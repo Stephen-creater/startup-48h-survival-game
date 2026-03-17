@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>创业者48小时生存实验 | 黑镜式创业模拟</title>
+    <meta name="description" content="一场残酷的创业生存实验。你能活过48小时吗？">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/animations.css">
+</head>
+<body>
+    <!-- 开场动画 -->
+    <div id="intro-screen" class="screen active">
+        <div class="intro-content">
+            <div class="typewriter-container">
+                <p class="typewriter-text" id="intro-text-1"></p>
+                <p class="typewriter-text" id="intro-text-2"></p>
+                <p class="typewriter-text" id="intro-text-3"></p>
+                <p class="typewriter-text" id="intro-text-4"></p>
+                <p class="typewriter-text" id="intro-text-5"></p>
+                <p class="typewriter-text" id="intro-text-6"></p>
+            </div>
+            <button id="start-btn" class="btn-primary hidden">开始实验</button>
+        </div>
+    </div>
+
+    <!-- 游戏主界面 -->
+    <div id="game-screen" class="screen">
+        <!-- 资源条 -->
+        <div class="resources-panel">
+            <div class="resource-item">
+                <span class="resource-icon">💰</span>
+                <span class="resource-label">金钱</span>
+                <div class="resource-bar">
+                    <div class="resource-fill" id="money-fill"></div>
+                </div>
+                <span class="resource-value" id="money-value">¥8,000</span>
+            </div>
+
+            <div class="resource-item">
+                <span class="resource-icon">⏰</span>
+                <span class="resource-label">时间</span>
+                <div class="resource-bar">
+                    <div class="resource-fill" id="time-fill"></div>
+                </div>
+                <span class="resource-value" id="time-value">48h</span>
+            </div>
+
+            <div class="resource-item">
+                <span class="resource-icon">⚡</span>
+                <span class="resource-label">精力</span>
+                <div class="resource-bar">
+                    <div class="resource-fill" id="energy-fill"></div>
+                </div>
+                <span class="resource-value" id="energy-value">100</span>
+            </div>
+
+            <div class="resource-item">
+                <span class="resource-icon">👥</span>
+                <span class="resource-label">人脉</span>
+                <div class="resource-bar">
+                    <div class="resource-fill" id="network-fill"></div>
+                </div>
+                <span class="resource-value" id="network-value">5</span>
+            </div>
+        </div>
+
+        <!-- 当前小时 -->
+        <div class="hour-display">
+            <span class="hour-label">第</span>
+            <span class="hour-number" id="current-hour">0</span>
+            <span class="hour-label">小时</span>
+        </div>
+
+        <!-- 剧情内容 -->
+        <div class="story-panel">
+            <h2 class="story-title" id="story-title"></h2>
+            <p class="story-scene" id="story-scene"></p>
+            <p class="story-description" id="story-description"></p>
+
+            <!-- 选择按钮 -->
+            <div class="choices-container" id="choices-container"></div>
+
+            <!-- 黑镜式旁白 -->
+            <p class="black-mirror-text" id="black-mirror-text"></p>
+        </div>
+
+        <!-- 后果显示 -->
+        <div class="consequence-panel hidden" id="consequence-panel">
+            <p class="consequence-text" id="consequence-text"></p>
+            <button class="btn-secondary" id="continue-btn">继续</button>
+        </div>
+    </div>
+
+    <!-- 结局界面 -->
+    <div id="ending-screen" class="screen">
+        <div class="ending-content">
+            <h1 class="ending-title glitch" id="ending-title"></h1>
+            <div class="ending-stats">
+                <p class="ending-stat">你存活了 <span class="stat-highlight" id="survival-time">0</span> 小时</p>
+                <p class="ending-stat">击败了 <span class="stat-highlight" id="beat-percentage">0</span>% 的玩家</p>
+            </div>
+            <div class="ending-description" id="ending-description"></div>
+
+            <!-- 资源剩余 -->
+            <div class="final-resources">
+                <h3>最终资源</h3>
+                <div class="final-resource-grid">
+                    <div class="final-resource-item">
+                        <span class="resource-icon">💰</span>
+                        <span id="final-money">¥0</span>
+                    </div>
+                    <div class="final-resource-item">
+                        <span class="resource-icon">⏰</span>
+                        <span id="final-time">0h</span>
+                    </div>
+                    <div class="final-resource-item">
+                        <span class="resource-icon">⚡</span>
+                        <span id="final-energy">0</span>
+                    </div>
+                    <div class="final-resource-item">
+                        <span class="resource-icon">👥</span>
+                        <span id="final-network">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 分享按钮 -->
+            <div class="ending-actions">
+                <button class="btn-primary" id="share-btn">分享结果</button>
+                <button class="btn-secondary" id="restart-btn">重新开始</button>
+                <button class="btn-secondary" id="contact-btn">联系小助手</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 分享卡片（隐藏，用于生成图片） -->
+    <div id="share-card" class="share-card hidden">
+        <h2>创业者48小时生存实验</h2>
+        <h3 id="share-ending-title"></h3>
+        <p>存活时间: <span id="share-survival-time"></span>小时</p>
+        <p>击败了 <span id="share-percentage"></span>% 的玩家</p>
+        <p class="share-footer">你能活多久？扫码挑战</p>
+    </div>
+
+    <script src="js/resources.js"></script>
+    <script src="js/story.js"></script>
+    <script src="js/endings.js"></script>
+    <script src="js/game.js"></script>
+    <script src="js/share.js"></script>
+</body>
+</html>

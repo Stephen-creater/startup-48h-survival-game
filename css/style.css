@@ -1,0 +1,484 @@
+/* 黑镜主题色 */
+:root {
+  --bg-black: #0a0a0a;
+  --bg-dark: #1a1a1a;
+  --text-green: #00ff41;
+  --text-red: #ff0040;
+  --text-white: #e0e0e0;
+  --text-gray: #666;
+  --glitch-color: #00ffff;
+  --border-color: #333;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--bg-black);
+  color: var(--text-white);
+  font-family: 'Courier New', 'Monaco', monospace;
+  line-height: 1.6;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+/* 屏幕切换 */
+.screen {
+  display: none;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.screen.active {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/* 开场动画 */
+#intro-screen {
+  background: var(--bg-black);
+}
+
+.intro-content {
+  max-width: 800px;
+  width: 100%;
+  text-align: center;
+}
+
+.typewriter-container {
+  margin-bottom: 40px;
+}
+
+.typewriter-text {
+  font-size: 18px;
+  margin: 20px 0;
+  opacity: 0;
+  color: var(--text-green);
+  min-height: 24px;
+}
+
+.typewriter-text.typing {
+  opacity: 1;
+  border-right: 2px solid var(--text-green);
+  animation: blink 0.75s step-end infinite;
+}
+
+.typewriter-text.typed {
+  opacity: 1;
+  border-right: none;
+}
+
+@keyframes blink {
+  0%, 100% { border-color: var(--text-green); }
+  50% { border-color: transparent; }
+}
+
+/* 按钮样式 */
+.btn-primary, .btn-secondary {
+  padding: 15px 40px;
+  font-size: 16px;
+  font-family: 'Courier New', monospace;
+  border: 2px solid var(--text-green);
+  background: transparent;
+  color: var(--text-green);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin: 10px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.btn-primary:hover {
+  background: var(--text-green);
+  color: var(--bg-black);
+  box-shadow: 0 0 20px var(--text-green);
+}
+
+.btn-secondary {
+  border-color: var(--text-gray);
+  color: var(--text-gray);
+}
+
+.btn-secondary:hover {
+  border-color: var(--text-white);
+  color: var(--text-white);
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* 游戏主界面 */
+#game-screen {
+  display: none;
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+#game-screen.active {
+  display: block;
+}
+
+/* 资源面板 */
+.resources-panel {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  margin-bottom: 30px;
+  padding: 20px;
+  background: var(--bg-dark);
+  border: 1px solid var(--border-color);
+}
+
+.resource-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.resource-icon {
+  font-size: 24px;
+}
+
+.resource-label {
+  font-size: 12px;
+  color: var(--text-gray);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.resource-bar {
+  height: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--text-green);
+  position: relative;
+  overflow: hidden;
+}
+
+.resource-fill {
+  height: 100%;
+  background: var(--text-green);
+  transition: width 0.5s ease, background-color 0.3s ease;
+  box-shadow: 0 0 10px var(--text-green);
+}
+
+.resource-bar.danger .resource-fill {
+  background: var(--text-red);
+  box-shadow: 0 0 10px var(--text-red);
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+.resource-value {
+  font-size: 14px;
+  color: var(--text-white);
+  font-weight: bold;
+}
+
+/* 当前小时显示 */
+.hour-display {
+  text-align: center;
+  font-size: 48px;
+  margin: 20px 0;
+  color: var(--text-green);
+  text-shadow: 0 0 20px var(--text-green);
+}
+
+.hour-label {
+  font-size: 24px;
+  color: var(--text-gray);
+}
+
+.hour-number {
+  font-weight: bold;
+  margin: 0 10px;
+}
+
+/* 剧情面板 */
+.story-panel {
+  background: var(--bg-dark);
+  border: 1px solid var(--border-color);
+  padding: 30px;
+  margin-bottom: 20px;
+}
+
+.story-title {
+  font-size: 28px;
+  color: var(--text-green);
+  margin-bottom: 15px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.story-scene {
+  font-size: 14px;
+  color: var(--text-gray);
+  margin-bottom: 20px;
+  font-style: italic;
+}
+
+.story-description {
+  font-size: 16px;
+  line-height: 1.8;
+  margin-bottom: 30px;
+  color: var(--text-white);
+}
+
+/* 选择按钮 */
+.choices-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.choice-btn {
+  padding: 20px;
+  background: transparent;
+  border: 2px solid var(--border-color);
+  color: var(--text-white);
+  font-family: 'Courier New', monospace;
+  font-size: 15px;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.choice-btn:hover {
+  border-color: var(--text-green);
+  background: rgba(0, 255, 65, 0.1);
+  transform: translateX(5px);
+}
+
+.choice-cost {
+  display: block;
+  font-size: 12px;
+  color: var(--text-red);
+  margin-top: 8px;
+}
+
+.choice-gain {
+  display: block;
+  font-size: 12px;
+  color: var(--text-green);
+  margin-top: 8px;
+}
+
+/* 黑镜式旁白 */
+.black-mirror-text {
+  font-size: 14px;
+  color: var(--text-gray);
+  font-style: italic;
+  padding: 20px;
+  border-left: 3px solid var(--text-red);
+  background: rgba(255, 0, 64, 0.05);
+  margin-top: 20px;
+}
+
+/* 后果面板 */
+.consequence-panel {
+  background: var(--bg-dark);
+  border: 2px solid var(--text-green);
+  padding: 30px;
+  text-align: center;
+  animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.consequence-text {
+  font-size: 18px;
+  line-height: 1.8;
+  margin-bottom: 30px;
+  color: var(--text-white);
+}
+
+/* 结局界面 */
+#ending-screen {
+  background: var(--bg-black);
+}
+
+.ending-content {
+  max-width: 800px;
+  width: 100%;
+  text-align: center;
+}
+
+.ending-title {
+  font-size: 48px;
+  color: var(--text-red);
+  margin-bottom: 30px;
+  text-transform: uppercase;
+  letter-spacing: 4px;
+}
+
+.glitch {
+  position: relative;
+  animation: glitch 1s infinite;
+}
+
+@keyframes glitch {
+  0% { transform: translate(0); }
+  20% { transform: translate(-2px, 2px); }
+  40% { transform: translate(-2px, -2px); }
+  60% { transform: translate(2px, 2px); }
+  80% { transform: translate(2px, -2px); }
+  100% { transform: translate(0); }
+}
+
+.ending-stats {
+  margin: 30px 0;
+}
+
+.ending-stat {
+  font-size: 20px;
+  margin: 15px 0;
+  color: var(--text-white);
+}
+
+.stat-highlight {
+  color: var(--text-green);
+  font-size: 32px;
+  font-weight: bold;
+  text-shadow: 0 0 10px var(--text-green);
+}
+
+.ending-description {
+  font-size: 16px;
+  line-height: 2;
+  margin: 40px 0;
+  color: var(--text-white);
+  padding: 30px;
+  background: var(--bg-dark);
+  border: 1px solid var(--border-color);
+}
+
+.ending-description p {
+  margin: 15px 0;
+}
+
+/* 最终资源 */
+.final-resources {
+  margin: 40px 0;
+  padding: 30px;
+  background: var(--bg-dark);
+  border: 1px solid var(--border-color);
+}
+
+.final-resources h3 {
+  font-size: 20px;
+  color: var(--text-gray);
+  margin-bottom: 20px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.final-resource-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.final-resource-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.final-resource-item .resource-icon {
+  font-size: 32px;
+}
+
+.final-resource-item span:last-child {
+  font-size: 18px;
+  color: var(--text-white);
+  font-weight: bold;
+}
+
+/* 结局按钮 */
+.ending-actions {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-top: 40px;
+}
+
+/* 分享卡片 */
+.share-card {
+  position: fixed;
+  top: -9999px;
+  left: -9999px;
+  width: 600px;
+  padding: 40px;
+  background: var(--bg-black);
+  border: 3px solid var(--text-green);
+  color: var(--text-white);
+  text-align: center;
+}
+
+.share-card h2 {
+  font-size: 24px;
+  color: var(--text-green);
+  margin-bottom: 20px;
+}
+
+.share-card h3 {
+  font-size: 32px;
+  color: var(--text-red);
+  margin-bottom: 20px;
+}
+
+.share-card p {
+  font-size: 18px;
+  margin: 10px 0;
+}
+
+.share-footer {
+  margin-top: 30px;
+  font-size: 14px;
+  color: var(--text-gray);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .resources-panel {
+    grid-template-columns: 1fr;
+  }
+
+  .hour-display {
+    font-size: 36px;
+  }
+
+  .story-title {
+    font-size: 22px;
+  }
+
+  .ending-title {
+    font-size: 32px;
+  }
+
+  .final-resource-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .btn-primary, .btn-secondary {
+    padding: 12px 30px;
+    font-size: 14px;
+  }
+}
