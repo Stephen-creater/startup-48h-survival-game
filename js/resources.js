@@ -112,10 +112,6 @@ class ResourceManager {
     const bar = document.getElementById(resource + '-fill').parentElement;
     if (percent <= 30) {
       bar.classList.add('danger');
-      // 播放警告音效
-      if (typeof audioManager !== 'undefined') {
-        audioManager.playWarningSound();
-      }
     } else {
       bar.classList.remove('danger');
     }

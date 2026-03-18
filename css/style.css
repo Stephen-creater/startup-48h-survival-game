@@ -1030,10 +1030,6 @@ body::before {
 
 /* 响应式设计 */
 @media (max-width: 768px) {
-  body {
-    font-size: 14px;
-  }
-
   .resources-panel {
     grid-template-columns: repeat(2, 1fr);
     gap: 10px;
@@ -1074,81 +1070,33 @@ body::before {
 
   .story-panel {
     padding: 20px;
-    margin-bottom: 20px;
   }
 
   .story-title {
-    font-size: 22px;
+    font-size: 26px;
     letter-spacing: 2px;
-    margin-bottom: 15px;
-  }
-
-  .story-scene {
-    font-size: 12px;
-    margin-bottom: 15px;
   }
 
   .story-description {
     font-size: 15px;
-    line-height: 1.8;
-  }
-
-  .choices-container {
-    gap: 12px;
   }
 
   .choice-btn {
-    padding: 18px 20px;
+    padding: 20px 25px;
     font-size: 14px;
   }
 
   .choice-btn:hover {
-    padding-left: 30px;
-  }
-
-  .choice-cost,
-  .choice-gain {
-    font-size: 11px;
-  }
-
-  .black-mirror-text {
-    font-size: 12px;
-    padding: 15px;
-    margin-top: 20px;
-  }
-
-  .consequence-panel {
-    padding: 25px 20px;
-  }
-
-  .consequence-text {
-    font-size: 15px;
-    line-height: 1.8;
+    padding-left: 35px;
   }
 
   .ending-title {
     font-size: 36px;
     letter-spacing: 4px;
-    margin-bottom: 30px;
-  }
-
-  .ending-stats {
-    margin-bottom: 25px;
-  }
-
-  .ending-stat {
-    font-size: 14px;
-    margin-bottom: 12px;
   }
 
   .stat-highlight {
-    font-size: 28px;
-  }
-
-  .ending-description {
-    font-size: 15px;
-    line-height: 1.8;
-    margin-bottom: 30px;
+    font-size: 32px;
   }
 
   .final-resource-grid {
@@ -1156,181 +1104,22 @@ body::before {
     gap: 15px;
   }
 
-  .final-resource-item {
-    padding: 20px 12px;
+  .btn-primary, .btn-secondary {
+    padding: 14px 35px;
+    font-size: 12px;
+    letter-spacing: 2px;
   }
 
   .intro-content {
-    padding: 30px 20px;
+    padding: 30px 25px;
   }
 
   .typewriter-text {
     font-size: 15px;
-    line-height: 1.8;
-    margin-bottom: 15px;
   }
 }
 
 @media (max-width: 480px) {
-  body {
-    font-size: 13px;
-  }
-
-  .resources-panel {
-    grid-template-columns: 1fr;
-    gap: 8px;
-    padding: 10px;
-  }
-
-  .resource-item {
-    padding: 10px;
-    flex-direction: row;
-    justify-content: space-between;
-  }
-
-  .resource-icon {
-    font-size: 18px;
-  }
-
-  .resource-label {
-    font-size: 10px;
-  }
-
-  .resource-bar {
-    flex: 1;
-    margin: 0 10px;
-  }
-
-  .hour-display {
-    font-size: 28px;
-    margin: 12px 0;
-  }
-
-  .hour-display::before,
-  .hour-display::after {
-    font-size: 20px;
-  }
-
-  .story-panel {
-    padding: 15px;
-    margin-bottom: 15px;
-  }
-
-  .story-title {
-    font-size: 20px;
-    letter-spacing: 1px;
-    margin-bottom: 12px;
-  }
-
-  .story-scene {
-    font-size: 11px;
-    margin-bottom: 12px;
-  }
-
-  .story-description {
-    font-size: 14px;
-    line-height: 1.7;
-  }
-
-  .choices-container {
-    gap: 10px;
-  }
-
-  .choice-btn {
-    padding: 16px 18px;
-    font-size: 13px;
-  }
-
-  .choice-btn:hover {
-    padding-left: 25px;
-  }
-
-  .choice-cost,
-  .choice-gain {
-    font-size: 10px;
-  }
-
-  .black-mirror-text {
-    font-size: 11px;
-    padding: 12px;
-    margin-top: 15px;
-  }
-
-  .consequence-panel {
-    padding: 20px 15px;
-  }
-
-  .consequence-text {
-    font-size: 14px;
-    line-height: 1.7;
-    margin-bottom: 20px;
-  }
-
-  .ending-content {
-    padding: 25px 15px;
-  }
-
-  .ending-title {
-    font-size: 28px;
-    letter-spacing: 3px;
-    margin-bottom: 25px;
-  }
-
-  .ending-stat {
-    font-size: 13px;
-    margin-bottom: 10px;
-  }
-
-  .stat-highlight {
-    font-size: 24px;
-  }
-
-  .ending-description {
-    font-size: 14px;
-    line-height: 1.7;
-    margin-bottom: 25px;
-  }
-
-  .final-resource-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-  }
-
-  .final-resource-item {
-    padding: 18px 10px;
-    gap: 10px;
-  }
-
-  .final-resource-item .resource-icon {
-    font-size: 24px;
-  }
-
-  .final-resource-item span:last-child {
-    font-size: 14px;
-  }
-
-  .btn-primary, .btn-secondary {
-    width: 100%;
-    padding: 12px 25px;
-    font-size: 12px;
-    letter-spacing: 1.5px;
-  }
-
-  .intro-content {
-    padding: 25px 15px;
-  }
-
-  .typewriter-text {
-    font-size: 14px;
-    line-height: 1.7;
-    margin-bottom: 12px;
-  }
-
-  #start-btn {
-    padding: 12px 30px;
-    font-size: 13px;
-  }
-}
   .resources-panel {
     grid-template-columns: repeat(2, 1fr);
     gap: 8px;

@@ -44,9 +44,7 @@ function playIntroAnimation() {
         element.classList.add('typing');
 
         // 播放打字音效
-        if (typeof audioManager !== 'undefined') {
-          audioManager.playTypingSound();
-        }
+        playTypingSoundEffect(texts[index].length);
 
         setTimeout(() => {
           element.classList.remove('typing');
@@ -62,6 +60,20 @@ function playIntroAnimation() {
       }, 500);
     }
   }, 1500);
+}
+
+// 播放打字音效（根据文字长度）
+function playTypingSoundEffect(textLength) {
+  const typingDuration = 1000; // 1秒
+  const charDelay = typingDuration / textLength;
+
+  for (let i = 0; i < textLength; i++) {
+    setTimeout(() => {
+      if (audioManager) {
+        audioManager.playTypingSound();
+      }
+    }, i * charDelay);
+  }
 }
 
 // 开始游戏
@@ -136,7 +148,21 @@ function loadNode(nodeId) {
       button.appendChild(gainSpan);
     }
 
-    button.addEventListener('click', () => makeChoice(index));
+    button.addEventListener('click', () => {
+      // 播放选择音效
+      if (audioManager) {
+        audioManager.playChoiceSound();
+      }
+      makeChoice(index);
+    });
+
+    // 添加悬停音效
+    button.addEventListener('mouseenter', () => {
+      if (audioManager) {
+        audioManager.playHoverSound();
+      }
+    });
+
     choicesContainer.appendChild(button);
   });
 
@@ -159,17 +185,12 @@ function makeChoice(choiceIndex) {
   const node = getNode(currentNodeId);
   const choice = node.choices[choiceIndex];
 
-  // 播放选择音效
-  audioManager.playChoiceSound();
-
   // 记录选择
   resourceManager.recordChoice(currentNodeId, choiceIndex);
 
   // 消耗资源
   if (choice.cost) {
     resourceManager.consume(choice.cost);
-    // 播放资源消耗音效
-    audioManager.playResourceSound();
   }
 
   // 获得资源
