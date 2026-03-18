@@ -122,16 +122,17 @@ body::before {
 }
 
 .intro-content {
-  max-width: 900px;
+  max-width: 1240px;
   width: 100%;
-  text-align: center;
-  padding: 40px;
+  text-align: left;
+  padding: 44px 44px 36px;
   border: 1px solid var(--border-color);
   background: rgba(0, 0, 0, 0.8);
   box-shadow:
     0 0 40px rgba(0, 255, 65, 0.1),
     inset 0 0 60px rgba(0, 255, 65, 0.02);
   position: relative;
+  overflow: hidden;
 }
 
 .intro-content::before {
@@ -156,9 +157,192 @@ body::before {
   box-shadow: 0 0 10px var(--neon-green);
 }
 
+.intro-content > * {
+  position: relative;
+  z-index: 1;
+}
+
+.intro-content::selection {
+  background: var(--text-green);
+  color: var(--bg-black);
+}
+
+.intro-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(320px, 0.8fr);
+  gap: 30px;
+  align-items: stretch;
+}
+
+.intro-hero {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.intro-kicker {
+  font-size: 11px;
+  letter-spacing: 4px;
+  color: rgba(0, 255, 65, 0.62);
+  font-family: 'Orbitron', monospace;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.intro-title {
+  font-family: 'Orbitron', monospace;
+  font-size: clamp(42px, 6vw, 76px);
+  line-height: 0.95;
+  color: var(--text-green);
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  text-shadow:
+    0 0 18px rgba(0, 255, 65, 0.45),
+    0 0 36px rgba(0, 255, 65, 0.18);
+}
+
+.intro-subtitle {
+  max-width: 760px;
+  font-size: 20px;
+  line-height: 1.9;
+  color: rgba(230, 236, 230, 0.92);
+  letter-spacing: 0.2px;
+}
+
+.intro-subtitle strong {
+  color: var(--text-green);
+  font-family: 'Orbitron', monospace;
+  font-weight: 700;
+  text-shadow: 0 0 12px rgba(0, 255, 65, 0.3);
+}
+
+.intro-stakes {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.intro-stake-card {
+  min-height: 180px;
+  padding: 18px 18px 16px;
+  background:
+    linear-gradient(180deg, rgba(11, 16, 13, 0.96) 0%, rgba(6, 9, 7, 0.98) 100%);
+  border: 1px solid rgba(0, 255, 65, 0.12);
+  border-top: 3px solid rgba(0, 255, 65, 0.5);
+  box-shadow:
+    0 14px 30px rgba(0, 0, 0, 0.34),
+    inset 0 0 18px rgba(0, 255, 65, 0.03);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.intro-stake-label {
+  font-size: 10px;
+  letter-spacing: 2.6px;
+  color: rgba(172, 184, 172, 0.68);
+  text-transform: uppercase;
+  font-family: 'Orbitron', monospace;
+}
+
+.intro-stake-value {
+  font-size: clamp(30px, 4vw, 46px);
+  color: var(--text-green);
+  font-family: 'Orbitron', monospace;
+  font-weight: 900;
+  text-shadow: 0 0 14px rgba(0, 255, 65, 0.28);
+}
+
+.intro-stake-copy {
+  font-size: 14px;
+  line-height: 1.7;
+  color: rgba(210, 218, 210, 0.84);
+}
+
+.intro-cta-row {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 20px;
+  align-items: center;
+  margin-top: 6px;
+}
+
+.intro-cta-row .btn-primary {
+  margin: 0;
+  min-width: 210px;
+}
+
+.intro-cta-copy {
+  font-size: 14px;
+  line-height: 1.8;
+  color: rgba(175, 189, 175, 0.82);
+}
+
+.intro-side-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 18px;
+  background:
+    linear-gradient(180deg, rgba(8, 12, 10, 0.88) 0%, rgba(4, 7, 5, 0.95) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-left: 3px solid rgba(255, 8, 68, 0.34);
+  box-shadow:
+    inset 0 0 24px rgba(255, 8, 68, 0.04),
+    0 12px 30px rgba(0, 0, 0, 0.3);
+}
+
+.intro-side-block {
+  padding: 16px 16px 18px;
+  background: rgba(0, 0, 0, 0.32);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.intro-side-label {
+  display: inline-block;
+  margin-bottom: 12px;
+  font-size: 10px;
+  letter-spacing: 2.8px;
+  color: rgba(255, 110, 138, 0.82);
+  text-transform: uppercase;
+  font-family: 'Orbitron', monospace;
+  font-weight: 700;
+}
+
+.intro-side-text {
+  font-size: 15px;
+  line-height: 1.85;
+  color: rgba(220, 226, 220, 0.9);
+}
+
+.intro-risk-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.intro-risk-list li {
+  position: relative;
+  padding-left: 18px;
+  font-size: 15px;
+  line-height: 1.7;
+  color: rgba(224, 224, 224, 0.88);
+}
+
+.intro-risk-list li::before {
+  content: '▸';
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: rgba(255, 110, 138, 0.82);
+}
+
 .typewriter-container {
-  margin-bottom: 50px;
-  margin-top: 30px;
+  margin-bottom: 18px;
+  margin-top: 28px;
+  padding-top: 22px;
+  border-top: 1px solid rgba(0, 255, 65, 0.12);
 }
 
 .typewriter-text {
@@ -1464,6 +1648,40 @@ body::before {
 
 /* 响应式设计 */
 @media (max-width: 768px) {
+  .intro-content {
+    padding: 28px 22px 24px;
+  }
+
+  .intro-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .intro-title {
+    letter-spacing: 2px;
+  }
+
+  .intro-subtitle {
+    font-size: 17px;
+    line-height: 1.8;
+  }
+
+  .intro-stakes {
+    grid-template-columns: 1fr;
+  }
+
+  .intro-stake-card {
+    min-height: 0;
+  }
+
+  .intro-cta-row {
+    grid-template-columns: 1fr;
+  }
+
+  .intro-cta-row .btn-primary {
+    width: 100%;
+  }
+
   .game-content {
     padding: 16px;
   }
@@ -1585,6 +1803,18 @@ body::before {
 }
 
 @media (max-width: 480px) {
+  .intro-kicker {
+    letter-spacing: 2.6px;
+  }
+
+  .intro-title {
+    font-size: 34px;
+  }
+
+  .intro-side-panel {
+    padding: 12px;
+  }
+
   .resources-panel {
     gap: 8px;
     padding: 10px;
