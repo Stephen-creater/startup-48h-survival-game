@@ -30,63 +30,66 @@
 
     <!-- 游戏主界面 -->
     <div id="game-screen" class="screen">
-        <!-- 资源条 -->
-        <div class="resources-panel">
-            <div class="resource-item">
-                <span class="resource-icon">💰</span>
-                <span class="resource-label">资金</span>
-                <div class="resource-bar">
-                    <div class="resource-fill" id="money-fill"></div>
-                </div>
-                <span class="resource-value" id="money-value">¥8,000</span>
-            </div>
-
-            <div class="resource-item">
-                <span class="resource-icon">⏰</span>
-                <span class="resource-label">时间</span>
-                <div class="resource-bar">
-                    <div class="resource-fill" id="time-fill"></div>
-                </div>
-                <span class="resource-value" id="time-value">48h</span>
-            </div>
-
-            <div class="resource-item">
-                <span class="resource-icon">⚡</span>
-                <span class="resource-label">精力</span>
-                <div class="resource-bar">
-                    <div class="resource-fill" id="energy-fill"></div>
-                </div>
-                <span class="resource-value" id="energy-value">100</span>
-            </div>
-
-            <div class="resource-item">
-                <span class="resource-icon">👥</span>
-                <span class="resource-label">人脉</span>
-                <div class="resource-bar">
-                    <div class="resource-fill" id="network-fill"></div>
-                </div>
-                <span class="resource-value" id="network-value">5</span>
-            </div>
-        </div>
-
-        <!-- 当前小时 -->
+        <!-- 当前小时（顶部） -->
         <div class="hour-display">
             <span class="hour-label">第</span>
             <span class="hour-number" id="current-hour">0</span>
             <span class="hour-label">小时</span>
         </div>
 
-        <!-- 剧情内容 -->
-        <div class="story-panel">
-            <h2 class="story-title" id="story-title"></h2>
-            <p class="story-scene" id="story-scene"></p>
-            <p class="story-description" id="story-description"></p>
+        <!-- 主内容区域 -->
+        <div class="game-content">
+            <!-- 左侧：剧情面板 -->
+            <div class="story-panel">
+                <h2 class="story-title" id="story-title"></h2>
+                <p class="story-scene" id="story-scene"></p>
+                <p class="story-description" id="story-description"></p>
 
-            <!-- 选择按钮 -->
-            <div class="choices-container" id="choices-container"></div>
+                <!-- 选择按钮 -->
+                <div class="choices-container" id="choices-container"></div>
 
-            <!-- 黑镜式旁白 -->
-            <p class="black-mirror-text" id="black-mirror-text"></p>
+                <!-- 黑镜式旁白 -->
+                <p class="black-mirror-text" id="black-mirror-text"></p>
+            </div>
+
+            <!-- 右侧：资源条 -->
+            <div class="resources-panel">
+                <div class="resource-item">
+                    <span class="resource-icon">💰</span>
+                    <span class="resource-label">资金</span>
+                    <div class="resource-bar">
+                        <div class="resource-fill" id="money-fill"></div>
+                    </div>
+                    <span class="resource-value" id="money-value">¥8,000</span>
+                </div>
+
+                <div class="resource-item">
+                    <span class="resource-icon">⏰</span>
+                    <span class="resource-label">时间</span>
+                    <div class="resource-bar">
+                        <div class="resource-fill" id="time-fill"></div>
+                    </div>
+                    <span class="resource-value" id="time-value">48h</span>
+                </div>
+
+                <div class="resource-item">
+                    <span class="resource-icon">⚡</span>
+                    <span class="resource-label">精力</span>
+                    <div class="resource-bar">
+                        <div class="resource-fill" id="energy-fill"></div>
+                    </div>
+                    <span class="resource-value" id="energy-value">100</span>
+                </div>
+
+                <div class="resource-item">
+                    <span class="resource-icon">👥</span>
+                    <span class="resource-label">人脉</span>
+                    <div class="resource-bar">
+                        <div class="resource-fill" id="network-fill"></div>
+                    </div>
+                    <span class="resource-value" id="network-value">5</span>
+                </div>
+            </div>
         </div>
 
         <!-- 后果显示 -->

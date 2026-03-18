@@ -270,12 +270,56 @@ body::before {
 }
 
 /* 资源面板 - 紧凑横向布局 */
+/* 游戏主界面布局 */
+#game-screen {
+  display: none;
+  padding: 0;
+}
+
+#game-screen.active {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* 小时显示（顶部） */
+.hour-display {
+  text-align: center;
+  font-size: 36px;
+  padding: 20px 0;
+  color: var(--text-green);
+  text-shadow:
+    0 0 20px var(--text-green),
+    0 0 40px rgba(0, 255, 65, 0.5),
+    0 0 60px rgba(0, 255, 65, 0.3);
+  font-family: 'Orbitron', monospace;
+  font-weight: 900;
+  letter-spacing: 6px;
+  position: relative;
+  animation: hourGlow 3s ease-in-out infinite;
+  background: var(--bg-black);
+  border-bottom: 1px solid rgba(0, 255, 65, 0.2);
+}
+
+/* 主内容区域（左右布局） */
+.game-content {
+  display: flex;
+  flex: 1;
+  gap: 20px;
+  padding: 20px;
+  max-width: 1600px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* 资源面板（右侧垂直布局） */
 .resources-panel {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
-  margin-bottom: 20px;
-  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 280px;
+  flex-shrink: 0;
+  padding: 20px;
   background:
     linear-gradient(135deg, rgba(0, 255, 65, 0.02) 0%, transparent 100%),
     var(--bg-panel);
@@ -285,6 +329,7 @@ body::before {
     0 0 30px rgba(0, 255, 65, 0.1),
     inset 0 0 40px rgba(0, 0, 0, 0.5);
   position: relative;
+  height: fit-content;
 }
 
 .resources-panel::before {
@@ -448,20 +493,8 @@ body::before {
   }
 }
 
-.hour-display::before {
-  content: '[ ';
-  color: var(--text-dim);
-  font-size: 48px;
-}
-
-.hour-display::after {
-  content: ' ]';
-  color: var(--text-dim);
-  font-size: 48px;
-}
-
 .hour-label {
-  font-size: 20px;
+  font-size: 16px;
   color: var(--text-gray);
   font-weight: 400;
   letter-spacing: 3px;
@@ -469,7 +502,7 @@ body::before {
 
 .hour-number {
   font-weight: 900;
-  margin: 0 15px;
+  margin: 0 10px;
   display: inline-block;
   animation: numberFlicker 0.1s infinite alternate;
 }
@@ -479,19 +512,20 @@ body::before {
   100% { opacity: 1; }
 }
 
-/* 剧情面板 */
+/* 剧情面板（左侧） */
 .story-panel {
+  flex: 1;
   background:
     linear-gradient(135deg, rgba(0, 255, 65, 0.01) 0%, transparent 100%),
     var(--bg-panel);
   border: 1px solid rgba(0, 255, 65, 0.3);
   border-left: 4px solid var(--neon-green);
   padding: 40px;
-  margin-bottom: 30px;
   box-shadow:
     0 0 40px rgba(0, 255, 65, 0.15),
     inset 0 0 60px rgba(0, 0, 0, 0.6);
   position: relative;
+  height: fit-content;
 }
 
 /* 场景图片 */
