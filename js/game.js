@@ -132,7 +132,7 @@ function loadNode(nodeId) {
   choicesContainer.innerHTML = '';
 
   // 创建选择按钮
-  let availableStrategicChoices = 0;
+  let availableChoices = 0;
   node.choices.forEach((choice, index) => {
     const availability = resourceManager.getChoiceAvailability(choice);
     const button = document.createElement('button');
@@ -165,9 +165,7 @@ function loadNode(nodeId) {
       warningSpan.textContent = '不可选：' + availability.reason;
       button.appendChild(warningSpan);
     } else {
-      if (!isTerminalChoice(choice)) {
-        availableStrategicChoices++;
-      }
+      availableChoices++;
 
       button.addEventListener('click', () => {
         // 播放选择音效
@@ -191,14 +189,9 @@ function loadNode(nodeId) {
   // 隐藏后果面板
   document.getElementById('consequence-panel').classList.add('hidden');
 
-  if (availableStrategicChoices === 0 && resourceManager.hasResourceLock()) {
+  if (availableChoices === 0 && resourceManager.hasResourceLock()) {
     showResourceLock();
   }
-}
-
-function isTerminalChoice(choice) {
-  const nextNode = choice.nextNode;
-  return nextNode === 'gave_up' || nextNode === 'broke' || nextNode === 'burnout';
 }
 
 // 格式化消耗/获得
