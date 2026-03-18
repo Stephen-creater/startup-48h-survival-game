@@ -157,11 +157,6 @@ function loadNode(nodeId) {
       button.appendChild(gainSpan);
     }
 
-    const tradeSpan = document.createElement('span');
-    tradeSpan.className = 'choice-trade';
-    tradeSpan.textContent = resourceManager.getChoiceTradeSummary(choice);
-    button.appendChild(tradeSpan);
-
     if (!availability.available) {
       button.classList.add('choice-btn-disabled');
       button.disabled = true;
@@ -236,69 +231,6 @@ function normalizeEndingState(endingId, rawState) {
 
 function calculateSurvivalTime(state) {
   return Math.max(0, resourceManager.initialTime - state.time);
-}
-
-function buildEndingDiagnosis(ending, state, resourceStory) {
-  const causeByEnding = {
-    broke: {
-      kicker: 'FAILURE CAUSE',
-      title: '你死在现金断流',
-      text: '不是想法先死了，是现金流先断了。账单比愿景更早落地，而你没能把下一笔筹码接上。'
-    },
-    burnout: {
-      kicker: 'FAILURE CAUSE',
-      title: '你死在体力透支',
-      text: '不是机会不够，而是身体先退出了牌桌。你把意志当燃料，但身体从来不接受赊账。'
-    },
-    gave_up: {
-      kicker: 'FAILURE CAUSE',
-      title: '你死在判断先撤',
-      text: '真正先熄火的不是资源，而是继续下注的判断。你在结果出来之前，先把自己从牌桌上撤了下来。'
-    },
-    cornered: {
-      kicker: 'FAILURE CAUSE',
-      title: state.network <= 0 ? '你死在没人可求' : '你死在选择空间归零',
-      text: state.network <= 0
-        ? '最后不是项目先死，而是最后一个会接你电话的人消失了。资源还有残渣，但已经没有人帮你把它们变成机会。'
-        : '你不是被一个错误击倒的，而是被一连串代价挤到没有任何可执行选项。'
-    },
-    no_ethics: {
-      kicker: 'SURVIVAL COST',
-      title: '你活下来，但判断越过了底线',
-      text: '你不是没能力活下去，而是把最贵的成本换成了底线本身。结果成立了，代价也成立了。'
-    },
-    survive: {
-      kicker: 'SURVIVAL COST',
-      title: '你活下来，但只是续命',
-      text: '这不是赢，只是勉强把自己留在牌桌上。真正的问题没有解决，你只是多换到了一点时间。'
-    },
-    success: {
-      kicker: 'SURVIVAL COST',
-      title: '你活下来，因为判断踩对了',
-      text: '这次不是资源特别宽裕，而是你把有限筹码押在了更有效的方向上。活下来的关键是判断，不是运气。'
-    }
-  };
-
-  const cause = causeByEnding[ending.id] || {
-    kicker: 'FAILURE CAUSE',
-    title: '你死在最后一层薄弱点',
-    text: '看起来像很多问题同时发生，但真正先崩掉的，永远是最薄的那一层。'
-  };
-
-  const costIntro = {
-    money: '你把现金压到了极限',
-    time: '你把时间窗口压到了极限',
-    energy: '你把体力压到了极限',
-    network: '你把人情压到了极限'
-  };
-
-  const survivalCost = {
-    kicker: ending.id === 'success' ? 'SURVIVAL COST' : 'PRICE PAID',
-    title: costIntro[resourceStory.weakestResource] || `你把${resourceStory.weakestLabel}压到了极限`,
-    text: `${resourceStory.detail} 最后最脆的那层是${resourceStory.weakestLabel}，而你保住的是${resourceStory.strongestLabel}。`
-  };
-
-  return { cause, survivalCost };
 }
 
 // 做出选择
@@ -404,7 +336,6 @@ function showEnding() {
   const ending = determineEnding(resourceManager);
   const state = normalizeEndingState(ending.id, resourceManager.getState());
   const resourceStory = resourceManager.getResourceStory(state);
-  const diagnosis = buildEndingDiagnosis(ending, state, resourceStory);
 
   // 切换到结局界面
   document.getElementById('game-screen').classList.remove('active');
@@ -423,13 +354,6 @@ function showEnding() {
     p.textContent = line;
     descriptionDiv.appendChild(p);
   });
-
-  document.getElementById('ending-cause-kicker').textContent = diagnosis.cause.kicker;
-  document.getElementById('ending-cause-title').textContent = diagnosis.cause.title;
-  document.getElementById('ending-cause-text').textContent = diagnosis.cause.text;
-  document.getElementById('ending-cost-kicker').textContent = diagnosis.survivalCost.kicker;
-  document.getElementById('ending-cost-title').textContent = diagnosis.survivalCost.title;
-  document.getElementById('ending-cost-text').textContent = diagnosis.survivalCost.text;
 
   // 显示最终资源
   document.getElementById('final-money').textContent = '¥' + state.money.toLocaleString();
