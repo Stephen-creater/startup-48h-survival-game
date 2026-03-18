@@ -83,6 +83,7 @@ function startGame() {
   // 切换到游戏界面
   document.getElementById('intro-screen').classList.remove('active');
   document.getElementById('game-screen').classList.add('active');
+  resourceManager.updateUI();
 
   // 加载第一个节点
   loadNode('hour_0');
@@ -156,6 +157,11 @@ function loadNode(nodeId) {
       gainSpan.textContent = '获得：' + gainText;
       button.appendChild(gainSpan);
     }
+
+    const tradeSpan = document.createElement('span');
+    tradeSpan.className = 'choice-trade';
+    tradeSpan.textContent = resourceManager.getChoiceTradeSummary(choice);
+    button.appendChild(tradeSpan);
 
     if (!availability.available) {
       button.classList.add('choice-btn-disabled');

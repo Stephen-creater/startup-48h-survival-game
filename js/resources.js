@@ -70,6 +70,8 @@ class ResourceManager {
 
   // 更新UI
   updateUI() {
+    const state = this.getState();
+
     // 更新金钱
     const moneyPercent = (this.money / this.initialMoney) * 100;
     const moneyFill = document.getElementById('money-fill');
@@ -103,6 +105,8 @@ class ResourceManager {
     this.updateDangerState('time', timePercent);
     this.updateDangerState('energy', energyPercent);
     this.updateDangerState('network', networkPercent);
+
+    this.updatePressureTone(state);
   }
 
   // 更新危险状态
@@ -171,6 +175,77 @@ class ResourceManager {
     return ratios[0];
   }
 
+  getPressureProfile(state = this.getState()) {
+    const pressure = this.getPrimaryPressure(state);
+
+    if (pressure.ratio > 0.55) {
+      return {
+        resource: 'stable',
+        level: 'stable',
+        kicker: 'SYSTEM STABLE',
+        text: '你暂时还能扛住，但每一个选择都在悄悄缩小你的回旋空间。'
+      };
+    }
+
+    const level = pressure.ratio <= 0.25 ? 'critical' : 'warning';
+    const profiles = {
+      money: {
+        kicker: level === 'critical' ? 'CASH COLLAPSE' : 'CASH PRESSURE',
+        text: level === 'critical'
+          ? '现金快断了。你现在不是在做最优解，而是在挑哪一种死法更慢。'
+          : '资金开始勒住你的脖子。接下来每一步都像是在给账单让路。'
+      },
+      time: {
+        kicker: level === 'critical' ? 'TIME COLLAPSE' : 'TIME PRESSURE',
+        text: level === 'critical'
+          ? '时间窗口几乎关死了。你现在做的不是规划，而是抢救。'
+          : '时间开始变成敌人。你已经没多少试错空间了。'
+      },
+      energy: {
+        kicker: level === 'critical' ? 'BODY FAILURE' : 'ENERGY PRESSURE',
+        text: level === 'critical'
+          ? '你的身体快要先退出牌桌了。再硬撑，代价不会只写在数字上。'
+          : '精力正在漏光。你还能做选择，但已经很难做出好选择。'
+      },
+      network: {
+        kicker: level === 'critical' ? 'SOCIAL DEBT' : 'NETWORK PRESSURE',
+        text: level === 'critical'
+          ? '你几乎把能求的人都求完了。接下来最先消失的，不是机会，是回应。'
+          : '人脉开始见底。以后每一个求助动作都会更贵，也更难看。'
+      }
+    };
+
+    return {
+      resource: pressure.resource,
+      level,
+      ...profiles[pressure.resource]
+    };
+  }
+
+  updatePressureTone(state = this.getState()) {
+    const profile = this.getPressureProfile(state);
+    const gameScreen = document.getElementById('game-screen');
+    const pressureStatus = document.getElementById('pressure-status');
+    const pressureKicker = document.getElementById('pressure-kicker');
+    const pressureText = document.getElementById('pressure-text');
+
+    if (!gameScreen || !pressureStatus || !pressureKicker || !pressureText) {
+      return;
+    }
+
+    gameScreen.dataset.crisisResource = profile.resource;
+    gameScreen.dataset.crisisLevel = profile.level;
+
+    pressureKicker.textContent = profile.kicker;
+    pressureText.textContent = profile.text;
+
+    if (profile.level === 'stable') {
+      pressureStatus.classList.add('hidden');
+    } else {
+      pressureStatus.classList.remove('hidden');
+    }
+  }
+
   // 获取已耗尽的核心资源
   getDepletedCoreResources() {
     return ['money', 'energy', 'network'].filter(resource => this[resource] <= 0);
@@ -220,6 +295,46 @@ class ResourceManager {
         network: '现在最危险的是人脉，你快把能求的人都求完了。'
       };
       summary += ` ${pressureText[pressure.resource]}`;
+    }
+
+    return summary;
+  }
+
+  getChoiceTradeSummary(choice) {
+    const costs = Object.entries(choice.cost || {}).filter(([, amount]) => amount > 0);
+    const gains = Object.entries(choice.gain || {}).filter(([, amount]) => amount > 0);
+    const profile = this.getPressureProfile();
+
+    const labelMap = {
+      money: '现金流',
+      time: '时间窗口',
+      energy: '体力',
+      network: '人情'
+    };
+
+    let summary = '';
+    if (costs.length && gains.length) {
+      const [spent] = costs.sort((a, b) => b[1] - a[1]);
+      const [earned] = gains.sort((a, b) => b[1] - a[1]);
+      summary = `本质上：拿${labelMap[spent[0]]}换${labelMap[earned[0]]}。`;
+    } else if (costs.length) {
+      const [spent] = costs.sort((a, b) => b[1] - a[1]);
+      summary = `本质上：先烧掉${labelMap[spent[0]]}，赌后面会有回报。`;
+    } else if (gains.length) {
+      const [earned] = gains.sort((a, b) => b[1] - a[1]);
+      summary = `本质上：给自己补一口${labelMap[earned[0]]}。`;
+    } else {
+      summary = '本质上：这一步赌的是方向，而不是眼前收益。';
+    }
+
+    if (profile.level !== 'stable') {
+      const emphasisMap = {
+        money: '现在最贵的是现金，不是想法。',
+        time: '现在最贵的是时间，不是努力。',
+        energy: '现在最贵的是体力，不是意志。',
+        network: '现在最贵的是人情，不是开口本身。'
+      };
+      summary += ` ${emphasisMap[profile.resource]}`;
     }
 
     return summary;

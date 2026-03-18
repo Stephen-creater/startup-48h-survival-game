@@ -16,6 +16,9 @@
   --neon-green: #39ff14;
   --neon-red: #ff073a;
   --neon-blue: #00e5ff;
+  --pressure-accent: var(--text-green);
+  --pressure-soft: rgba(0, 255, 65, 0.14);
+  --pressure-glow: rgba(0, 255, 65, 0.18);
 }
 
 * {
@@ -280,6 +283,54 @@ body::before {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+}
+
+#game-screen[data-crisis-resource="money"][data-crisis-level="warning"] {
+  --pressure-accent: #ff7474;
+  --pressure-soft: rgba(255, 116, 116, 0.14);
+  --pressure-glow: rgba(255, 8, 68, 0.2);
+}
+
+#game-screen[data-crisis-resource="money"][data-crisis-level="critical"] {
+  --pressure-accent: #ff4d6d;
+  --pressure-soft: rgba(255, 77, 109, 0.18);
+  --pressure-glow: rgba(255, 8, 68, 0.28);
+}
+
+#game-screen[data-crisis-resource="energy"][data-crisis-level="warning"] {
+  --pressure-accent: #ffd166;
+  --pressure-soft: rgba(255, 209, 102, 0.13);
+  --pressure-glow: rgba(255, 209, 102, 0.2);
+}
+
+#game-screen[data-crisis-resource="energy"][data-crisis-level="critical"] {
+  --pressure-accent: #ff9f43;
+  --pressure-soft: rgba(255, 159, 67, 0.16);
+  --pressure-glow: rgba(255, 159, 67, 0.24);
+}
+
+#game-screen[data-crisis-resource="network"][data-crisis-level="warning"] {
+  --pressure-accent: #9bd1ff;
+  --pressure-soft: rgba(155, 209, 255, 0.13);
+  --pressure-glow: rgba(0, 229, 255, 0.18);
+}
+
+#game-screen[data-crisis-resource="network"][data-crisis-level="critical"] {
+  --pressure-accent: #72b6ff;
+  --pressure-soft: rgba(114, 182, 255, 0.16);
+  --pressure-glow: rgba(0, 229, 255, 0.24);
+}
+
+#game-screen[data-crisis-resource="time"][data-crisis-level="warning"] {
+  --pressure-accent: #f7a8ff;
+  --pressure-soft: rgba(247, 168, 255, 0.13);
+  --pressure-glow: rgba(247, 168, 255, 0.18);
+}
+
+#game-screen[data-crisis-resource="time"][data-crisis-level="critical"] {
+  --pressure-accent: #ff89c5;
+  --pressure-soft: rgba(255, 137, 197, 0.16);
+  --pressure-glow: rgba(255, 137, 197, 0.24);
 }
 
 /* 小时显示（顶部） */
@@ -627,6 +678,33 @@ body::before {
   border-left: 2px solid var(--text-dim);
 }
 
+.pressure-status {
+  margin: 0 0 28px;
+  padding: 16px 18px;
+  background:
+    linear-gradient(135deg, var(--pressure-soft) 0%, transparent 100%),
+    rgba(0, 0, 0, 0.42);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-left: 4px solid var(--pressure-accent);
+  box-shadow: inset 0 0 24px rgba(0, 0, 0, 0.32);
+}
+
+.pressure-kicker {
+  display: inline-block;
+  margin-bottom: 10px;
+  font-size: 11px;
+  font-family: 'Orbitron', monospace;
+  letter-spacing: 2.6px;
+  color: var(--pressure-accent);
+  font-weight: 700;
+}
+
+.pressure-text {
+  font-size: 14px;
+  line-height: 1.8;
+  color: rgba(234, 236, 234, 0.9);
+}
+
 .story-body {
   position: relative;
   min-height: 300px;
@@ -762,6 +840,16 @@ body::before {
   text-shadow: 0 0 8px rgba(255, 8, 68, 0.28);
 }
 
+.choice-trade {
+  display: block;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  font-size: 12px;
+  line-height: 1.75;
+  color: rgba(201, 220, 201, 0.82);
+}
+
 .choice-btn-disabled {
   border-color: rgba(255, 8, 68, 0.22);
   border-left-color: rgba(255, 8, 68, 0.68);
@@ -771,6 +859,46 @@ body::before {
   color: rgba(232, 232, 232, 0.72);
   cursor: not-allowed;
   opacity: 0.88;
+}
+
+#game-screen[data-crisis-level="warning"] .choice-btn,
+#game-screen[data-crisis-level="critical"] .choice-btn {
+  border-left-color: var(--pressure-accent);
+}
+
+#game-screen[data-crisis-level="warning"] .choice-btn:hover,
+#game-screen[data-crisis-level="critical"] .choice-btn:hover {
+  border-color: var(--pressure-accent);
+  background:
+    linear-gradient(135deg, var(--pressure-soft) 0%, rgba(255, 255, 255, 0.01) 100%),
+    rgba(0, 0, 0, 0.8);
+  box-shadow:
+    0 0 22px var(--pressure-glow),
+    inset 0 0 18px rgba(255, 255, 255, 0.03);
+}
+
+#game-screen[data-crisis-level="critical"] .story-title {
+  color: var(--pressure-accent);
+  text-shadow:
+    0 0 18px var(--pressure-glow),
+    0 0 34px var(--pressure-glow);
+}
+
+#game-screen[data-crisis-level="warning"] .consequence-impact,
+#game-screen[data-crisis-level="critical"] .consequence-impact {
+  color: var(--pressure-accent);
+  background: rgba(0, 0, 0, 0.28);
+  border-left-color: var(--pressure-accent);
+}
+
+#game-screen[data-crisis-resource="energy"][data-crisis-level="critical"] .story-panel,
+#game-screen[data-crisis-resource="energy"][data-crisis-level="critical"] .consequence-card {
+  animation: fatiguePulse 3.2s ease-in-out infinite;
+}
+
+@keyframes fatiguePulse {
+  0%, 100% { filter: none; }
+  50% { filter: saturate(0.88) brightness(0.97); }
 }
 
 .choice-btn-disabled:hover {
