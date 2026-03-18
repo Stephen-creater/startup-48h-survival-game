@@ -343,7 +343,7 @@ function showImagePreview(dataURL, blob) {
         <div class="share-card-enhanced">
           <div class="share-header">
             <h2 class="share-game-title">创业者48小时生存实验</h2>
-            <p class="share-subtitle">黑镜式创业模拟 | 你能活多久?</p>
+            <p class="share-subtitle">创业模拟 | 你能活多久?</p>
           </div>
 
           <div class="share-result">

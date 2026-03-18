@@ -96,10 +96,10 @@
 .share-card-enhanced {
   width: 600px;
   background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
-  border: 3px solid var(--text-green);
+  border: 2px solid rgba(0, 255, 65, 0.3);
   box-shadow:
-    0 0 40px rgba(0, 255, 65, 0.4),
-    inset 0 0 60px rgba(0, 255, 65, 0.05);
+    0 0 20px rgba(0, 255, 65, 0.15),
+    inset 0 0 30px rgba(0, 255, 65, 0.02);
   padding: 40px;
   position: relative;
 }
@@ -114,8 +114,8 @@
   background:
     repeating-linear-gradient(
       0deg,
-      rgba(0, 255, 65, 0.03),
-      rgba(0, 255, 65, 0.03) 1px,
+      rgba(0, 255, 65, 0.01),
+      rgba(0, 255, 65, 0.01) 1px,
       transparent 1px,
       transparent 2px
     );
@@ -125,23 +125,23 @@
 .share-header {
   text-align: center;
   margin-bottom: 30px;
-  border-bottom: 2px solid var(--text-green);
+  border-bottom: 1px solid rgba(0, 255, 65, 0.2);
   padding-bottom: 20px;
 }
 
 .share-game-title {
   font-family: 'Orbitron', sans-serif;
   font-size: 28px;
-  color: var(--text-green);
+  color: rgba(0, 255, 65, 0.8);
   text-transform: uppercase;
   letter-spacing: 3px;
   margin: 0 0 10px 0;
-  text-shadow: 0 0 20px rgba(0, 255, 65, 0.6);
+  text-shadow: 0 0 10px rgba(0, 255, 65, 0.3);
 }
 
 .share-subtitle {
   font-size: 14px;
-  color: var(--text-cyan);
+  color: rgba(0, 217, 255, 0.6);
   letter-spacing: 2px;
   margin: 0;
 }
@@ -168,8 +168,8 @@
 }
 
 .share-stat-item {
-  background: rgba(0, 255, 65, 0.05);
-  border: 1px solid var(--text-green);
+  background: rgba(0, 255, 65, 0.03);
+  border: 1px solid rgba(0, 255, 65, 0.2);
   padding: 15px;
   text-align: center;
 }
@@ -177,7 +177,7 @@
 .share-stat-label {
   display: block;
   font-size: 12px;
-  color: var(--text-gray);
+  color: rgba(160, 160, 160, 0.8);
   margin-bottom: 8px;
   letter-spacing: 1px;
 }
@@ -186,9 +186,9 @@
   display: block;
   font-family: 'Orbitron', sans-serif;
   font-size: 24px;
-  color: var(--text-green);
+  color: rgba(0, 255, 65, 0.8);
   font-weight: 700;
-  text-shadow: 0 0 10px rgba(0, 255, 65, 0.5);
+  text-shadow: 0 0 8px rgba(0, 255, 65, 0.3);
 }
 
 .share-resources {
@@ -199,26 +199,26 @@
 
 .share-resource {
   background: rgba(0, 0, 0, 0.5);
-  border: 1px solid var(--border-color);
+  border: 1px solid rgba(80, 80, 80, 0.3);
   padding: 12px 8px;
   text-align: center;
   font-size: 14px;
-  color: var(--text-white);
+  color: rgba(224, 224, 224, 0.9);
 }
 
 .share-footer {
   text-align: center;
   padding-top: 25px;
-  border-top: 2px solid var(--text-green);
+  border-top: 1px solid rgba(0, 255, 65, 0.2);
 }
 
 .share-challenge {
   font-family: 'Orbitron', sans-serif;
   font-size: 20px;
-  color: var(--text-cyan);
+  color: rgba(0, 217, 255, 0.7);
   margin: 0 0 20px 0;
   letter-spacing: 2px;
-  text-shadow: 0 0 15px rgba(0, 217, 255, 0.5);
+  text-shadow: 0 0 10px rgba(0, 217, 255, 0.3);
 }
 
 .share-qr-placeholder {
@@ -229,13 +229,13 @@
 .qr-box {
   width: 120px;
   height: 120px;
-  border: 2px solid var(--text-green);
-  background: rgba(0, 255, 65, 0.1);
+  border: 2px solid rgba(0, 255, 65, 0.3);
+  background: rgba(0, 255, 65, 0.05);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 14px;
-  color: var(--text-green);
+  color: rgba(0, 255, 65, 0.6);
   letter-spacing: 1px;
 }
 
