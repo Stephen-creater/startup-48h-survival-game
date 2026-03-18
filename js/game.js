@@ -246,7 +246,7 @@ function showEnding() {
   // 显示最终资源
   const state = resourceManager.getState();
   document.getElementById('final-money').textContent = '¥' + state.money.toLocaleString();
-  document.getElementById('final-time').textContent = state.time + 'h';
+  document.getElementById('final-time').textContent = (48 - state.time) + 'h';  // 修正：显示已消耗的时间
   document.getElementById('final-energy').textContent = state.energy;
   document.getElementById('final-network').textContent = state.network;
 
@@ -329,6 +329,10 @@ function showImagePreview(dataURL, blob) {
   // 创建预览弹窗
   const modal = document.createElement('div');
   modal.className = 'image-preview-modal';
+
+  const latestResult = JSON.parse(localStorage.getItem('latestResult'));
+  const ending = getEnding(latestResult.endingId);
+
   modal.innerHTML = `
     <div class="preview-content">
       <div class="preview-header">
@@ -336,7 +340,40 @@ function showImagePreview(dataURL, blob) {
         <button class="close-preview">×</button>
       </div>
       <div class="preview-image-container">
-        <img src="${dataURL}" alt="结局图片" class="preview-image">
+        <div class="share-card-enhanced">
+          <div class="share-header">
+            <h2 class="share-game-title">创业者48小时生存实验</h2>
+            <p class="share-subtitle">黑镜式创业模拟 | 你能活多久?</p>
+          </div>
+
+          <div class="share-result">
+            <h3 class="share-ending-title">${ending.title}</h3>
+            <div class="share-stats">
+              <div class="share-stat-item">
+                <span class="share-stat-label">存活时长</span>
+                <span class="share-stat-value">${latestResult.survivalTime}小时</span>
+              </div>
+              <div class="share-stat-item">
+                <span class="share-stat-label">击败玩家</span>
+                <span class="share-stat-value">${ending.percentage}%</span>
+              </div>
+            </div>
+
+            <div class="share-resources">
+              <div class="share-resource">💰 ¥${latestResult.finalResources.money.toLocaleString()}</div>
+              <div class="share-resource">⏰ ${48 - latestResult.finalResources.time}h</div>
+              <div class="share-resource">⚡ ${latestResult.finalResources.energy}</div>
+              <div class="share-resource">👥 ${latestResult.finalResources.network}</div>
+            </div>
+          </div>
+
+          <div class="share-footer">
+            <p class="share-challenge">你能活过我吗？</p>
+            <div class="share-qr-placeholder">
+              <div class="qr-box">扫码挑战</div>
+            </div>
+          </div>
+        </div>
       </div>
       <div class="preview-actions">
         <button class="btn-primary copy-image-btn">复制图片</button>
@@ -346,6 +383,44 @@ function showImagePreview(dataURL, blob) {
   `;
 
   document.body.appendChild(modal);
+
+  // 等待DOM渲染后生成真实图片
+  setTimeout(async () => {
+    const shareCard = modal.querySelector('.share-card-enhanced');
+    const canvas = await html2canvas(shareCard, {
+      backgroundColor: '#0a0a0a',
+      scale: 2,
+      logging: false
+    });
+
+    const newDataURL = canvas.toDataURL('image/png');
+    canvas.toBlob((newBlob) => {
+      // 更新按钮事件
+      modal.querySelector('.copy-image-btn').onclick = async () => {
+        try {
+          await navigator.clipboard.write([
+            new ClipboardItem({
+              'image/png': newBlob
+            })
+          ]);
+          alert('图片已复制到剪贴板！\n\n可以直接粘贴到微信、朋友圈等社交媒体分享。');
+          document.body.removeChild(modal);
+        } catch (err) {
+          console.error('复制失败:', err);
+          alert('复制失败，请尝试下载图片');
+        }
+      };
+
+      modal.querySelector('.download-image-btn').onclick = () => {
+        const link = document.createElement('a');
+        link.download = '创业者48小时生存实验-我的结局.png';
+        link.href = newDataURL;
+        link.click();
+        alert('图片已下载！');
+        document.body.removeChild(modal);
+      };
+    }, 'image/png');
+  }, 100);
 
   // 关闭按钮
   modal.querySelector('.close-preview').onclick = () => {
@@ -357,32 +432,6 @@ function showImagePreview(dataURL, blob) {
     if (e.target === modal) {
       document.body.removeChild(modal);
     }
-  };
-
-  // 复制图片
-  modal.querySelector('.copy-image-btn').onclick = async () => {
-    try {
-      await navigator.clipboard.write([
-        new ClipboardItem({
-          'image/png': blob
-        })
-      ]);
-      alert('图片已复制到剪贴板！\n\n可以直接粘贴到微信、朋友圈等社交媒体分享。');
-      document.body.removeChild(modal);
-    } catch (err) {
-      console.error('复制失败:', err);
-      alert('复制失败，请尝试下载图片');
-    }
-  };
-
-  // 下载图片
-  modal.querySelector('.download-image-btn').onclick = () => {
-    const link = document.createElement('a');
-    link.download = '创业者48小时生存实验-我的结局.png';
-    link.href = dataURL;
-    link.click();
-    alert('图片已下载！');
-    document.body.removeChild(modal);
   };
 }
 
