@@ -3,7 +3,7 @@ const endings = {
   broke: {
     id: 'broke',
     title: '破产',
-    percentage: 60,
+    percentage: 35,  // 击败35%的玩家（比崩溃和放弃好）
     description: [
       '第48小时，你的银行卡被冻结了。',
       '房东换了门锁。',
@@ -21,7 +21,7 @@ const endings = {
   burnout: {
     id: 'burnout',
     title: '崩溃',
-    percentage: 20,
+    percentage: 15,  // 击败15%的玩家（比放弃好）
     description: [
       '第36小时，你晕倒在电脑前。',
       '醒来时，你在医院。',
@@ -39,7 +39,7 @@ const endings = {
   gave_up: {
     id: 'gave_up',
     title: '放弃',
-    percentage: 15,
+    percentage: 0,  // 最差结局，击败0%
     description: [
       '你重新打开了招聘网站。',
       '你的前老板同意你回去。',
@@ -58,7 +58,7 @@ const endings = {
   survive: {
     id: 'survive',
     title: '勉强生存',
-    percentage: 4,
+    percentage: 95,  // 击败95%的玩家
     description: [
       '第48小时，你交了房租。',
       '你的产品上线了。',
@@ -77,7 +77,7 @@ const endings = {
   success: {
     id: 'success',
     title: '初步成功',
-    percentage: 0.8,
+    percentage: 99.2,  // 击败99.2%的玩家
     description: [
       '第48小时，你拿到了第一笔收入。',
       '¥2000。',
@@ -95,7 +95,7 @@ const endings = {
   no_ethics: {
     id: 'no_ethics',
     title: '不择手段',
-    percentage: 0.2,
+    percentage: 99,  // 击败99%的玩家
     description: [
       '你活下来了。',
       '通过违反竞业协议。',
