@@ -3,17 +3,30 @@ class AudioManager {
   constructor() {
     this.enabled = true;
     this.sounds = {};
-    this.initSounds();
+    this.audioContext = null;
+    this.initialized = false;
   }
 
   // 初始化音效（使用Web Audio API生成）
   initSounds() {
-    this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    if (!this.audioContext) {
+      this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    // 恢复AudioContext（如果被暂停）
+    if (this.audioContext.state === 'suspended') {
+      this.audioContext.resume();
+    }
+    this.initialized = true;
   }
 
   // 生成打字音效
   playTypingSound() {
     if (!this.enabled) return;
+
+    // 确保AudioContext已初始化
+    if (!this.initialized) {
+      this.initSounds();
+    }
 
     try {
       const ctx = this.audioContext;
@@ -40,6 +53,11 @@ class AudioManager {
   playWarningSound() {
     if (!this.enabled) return;
 
+    // 确保AudioContext已初始化
+    if (!this.initialized) {
+      this.initSounds();
+    }
+
     try {
       const ctx = this.audioContext;
       const oscillator = ctx.createOscillator();
@@ -65,6 +83,11 @@ class AudioManager {
   playChoiceSound() {
     if (!this.enabled) return;
 
+    // 确保AudioContext已初始化
+    if (!this.initialized) {
+      this.initSounds();
+    }
+
     try {
       const ctx = this.audioContext;
       const oscillator = ctx.createOscillator();
@@ -89,6 +112,11 @@ class AudioManager {
   // 生成资源消耗音效
   playResourceSound() {
     if (!this.enabled) return;
+
+    // 确保AudioContext已初始化
+    if (!this.initialized) {
+      this.initSounds();
+    }
 
     try {
       const ctx = this.audioContext;
