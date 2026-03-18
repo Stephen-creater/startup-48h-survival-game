@@ -12,10 +12,17 @@ class AudioManager {
   }
 
   init() {
-    // 延迟初始化AudioContext（需要用户交互）
+    // 立即初始化AudioContext（开场动画需要）
+    try {
+      this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    } catch (e) {
+      console.log('AudioContext初始化失败:', e);
+    }
+
+    // 如果浏览器需要用户交互才能播放音频，在首次点击时恢复
     document.addEventListener('click', () => {
-      if (!this.audioContext) {
-        this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      if (this.audioContext && this.audioContext.state === 'suspended') {
+        this.audioContext.resume();
       }
     }, { once: true });
   }
@@ -51,15 +58,15 @@ class AudioManager {
     oscillator.connect(gainNode);
     gainNode.connect(this.audioContext.destination);
 
-    // 赛博朋克风格的音效
-    oscillator.frequency.value = 600;
-    oscillator.type = 'square';
+    // 更柔和的音效
+    oscillator.frequency.value = 400;
+    oscillator.type = 'sine';
 
-    gainNode.gain.setValueAtTime(0.15, this.audioContext.currentTime);
-    gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.1);
+    gainNode.gain.setValueAtTime(0.08, this.audioContext.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.15);
 
     oscillator.start(this.audioContext.currentTime);
-    oscillator.stop(this.audioContext.currentTime + 0.1);
+    oscillator.stop(this.audioContext.currentTime + 0.15);
   }
 
   // 生成悬停音效
