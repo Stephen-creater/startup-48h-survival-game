@@ -312,29 +312,69 @@ class ResourceManager {
       network: '人情'
     };
 
+    const choiceSignature = `${choice.text}|${costs.map(([resource]) => resource).join(',')}|${gains.map(([resource]) => resource).join(',')}`;
+    const hash = Array.from(choiceSignature).reduce((sum, char) => sum + char.charCodeAt(0), 0);
+    const pick = (variants) => variants[hash % variants.length];
+
     let summary = '';
     if (costs.length && gains.length) {
       const [spent] = costs.sort((a, b) => b[1] - a[1]);
       const [earned] = gains.sort((a, b) => b[1] - a[1]);
-      summary = `本质上：拿${labelMap[spent[0]]}换${labelMap[earned[0]]}。`;
+      summary = pick([
+        `你是在拆${labelMap[spent[0]]}，换一口${labelMap[earned[0]]}。`,
+        `这一步不轻松，本质上是拿${labelMap[spent[0]]}去换${labelMap[earned[0]]}。`,
+        `你把${labelMap[spent[0]]}压下去，只为了把${labelMap[earned[0]]}抬上来。`,
+        `眼下的交易很直接：少一点${labelMap[spent[0]]}，多一点${labelMap[earned[0]]}。`
+      ]);
     } else if (costs.length) {
       const [spent] = costs.sort((a, b) => b[1] - a[1]);
-      summary = `本质上：先烧掉${labelMap[spent[0]]}，赌后面会有回报。`;
+      summary = pick([
+        `这一步像预支${labelMap[spent[0]]}，回报得等后面兑现。`,
+        `你先把${labelMap[spent[0]]}垫进去，结果要往后看。`,
+        `这不是收获，是先烧一截${labelMap[spent[0]]}去搏后手。`,
+        `眼前看不到进账，你只是在拿${labelMap[spent[0]]}换可能性。`
+      ]);
     } else if (gains.length) {
       const [earned] = gains.sort((a, b) => b[1] - a[1]);
-      summary = `本质上：给自己补一口${labelMap[earned[0]]}。`;
+      summary = pick([
+        `这一步更像喘口气，把${labelMap[earned[0]]}补回来。`,
+        `你不是在猛冲，只是在给${labelMap[earned[0]]}续命。`,
+        `先把${labelMap[earned[0]]}拉起来，后面才谈得上继续。`,
+        `这一步的意义很单纯：先补一口${labelMap[earned[0]]}。`
+      ]);
     } else {
-      summary = '本质上：这一步赌的是方向，而不是眼前收益。';
+      summary = pick([
+        '这一步改的是路线，不是账面数字。',
+        '眼前不会立刻变好，但方向会被改写。',
+        '你押的不是收益，是接下来那条路怎么走。',
+        '这一步没有立刻回报，真正下注的是判断本身。'
+      ]);
     }
 
     if (profile.level !== 'stable') {
       const emphasisMap = {
-        money: '现在最贵的是现金，不是想法。',
-        time: '现在最贵的是时间，不是努力。',
-        energy: '现在最贵的是体力，不是意志。',
-        network: '现在最贵的是人情，不是开口本身。'
+        money: [
+          '别忘了，现在最紧的是现金。',
+          '此刻最贵的不是想法，是手上的钱。',
+          '账单已经贴脸了，现金比判断更先见底。'
+        ],
+        time: [
+          '最缺的不是狠劲，是时间。',
+          '你现在真正烧不起的是时间窗口。',
+          '时间已经不站你这边了。'
+        ],
+        energy: [
+          '你现在最不该乱花的是体力。',
+          '再往下烧，先散架的会是你自己。',
+          '眼前真正见底的，是身体不是意志。'
+        ],
+        network: [
+          '现在最贵的不是开口，是还能回应你的人。',
+          '人情快见底了，这一步会比看上去更贵。',
+          '再往下用，人脉就不是资源，是债。'
+        ]
       };
-      summary += ` ${emphasisMap[profile.resource]}`;
+      summary += ` ${pick(emphasisMap[profile.resource])}`;
     }
 
     return summary;
