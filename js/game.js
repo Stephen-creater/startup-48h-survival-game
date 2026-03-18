@@ -35,32 +35,34 @@ function playIntroAnimation() {
   ];
 
   let index = 0;
+
+  // 第一行字出现时开始播放音效
+  if (audioManager) {
+    audioManager.startTypingSound();
+  }
+
   const interval = setInterval(() => {
     if (index < texts.length) {
       const elementIndex = Math.min(index + 1, 6);
       const element = document.getElementById(`intro-text-${elementIndex}`);
       if (element) {
-        // 第一行文字时开始播放音效
-        if (index === 0 && audioManager) {
-          audioManager.startTypingSound();
-        }
-
         element.textContent = texts[index];
         element.classList.add('typing');
 
         setTimeout(() => {
           element.classList.remove('typing');
           element.classList.add('typed');
-
-          // 最后一行文字显示完毕后停止音效
-          if (index === texts.length - 1 && audioManager) {
-            audioManager.stopTypingSound();
-          }
         }, 1000);
       }
       index++;
     } else {
       clearInterval(interval);
+
+      // 最后一行字显示完毕后停止音效
+      if (audioManager) {
+        audioManager.stopTypingSound();
+      }
+
       // 显示开始按钮
       setTimeout(() => {
         document.getElementById('start-btn').classList.remove('hidden');
