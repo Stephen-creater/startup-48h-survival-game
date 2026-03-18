@@ -422,6 +422,12 @@ function restartGame() {
   document.getElementById('ending-screen').classList.remove('active');
   document.getElementById('game-screen').classList.add('active');
 
+  // 隐藏后果面板
+  document.getElementById('consequence-panel').classList.add('hidden');
+
+  // 显示选择容器
+  document.getElementById('choices-container').style.display = 'flex';
+
   // 加载第一个节点
   loadNode('hour_0');
 }
