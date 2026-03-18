@@ -8,10 +8,9 @@ function initGame() {
 
   // 绑定点击开始按钮
   document.getElementById('click-to-start').addEventListener('click', () => {
-    // 隐藏点击开始按钮
-    document.getElementById('click-to-start').classList.add('hidden');
-    // 显示打字机容器
-    document.getElementById('typewriter-container').classList.remove('hidden');
+    // 切换到独立的打字页面
+    document.getElementById('intro-landing').classList.add('hidden');
+    document.getElementById('intro-sequence').classList.remove('hidden');
     // 播放开场动画
     playIntroAnimation();
   });

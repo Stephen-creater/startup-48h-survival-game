@@ -121,21 +121,36 @@ body::before {
     var(--bg-black);
 }
 
-.intro-content {
-  max-width: 1240px;
+.intro-landing,
+.intro-sequence {
   width: 100%;
-  text-align: left;
-  padding: 40px 44px 32px;
+  display: flex;
+  justify-content: center;
+}
+
+.intro-shell,
+.intro-sequence-panel {
+  width: min(1120px, 100%);
+  position: relative;
   border: 1px solid var(--border-color);
-  background: rgba(0, 0, 0, 0.8);
+  background: rgba(0, 0, 0, 0.82);
   box-shadow:
     0 0 40px rgba(0, 255, 65, 0.1),
     inset 0 0 60px rgba(0, 255, 65, 0.02);
-  position: relative;
   overflow: hidden;
 }
 
-.intro-content::before {
+.intro-shell {
+  padding: 42px 46px 36px;
+}
+
+.intro-sequence-panel {
+  max-width: 900px;
+  padding: 40px;
+}
+
+.intro-shell::before,
+.intro-sequence-panel::before {
   content: '> SYSTEM_INIT';
   position: absolute;
   top: 12px;
@@ -146,7 +161,8 @@ body::before {
   font-weight: 700;
 }
 
-.intro-content::after {
+.intro-shell::after,
+.intro-sequence-panel::after {
   content: '';
   position: absolute;
   top: 0;
@@ -155,29 +171,6 @@ body::before {
   height: 100%;
   background: linear-gradient(to bottom, var(--neon-green), transparent);
   box-shadow: 0 0 10px var(--neon-green);
-}
-
-.intro-content > * {
-  position: relative;
-  z-index: 1;
-}
-
-.intro-content::selection {
-  background: var(--text-green);
-  color: var(--bg-black);
-}
-
-.intro-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1.35fr) minmax(320px, 0.8fr);
-  gap: 30px;
-  align-items: stretch;
-}
-
-.intro-hero {
-  display: flex;
-  flex-direction: column;
-  gap: 22px;
 }
 
 .intro-kicker {
@@ -189,25 +182,39 @@ body::before {
   text-transform: uppercase;
 }
 
+.intro-title-lockup {
+  display: flex;
+  align-items: flex-end;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.intro-title-prefix {
+  font-family: 'Orbitron', monospace;
+  font-size: clamp(24px, 3vw, 34px);
+  line-height: 1;
+  color: rgba(0, 255, 65, 0.72);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  padding-bottom: 10px;
+}
+
 .intro-title {
   font-family: 'Orbitron', monospace;
-  font-size: clamp(42px, 6vw, 72px);
+  font-size: clamp(52px, 7vw, 94px);
   line-height: 0.92;
   color: var(--text-green);
-  letter-spacing: 3px;
+  letter-spacing: 2px;
   text-transform: uppercase;
   text-shadow:
     0 0 18px rgba(0, 255, 65, 0.45),
     0 0 36px rgba(0, 255, 65, 0.18);
 }
 
-.intro-title-line {
-  display: block;
-}
-
 .intro-subtitle {
-  max-width: 720px;
-  font-size: 19px;
+  max-width: 860px;
+  margin-top: 20px;
+  font-size: 22px;
   line-height: 1.85;
   color: rgba(230, 236, 230, 0.92);
   letter-spacing: 0.2px;
@@ -221,9 +228,10 @@ body::before {
 }
 
 .intro-stakes {
+  margin-top: 28px;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
+  gap: 18px;
 }
 
 .intro-stake-card {
@@ -263,15 +271,28 @@ body::before {
   color: rgba(210, 218, 210, 0.84);
 }
 
-.intro-cta-row {
+.intro-notes {
+  margin-top: 24px;
+  display: grid;
+  gap: 12px;
+  max-width: 860px;
+}
+
+.intro-note {
+  font-size: 15px;
+  line-height: 1.8;
+  color: rgba(178, 190, 178, 0.86);
+}
+
+.intro-actions {
+  margin-top: 28px;
   display: grid;
   grid-template-columns: auto 1fr;
   gap: 20px;
   align-items: center;
-  margin-top: 2px;
 }
 
-.intro-cta-row .btn-primary {
+.intro-actions .btn-primary {
   margin: 0;
   min-width: 210px;
 }
@@ -280,94 +301,6 @@ body::before {
   font-size: 14px;
   line-height: 1.8;
   color: rgba(175, 189, 175, 0.82);
-}
-
-.intro-side-panel {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-  padding: 18px;
-  background:
-    linear-gradient(180deg, rgba(8, 12, 10, 0.88) 0%, rgba(4, 7, 5, 0.95) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-left: 3px solid rgba(255, 8, 68, 0.34);
-  box-shadow:
-    inset 0 0 24px rgba(255, 8, 68, 0.04),
-    0 12px 30px rgba(0, 0, 0, 0.3);
-}
-
-.intro-side-block {
-  padding: 16px 16px 18px;
-  background: rgba(0, 0, 0, 0.32);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.intro-side-label {
-  display: inline-block;
-  margin-bottom: 12px;
-  font-size: 10px;
-  letter-spacing: 2.8px;
-  color: rgba(255, 110, 138, 0.82);
-  text-transform: uppercase;
-  font-family: 'Orbitron', monospace;
-  font-weight: 700;
-}
-
-.intro-side-text {
-  font-size: 15px;
-  line-height: 1.85;
-  color: rgba(220, 226, 220, 0.9);
-}
-
-.intro-risk-list {
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.intro-risk-list li {
-  position: relative;
-  padding-left: 18px;
-  font-size: 15px;
-  line-height: 1.7;
-  color: rgba(224, 224, 224, 0.88);
-}
-
-.intro-risk-list li::before {
-  content: '▸';
-  position: absolute;
-  left: 0;
-  top: 0;
-  color: rgba(255, 110, 138, 0.82);
-}
-
-.intro-transcript {
-  width: min(1240px, 100%);
-  margin-top: 18px;
-  border: 1px solid rgba(0, 255, 65, 0.1);
-  background:
-    linear-gradient(180deg, rgba(7, 12, 9, 0.9) 0%, rgba(3, 6, 4, 0.96) 100%);
-  box-shadow:
-    0 0 28px rgba(0, 255, 65, 0.08),
-    inset 0 0 32px rgba(0, 255, 65, 0.03);
-  position: relative;
-}
-
-.intro-transcript::before {
-  content: 'LIVE_FEED';
-  position: absolute;
-  top: 12px;
-  left: 18px;
-  font-size: 10px;
-  color: rgba(0, 255, 65, 0.38);
-  letter-spacing: 2.8px;
-  font-family: 'Orbitron', monospace;
-  font-weight: 700;
-}
-
-.intro-transcript-inner {
-  padding: 42px 28px 26px;
 }
 
 .typewriter-text {
@@ -381,7 +314,11 @@ body::before {
   font-weight: 400;
 }
 
-.intro-transcript .btn-primary {
+.typewriter-container {
+  margin-top: 26px;
+}
+
+.intro-sequence-panel .btn-primary {
   margin: 18px 0 0;
 }
 
@@ -1677,17 +1614,18 @@ body::before {
 
 /* 响应式设计 */
 @media (max-width: 768px) {
-  .intro-content {
+  .intro-shell,
+  .intro-sequence-panel {
     padding: 28px 22px 24px;
   }
 
-  .intro-grid {
-    grid-template-columns: 1fr;
-    gap: 20px;
+  .intro-title-lockup {
+    gap: 10px;
   }
 
   .intro-title {
-    letter-spacing: 2px;
+    font-size: clamp(42px, 12vw, 64px);
+    letter-spacing: 1px;
   }
 
   .intro-subtitle {
@@ -1703,20 +1641,12 @@ body::before {
     min-height: 0;
   }
 
-  .intro-cta-row {
+  .intro-actions {
     grid-template-columns: 1fr;
   }
 
-  .intro-cta-row .btn-primary {
+  .intro-actions .btn-primary {
     width: 100%;
-  }
-
-  .intro-transcript {
-    margin-top: 14px;
-  }
-
-  .intro-transcript-inner {
-    padding: 38px 18px 20px;
   }
 
   .game-content {
@@ -1848,12 +1778,13 @@ body::before {
     font-size: 34px;
   }
 
-  .intro-subtitle {
-    font-size: 16px;
+  .intro-title-prefix {
+    font-size: 18px;
+    padding-bottom: 0;
   }
 
-  .intro-side-panel {
-    padding: 12px;
+  .intro-subtitle {
+    font-size: 16px;
   }
 
   .resources-panel {

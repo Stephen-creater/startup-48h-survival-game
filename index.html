@@ -14,67 +14,61 @@
 <body>
     <!-- 开场动画 -->
     <div id="intro-screen" class="screen active">
-        <div class="intro-content">
-            <div class="intro-grid">
-                <div class="intro-hero">
-                    <p class="intro-kicker">BLACK MIRROR STARTUP SIMULATION</p>
-                    <h1 class="intro-title">
-                        <span class="intro-title-line">创业者48小时</span>
-                        <span class="intro-title-line">生存实验</span>
-                    </h1>
-                    <p class="intro-subtitle">你刚辞职。账户里只剩 <strong>¥8,000</strong>。房租 48 小时后到期。接下来每一个决定，都会拿走你的一块命。</p>
+        <div class="intro-landing" id="intro-landing">
+            <div class="intro-shell">
+                <p class="intro-kicker">BLACK MIRROR STARTUP SIMULATION</p>
+                <div class="intro-title-lockup">
+                    <span class="intro-title-prefix">创业者</span>
+                    <h1 class="intro-title">48小时生存实验</h1>
+                </div>
+                <p class="intro-subtitle">辞职信刚发出去，账户里只剩 <strong>¥8,000</strong>。房租 48 小时后到期。接下来每一步，都在拿你的现金、体力和人情换活路。</p>
 
-                    <div class="intro-stakes">
-                        <div class="intro-stake-card">
-                            <span class="intro-stake-label">生存窗口</span>
-                            <span class="intro-stake-value">48h</span>
-                            <span class="intro-stake-copy">熬不过去，故事就在这里结束。</span>
-                        </div>
-                        <div class="intro-stake-card">
-                            <span class="intro-stake-label">初始现金</span>
-                            <span class="intro-stake-value">¥8,000</span>
-                            <span class="intro-stake-copy">每一步都在和账单抢时间。</span>
-                        </div>
-                        <div class="intro-stake-card">
-                            <span class="intro-stake-label">结局数量</span>
-                            <span class="intro-stake-value">6+</span>
-                            <span class="intro-stake-copy">你可能活下来，也可能只剩代价。</span>
-                        </div>
+                <div class="intro-stakes">
+                    <div class="intro-stake-card">
+                        <span class="intro-stake-label">倒计时</span>
+                        <span class="intro-stake-value">48h</span>
+                        <span class="intro-stake-copy">不是规划未来，是抢救现在。</span>
                     </div>
-
-                    <div class="intro-cta-row">
-                        <button id="click-to-start" class="btn-primary">点击开始</button>
-                        <p class="intro-cta-copy">进入后，你会立刻面对第一笔交换：时间、精力、人脉，或者底线。</p>
+                    <div class="intro-stake-card">
+                        <span class="intro-stake-label">起始筹码</span>
+                        <span class="intro-stake-value">¥8,000</span>
+                        <span class="intro-stake-copy">账单会比理想更早落地。</span>
+                    </div>
+                    <div class="intro-stake-card">
+                        <span class="intro-stake-label">真实代价</span>
+                        <span class="intro-stake-value">命</span>
+                        <span class="intro-stake-copy">你可能活下来，但不一定还能完整地活着。</span>
                     </div>
                 </div>
 
-                <div class="intro-side-panel">
-                    <div class="intro-side-block">
-                        <span class="intro-side-label">实验说明</span>
-                        <p class="intro-side-text">这不是“创业成功学”。这是一个把现金流、疲惫、羞耻感和侥幸心理全部摆到桌面上的 48 小时压力测试。</p>
-                    </div>
-                    <div class="intro-side-block">
-                        <span class="intro-side-label">你会失去什么</span>
-                        <ul class="intro-risk-list">
-                            <li>钱先花光</li>
-                            <li>体力先崩掉</li>
-                            <li>最后一个愿意帮你的人消失</li>
-                            <li>为了活下来，越过自己的底线</li>
-                        </ul>
-                    </div>
+                <div class="intro-notes">
+                    <p class="intro-note">这不是爽文。你不会靠一句热血台词翻盘。</p>
+                    <p class="intro-note">你会先花光钱，先烧掉体力，或者先失去最后一个愿意帮你的人。</p>
+                </div>
+
+                <div class="intro-actions">
+                    <button id="click-to-start" class="btn-primary">点击开始</button>
+                    <p class="intro-cta-copy">进入后，我们才开始播放那段你已经来不及撤回的人生录音。</p>
                 </div>
             </div>
         </div>
 
-        <div class="intro-transcript hidden" id="typewriter-container">
+        <div class="intro-sequence hidden" id="intro-sequence">
+            <div class="intro-sequence-panel">
+                <div class="typewriter-container" id="typewriter-container">
+                    <p class="typewriter-text" id="intro-text-1"></p>
+                    <p class="typewriter-text" id="intro-text-2"></p>
+                    <p class="typewriter-text" id="intro-text-3"></p>
+                    <p class="typewriter-text" id="intro-text-4"></p>
+                    <p class="typewriter-text" id="intro-text-5"></p>
+                    <p class="typewriter-text" id="intro-text-6"></p>
+                    <button id="start-btn" class="btn-primary hidden">启动实验</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="intro-transcript hidden" aria-hidden="true">
             <div class="intro-transcript-inner">
-                <p class="typewriter-text" id="intro-text-1"></p>
-                <p class="typewriter-text" id="intro-text-2"></p>
-                <p class="typewriter-text" id="intro-text-3"></p>
-                <p class="typewriter-text" id="intro-text-4"></p>
-                <p class="typewriter-text" id="intro-text-5"></p>
-                <p class="typewriter-text" id="intro-text-6"></p>
-                <button id="start-btn" class="btn-primary hidden">启动实验</button>
             </div>
         </div>
     </div>
