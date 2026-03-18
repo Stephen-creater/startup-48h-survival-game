@@ -66,21 +66,14 @@ class AudioManager {
     oscillator.stop(this.audioContext.currentTime + 0.03);
   }
 
-  // 开始连续打字音效
+  // 开始连续打字音效（直接播放完整音频）
   startTypingSound(duration = 1000) {
-    if (!this.enabled) return;
+    if (!this.enabled || !this.typingAudio) return;
 
-    const charDelay = 50;
-    let elapsed = 0;
-
-    const playNext = () => {
-      if (elapsed >= duration) return;
-      this.playTypingSound();
-      elapsed += charDelay;
-      setTimeout(playNext, charDelay);
-    };
-
-    playNext();
+    // 直接播放完整的打字音频
+    this.typingAudio.currentTime = 0;
+    this.typingAudio.volume = 0.15;
+    this.typingAudio.play().catch(e => console.log('打字音效播放失败:', e));
   }
 
   // 生成选择音效（已优化）
