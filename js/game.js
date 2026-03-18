@@ -40,17 +40,22 @@ function playIntroAnimation() {
       const elementIndex = Math.min(index + 1, 6);
       const element = document.getElementById(`intro-text-${elementIndex}`);
       if (element) {
+        // 第一行文字时开始播放音效
+        if (index === 0 && audioManager) {
+          audioManager.startTypingSound();
+        }
+
         element.textContent = texts[index];
         element.classList.add('typing');
-
-        // 播放连续打字音效
-        if (audioManager) {
-          audioManager.startTypingSound(1000);
-        }
 
         setTimeout(() => {
           element.classList.remove('typing');
           element.classList.add('typed');
+
+          // 最后一行文字显示完毕后停止音效
+          if (index === texts.length - 1 && audioManager) {
+            audioManager.stopTypingSound();
+          }
         }, 1000);
       }
       index++;

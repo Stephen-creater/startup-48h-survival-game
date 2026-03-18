@@ -67,13 +67,21 @@ class AudioManager {
   }
 
   // 开始连续打字音效（直接播放完整音频）
-  startTypingSound(duration = 1000) {
+  startTypingSound() {
     if (!this.enabled || !this.typingAudio) return;
 
     // 直接播放完整的打字音频
     this.typingAudio.currentTime = 0;
     this.typingAudio.volume = 0.15;
     this.typingAudio.play().catch(e => console.log('打字音效播放失败:', e));
+  }
+
+  // 停止打字音效
+  stopTypingSound() {
+    if (this.typingAudio) {
+      this.typingAudio.pause();
+      this.typingAudio.currentTime = 0;
+    }
   }
 
   // 生成选择音效（已优化）
