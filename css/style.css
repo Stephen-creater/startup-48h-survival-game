@@ -305,12 +305,23 @@ body::before {
 .game-content {
   display: flex;
   flex: 1;
-  gap: 30px;
-  padding: 20px 40px;
-  max-width: 1400px;
+  gap: 20px;
+  padding: 20px;
+  max-width: 1600px;
   width: 100%;
   margin: 0 auto;
   align-items: flex-start;
+}
+
+/* 剧情面板（左侧） - 去掉边框背景 */
+.story-panel {
+  flex: 1;
+  padding: 0;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  position: relative;
+  height: fit-content;
 }
 
 /* 资源面板（右侧垂直布局，紧凑） */
@@ -516,18 +527,12 @@ body::before {
 /* 剧情面板（左侧） */
 .story-panel {
   flex: 1;
-  background:
-    linear-gradient(135deg, rgba(0, 255, 65, 0.01) 0%, transparent 100%),
-    var(--bg-panel);
-  border: 1px solid rgba(0, 255, 65, 0.3);
-  border-left: 4px solid var(--neon-green);
-  padding: 30px;
-  box-shadow:
-    0 0 40px rgba(0, 255, 65, 0.15),
-    inset 0 0 60px rgba(0, 0, 0, 0.6);
+  background: transparent;
+  border: none;
+  padding: 0;
+  box-shadow: none;
   position: relative;
   height: fit-content;
-  max-width: 900px;
 }
 
 /* 场景图片 */
@@ -551,17 +556,6 @@ body::before {
     opacity: 1;
     transform: translateY(0);
   }
-}
-
-.story-panel::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 1px;
-  background: linear-gradient(90deg, var(--neon-green), transparent);
-  box-shadow: 0 0 10px var(--neon-green);
 }
 
 .story-title {
