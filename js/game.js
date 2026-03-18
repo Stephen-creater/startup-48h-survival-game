@@ -43,8 +43,12 @@ function playIntroAnimation() {
         element.textContent = texts[index];
         element.classList.add('typing');
 
-        // 播放打字音效
-        audioManager.playTypingSound();
+        // 播放打字音效（延迟确保audioContext已初始化）
+        setTimeout(() => {
+          if (typeof audioManager !== 'undefined') {
+            audioManager.playTypingSound();
+          }
+        }, 100);
 
         setTimeout(() => {
           element.classList.remove('typing');
