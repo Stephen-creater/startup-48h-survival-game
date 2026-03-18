@@ -229,6 +229,10 @@ function normalizeEndingState(endingId, rawState) {
   return state;
 }
 
+function calculateSurvivalTime(state) {
+  return Math.max(0, resourceManager.initialTime - state.time);
+}
+
 // 做出选择
 function makeChoice(choiceIndex) {
   const node = getNode(currentNodeId);
@@ -330,6 +334,8 @@ function continueGame() {
 function showEnding() {
   // 判定结局
   const ending = determineEnding(resourceManager);
+  const state = normalizeEndingState(ending.id, resourceManager.getState());
+  const resourceStory = resourceManager.getResourceStory(state);
 
   // 切换到结局界面
   document.getElementById('game-screen').classList.remove('active');
@@ -337,7 +343,7 @@ function showEnding() {
 
   // 显示结局信息
   document.getElementById('ending-title').textContent = ending.title;
-  document.getElementById('survival-time').textContent = resourceManager.hour;
+  document.getElementById('survival-time').textContent = calculateSurvivalTime(state);
   document.getElementById('beat-percentage').textContent = ending.percentage;
 
   // 显示结局描述
@@ -350,8 +356,6 @@ function showEnding() {
   });
 
   // 显示最终资源
-  const state = normalizeEndingState(ending.id, resourceManager.getState());
-  const resourceStory = resourceManager.getResourceStory(state);
   document.getElementById('final-money').textContent = '¥' + state.money.toLocaleString();
   document.getElementById('final-time').textContent = state.time + 'h';
   document.getElementById('final-energy').textContent = state.energy;
@@ -366,7 +370,7 @@ function showEnding() {
 function saveGameResult(ending, state, resourceStory) {
   const result = {
     endingId: ending.id,
-    survivalTime: state.hour,
+    survivalTime: calculateSurvivalTime(state),
     finalResources: {
       money: state.money,
       time: state.time,
