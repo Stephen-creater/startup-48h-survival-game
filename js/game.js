@@ -43,6 +43,9 @@ function playIntroAnimation() {
         element.textContent = texts[index];
         element.classList.add('typing');
 
+        // 播放打字音效
+        audioManager.playTypingSound();
+
         setTimeout(() => {
           element.classList.remove('typing');
           element.classList.add('typed');
@@ -154,12 +157,17 @@ function makeChoice(choiceIndex) {
   const node = getNode(currentNodeId);
   const choice = node.choices[choiceIndex];
 
+  // 播放选择音效
+  audioManager.playChoiceSound();
+
   // 记录选择
   resourceManager.recordChoice(currentNodeId, choiceIndex);
 
   // 消耗资源
   if (choice.cost) {
     resourceManager.consume(choice.cost);
+    // 播放资源消耗音效
+    audioManager.playResourceSound();
   }
 
   // 获得资源
