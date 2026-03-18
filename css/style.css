@@ -303,25 +303,56 @@ body::before {
 
 /* 主内容区域（左右布局） */
 .game-content {
-  display: flex;
   flex: 1;
-  gap: 20px;
-  padding: 20px;
-  max-width: 1600px;
+  padding: 20px 40px;
+  max-width: 1400px;
   width: 100%;
   margin: 0 auto;
-  align-items: flex-start;
 }
 
-/* 剧情面板（左侧） - 去掉边框背景 */
-.story-panel {
-  flex: 1;
-  padding: 0;
-  background: transparent;
-  border: none;
-  box-shadow: none;
+/* 左侧整体组件 */
+.story-main {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+}
+
+/* 图片下方双列区 */
+.story-lower {
+  display: flex;
+  align-items: flex-start;
+  gap: 26px;
+  width: 100%;
+  padding: 24px 22px 22px;
+  background:
+    linear-gradient(180deg, rgba(8, 14, 10, 0.92) 0%, rgba(5, 9, 7, 0.96) 100%);
+  border: 1px solid rgba(0, 255, 65, 0.28);
+  box-shadow:
+    0 0 34px rgba(0, 255, 65, 0.12),
+    inset 0 0 48px rgba(0, 0, 0, 0.52);
   position: relative;
-  height: fit-content;
+}
+
+.story-lower::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(121, 255, 141, 0.85), transparent 45%);
+  box-shadow: 0 0 12px rgba(0, 255, 65, 0.4);
+}
+
+/* 场景图片容器 */
+.scene-frame {
+  position: relative;
+  min-height: 220px;
+}
+
+.scene-frame:empty {
+  display: none;
 }
 
 /* 资源面板（右侧垂直布局，紧凑） */
@@ -329,18 +360,17 @@ body::before {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  width: 240px;
+  width: 230px;
   flex-shrink: 0;
-  padding: 15px;
+  padding: 14px;
   background:
-    linear-gradient(135deg, rgba(0, 255, 65, 0.02) 0%, transparent 100%),
-    var(--bg-panel);
-  border: 1px solid rgba(0, 255, 65, 0.2);
-  border-left: 3px solid var(--neon-green);
+    linear-gradient(180deg, rgba(10, 14, 11, 0.92) 0%, rgba(6, 9, 7, 0.98) 100%);
+  border: 1px solid rgba(0, 255, 65, 0.16);
+  border-left: 2px solid rgba(121, 255, 141, 0.72);
   box-shadow:
-    0 0 30px rgba(0, 255, 65, 0.1),
-    inset 0 0 40px rgba(0, 0, 0, 0.5);
-  position: relative;
+    inset 0 0 30px rgba(0, 0, 0, 0.45);
+  position: sticky;
+  top: 18px;
   height: fit-content;
 }
 
@@ -527,12 +557,16 @@ body::before {
 /* 剧情面板（左侧） */
 .story-panel {
   flex: 1;
+  min-width: 0;
+  width: 100%;
   background: transparent;
   border: none;
-  padding: 0;
+  padding: 8px 6px 6px 10px;
   box-shadow: none;
   position: relative;
   height: fit-content;
+  max-width: none;
+  overflow: visible;
 }
 
 /* 场景图片 */
@@ -556,6 +590,10 @@ body::before {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+.story-panel::before {
+  content: none;
 }
 
 .story-title {
@@ -587,6 +625,23 @@ body::before {
   letter-spacing: 1px;
   padding-left: 20px;
   border-left: 2px solid var(--text-dim);
+}
+
+.story-body {
+  position: relative;
+  min-height: 300px;
+}
+
+.story-body.consequence-active {
+  min-height: max(300px, var(--consequence-height, 300px));
+}
+
+.story-body.consequence-active > *:not(.consequence-panel) {
+  opacity: 0.16;
+  filter: blur(4px);
+  transform: scale(0.995);
+  transition: opacity 0.25s ease, filter 0.25s ease, transform 0.25s ease;
+  pointer-events: none;
 }
 
 .story-description {
@@ -697,6 +752,38 @@ body::before {
   text-shadow: 0 0 8px rgba(0, 255, 65, 0.6);
 }
 
+.choice-warning {
+  display: block;
+  font-size: 12px;
+  color: #ff8f8f;
+  margin-top: 10px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-shadow: 0 0 8px rgba(255, 8, 68, 0.28);
+}
+
+.choice-btn-disabled {
+  border-color: rgba(255, 8, 68, 0.22);
+  border-left-color: rgba(255, 8, 68, 0.68);
+  background:
+    linear-gradient(135deg, rgba(255, 8, 68, 0.05) 0%, rgba(255, 8, 68, 0.01) 100%),
+    rgba(0, 0, 0, 0.58);
+  color: rgba(232, 232, 232, 0.72);
+  cursor: not-allowed;
+  opacity: 0.88;
+}
+
+.choice-btn-disabled:hover {
+  transform: none;
+  padding-left: 30px;
+  box-shadow: none;
+}
+
+.choice-btn-disabled::before,
+.choice-btn-disabled::after {
+  display: none;
+}
+
 /* 黑镜式旁白 */
 .black-mirror-text {
   font-size: 14px;
@@ -731,54 +818,163 @@ body::before {
 
 /* 后果面板 */
 .consequence-panel {
+  display: flex;
+  align-items: stretch;
+  justify-content: stretch;
   background:
-    linear-gradient(135deg, rgba(0, 217, 255, 0.05) 0%, transparent 100%),
-    var(--bg-panel);
-  border: 2px solid var(--text-cyan);
-  border-top: 4px solid var(--neon-blue);
-  padding: 40px;
-  text-align: center;
+    linear-gradient(180deg, rgba(2, 8, 3, 0.18), rgba(2, 8, 3, 0.78) 30%, rgba(2, 8, 3, 0.9) 100%),
+    radial-gradient(circle at top, rgba(0, 255, 65, 0.08), transparent 32%);
+  padding: 8px 0 0;
+  margin: 0;
+  text-align: left;
   animation: consequenceFadeIn 0.6s ease;
-  box-shadow:
-    0 0 40px rgba(0, 217, 255, 0.2),
-    inset 0 0 60px rgba(0, 0, 0, 0.6);
-  position: relative;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  min-height: 100%;
+  overflow: visible;
+  z-index: 6;
+  backdrop-filter: blur(12px);
 }
 
 .consequence-panel::before {
-  content: 'CONSEQUENCE';
+  content: '';
   position: absolute;
-  top: -12px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: var(--bg-black);
-  padding: 0 15px;
-  font-size: 10px;
-  color: var(--text-cyan);
-  letter-spacing: 3px;
-  font-weight: 700;
+  inset: 0;
+  border: 1px solid rgba(0, 255, 65, 0.12);
+  pointer-events: none;
+}
+
+.consequence-panel::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(0, 255, 65, 0.04), transparent 18%),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.08), transparent 36%);
+  pointer-events: none;
+}
+
+.consequence-card {
+  width: 100%;
+  max-height: none;
+  overflow: visible;
+  margin: 0;
+  padding: 24px 28px 28px;
+  background:
+    linear-gradient(180deg, rgba(12, 18, 14, 0.96) 0%, rgba(6, 9, 7, 0.98) 100%);
+  border: 1px solid rgba(165, 255, 186, 0.14);
+  border-top: 3px solid rgba(121, 255, 141, 0.9);
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.55),
+    0 0 24px rgba(0, 255, 65, 0.08);
+  position: relative;
+  z-index: 1;
+}
+
+.consequence-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(121, 255, 141, 0.95), transparent);
+}
+
+.consequence-kicker {
+  display: inline-block;
+  margin-bottom: 16px;
+  font-size: 11px;
+  color: rgba(121, 255, 141, 0.9);
+  letter-spacing: 2.8px;
   font-family: 'Orbitron', monospace;
+  font-weight: 700;
 }
 
 @keyframes consequenceFadeIn {
   from {
     opacity: 0;
-    transform: translateY(30px) scale(0.95);
+    transform: translateY(12px);
   }
   to {
     opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: translateY(0);
   }
 }
 
 .consequence-text {
   font-size: 18px;
-  line-height: 2;
-  margin-bottom: 35px;
-  color: var(--text-white);
+  line-height: 1.85;
+  margin-bottom: 20px;
+  color: rgba(236, 240, 236, 0.96);
   white-space: pre-line;
-  text-shadow: 0 0 10px rgba(0, 217, 255, 0.3);
-  letter-spacing: 0.5px;
+  text-shadow: none;
+  letter-spacing: 0.4px;
+}
+
+.consequence-impact {
+  margin: 0 0 22px;
+  padding: 14px 16px;
+  font-size: 14px;
+  line-height: 1.75;
+  color: rgba(176, 248, 188, 0.88);
+  background: rgba(121, 255, 141, 0.06);
+  border: 1px solid rgba(121, 255, 141, 0.12);
+  border-left: 3px solid rgba(121, 255, 141, 0.55);
+}
+
+.consequence-actions {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.consequence-btn {
+  margin: 0;
+  min-width: 132px;
+  border-color: rgba(121, 255, 141, 0.45);
+  color: rgba(225, 255, 231, 0.92);
+  background: rgba(121, 255, 141, 0.06);
+  box-shadow: none;
+}
+
+.consequence-btn:hover {
+  border-color: var(--text-green);
+  color: var(--bg-black);
+  background: var(--text-green);
+  box-shadow: 0 0 24px rgba(0, 255, 65, 0.22);
+}
+
+@media (max-width: 768px) {
+  .story-body {
+    min-height: 260px;
+  }
+
+  .story-body.consequence-active {
+    min-height: max(260px, var(--consequence-height, 260px));
+  }
+
+  .consequence-panel {
+    padding: 6px 0 0;
+  }
+
+  .consequence-card {
+    padding: 20px 18px 22px;
+  }
+
+  .consequence-text {
+    font-size: 17px;
+    line-height: 1.75;
+  }
+
+  .consequence-actions {
+    justify-content: stretch;
+  }
+
+  .consequence-btn {
+    width: 100%;
+  }
 }
 
 /* 结局界面 */
@@ -946,6 +1142,19 @@ body::before {
   font-weight: 700;
 }
 
+.final-state-summary {
+  margin-bottom: 24px;
+  padding: 20px 22px;
+  font-size: 15px;
+  line-height: 1.9;
+  color: rgba(224, 237, 224, 0.94);
+  background:
+    linear-gradient(135deg, rgba(121, 255, 141, 0.05) 0%, transparent 100%),
+    rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(121, 255, 141, 0.12);
+  border-left: 4px solid rgba(121, 255, 141, 0.72);
+}
+
 .final-resource-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -1060,11 +1269,26 @@ body::before {
 
 /* 响应式设计 */
 @media (max-width: 768px) {
+  .game-content {
+    padding: 16px;
+  }
+
+  .story-main {
+    width: 100%;
+    gap: 18px;
+  }
+
+  .story-lower {
+    flex-direction: column;
+    gap: 20px;
+    padding: 18px 16px 16px;
+  }
+
   .resources-panel {
-    grid-template-columns: repeat(2, 1fr);
+    width: 100%;
     gap: 10px;
     padding: 12px;
-    margin-bottom: 15px;
+    position: static;
   }
 
   .resource-item {
@@ -1151,7 +1375,6 @@ body::before {
 
 @media (max-width: 480px) {
   .resources-panel {
-    grid-template-columns: repeat(2, 1fr);
     gap: 8px;
     padding: 10px;
   }

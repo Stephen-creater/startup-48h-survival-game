@@ -206,6 +206,17 @@
   color: rgba(224, 224, 224, 0.9);
 }
 
+.share-summary {
+  margin: 18px 0 0;
+  padding: 16px 18px;
+  font-size: 15px;
+  line-height: 1.8;
+  color: rgba(228, 237, 228, 0.92);
+  background: rgba(121, 255, 141, 0.05);
+  border: 1px solid rgba(121, 255, 141, 0.12);
+  border-left: 3px solid rgba(121, 255, 141, 0.72);
+}
+
 .share-footer {
   text-align: center;
   padding-top: 25px;

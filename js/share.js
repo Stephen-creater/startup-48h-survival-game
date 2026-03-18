@@ -75,7 +75,8 @@ function shareToSocialMedia(platform) {
 
   const ending = getEnding(latestResult.endingId);
   const url = encodeURIComponent(window.location.href);
-  const text = encodeURIComponent(`我在《创业者48小时生存实验》中获得了"${ending.title}"结局，存活了${latestResult.survivalTime}小时！你能活多久？`);
+  const summary = latestResult.resourceStory?.share || '每一个决定都在拿资源换命运。';
+  const text = encodeURIComponent(`我在《创业者48小时生存实验》中获得了"${ending.title}"结局，存活了${latestResult.survivalTime}小时。${summary} 你能活多久？`);
 
   let shareUrl = '';
 

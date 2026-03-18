@@ -66,6 +66,8 @@ const storyNodes = [
       {
         text: '自己学编程',
         cost: { time: 12, energy: 30 },
+        requirements: { energy: 45, time: 18 },
+        unavailableReason: '你现在的精力和时间窗口都不够，再硬啃技术只会把自己拖垮。',
         consequence: '你打开了编程教程。\n\n12小时后，你写出了第一行代码。\n\n然后发现，根本跑不起来。',
         nextNode: 'hour_16',
         flags: ['tried_coding']
@@ -73,6 +75,8 @@ const storyNodes = [
       {
         text: '联系前公司的技术同事',
         cost: { network: 2, time: 4 },
+        requirements: { network: 2 },
+        unavailableReason: '你手里的可用人情已经不够了，这一步没人会替你兜底。',
         consequence: '他答应了。\n\n但他有全职工作，只能晚上帮你。\n\n总比没有强。',
         nextNode: 'hour_16',
         flags: ['has_tech_partner']
@@ -92,6 +96,8 @@ const storyNodes = [
       {
         text: '联系前公司客户（违反竞业协议）',
         cost: { network: 1, time: 4 },
+        requirements: { network: 2 },
+        unavailableReason: '你已经没有多余的人情去冒这个险了。',
         consequence: '你发了消息。\n\n有3个客户回复了。\n\n你知道这是不对的。\n\n但你也知道，创业没有对错，只有生存。',
         nextNode: 'hour_24',
         flags: ['broke_rules', 'has_customer']
@@ -99,6 +105,8 @@ const storyNodes = [
       {
         text: '从零开始找客户',
         cost: { time: 8, energy: 25 },
+        requirements: { energy: 40 },
+        unavailableReason: '陌生开发太吃体力了，你现在已经没有状态去硬打50个电话。',
         consequence: '你打了50个陌生电话。\n\n49个人挂断了。\n\n1个人说"发个资料我看看"。\n\n然后就没有然后了。',
         nextNode: 'hour_24',
         flags: ['cold_call']
@@ -106,6 +114,8 @@ const storyNodes = [
       {
         text: '放弃B2B，转做C端产品',
         cost: { time: 8, energy: 20 },
+        requirements: { time: 20 },
+        unavailableReason: '转向意味着重开一局，但你的时间窗口已经不支持你这么做了。',
         consequence: '你决定换方向。\n\n重新开始。\n\n但时间已经不多了。',
         nextNode: 'hour_24',
         flags: ['pivoted']
@@ -132,6 +142,8 @@ const storyNodes = [
       {
         text: '继续死磕当前方向',
         cost: { energy: 25, time: 8 },
+        requirements: { energy: 35 },
+        unavailableReason: '你现在的精力已经不足以再硬扛 8 小时了。',
         consequence: '你咬牙坚持。\n\n8小时后，你有了一个粗糙的原型。\n\n虽然很丑，但至少能用。',
         nextNode: 'hour_36',
         flags: ['has_prototype']
@@ -139,6 +151,8 @@ const storyNodes = [
       {
         text: '找投资人，试图融资',
         cost: { network: 2, time: 6, energy: 20 },
+        requirements: { network: 3 },
+        unavailableReason: '融资不是发愿望清单，你现在的人脉厚度还不够支撑这一步。',
         consequence: '你约了3个投资人。\n\n2个没回复。\n\n1个说"太早期了，等你有数据再聊"。',
         nextNode: 'hour_36',
         flags: ['tried_fundraising']
@@ -146,6 +160,8 @@ const storyNodes = [
       {
         text: '接一个外包项目赚钱',
         cost: { time: 16, energy: 30 },
+        requirements: { energy: 45 },
+        unavailableReason: '这种高强度外包会直接把你榨干，你现在的状态扛不住。',
         gain: { money: 8000 },
         consequence: '你接了一个紧急外包项目。\n\n16小时不眠不休。\n\n赚了¥8000。\n\n但你的创业项目停滞了。',
         nextNode: 'hour_36',
@@ -173,8 +189,10 @@ const storyNodes = [
     choices: [
       {
         text: '喝咖啡硬撑',
-        cost: { money: 50, energy: -10 },
+        cost: { money: 50, energy: 10 },
         gain: { energy: 20 },
+        requirements: { energy: 15 },
+        unavailableReason: '你已经不是困了，是身体快要断电了，咖啡顶不上来。',
         consequence: '你喝了第5杯咖啡。\n\n心跳加速。\n\n你感觉自己快要爆炸了。',
         nextNode: 'hour_48',
         flags: ['overdose_caffeine']
@@ -189,8 +207,10 @@ const storyNodes = [
       },
       {
         text: '吃药（安非他明）',
-        cost: { money: 200, energy: -20 },
+        cost: { money: 200, energy: 20 },
         gain: { energy: 40 },
+        requirements: { energy: 20 },
+        unavailableReason: '你已经太虚了，这一步不是提神，是把自己推向崩溃。',
         consequence: '你吃了药。\n\n瞬间清醒。\n\n但你知道，这是在透支生命。',
         nextNode: 'hour_48',
         flags: ['took_drugs']

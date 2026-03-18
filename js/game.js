@@ -103,14 +103,14 @@ function loadNode(nodeId) {
 
   // 更新场景图片
   if (node.image) {
-    const storyPanel = document.querySelector('.story-panel');
+    const sceneFrame = document.getElementById('scene-frame');
     let sceneImage = document.getElementById('scene-image');
 
     if (!sceneImage) {
       sceneImage = document.createElement('img');
       sceneImage.id = 'scene-image';
       sceneImage.className = 'scene-image';
-      storyPanel.insertBefore(sceneImage, storyPanel.firstChild);
+      sceneFrame.appendChild(sceneImage);
     }
 
     sceneImage.src = node.image;
@@ -122,6 +122,10 @@ function loadNode(nodeId) {
   document.getElementById('story-scene').textContent = node.scene;
   document.getElementById('story-description').textContent = node.description;
   document.getElementById('black-mirror-text').textContent = node.blackMirrorText || '';
+  const storyBody = document.getElementById('story-body');
+  storyBody.classList.remove('consequence-active');
+  storyBody.style.removeProperty('--consequence-height');
+  document.getElementById('consequence-impact').textContent = '';
 
   // 清空选择容器
   const choicesContainer = document.getElementById('choices-container');
@@ -129,9 +133,11 @@ function loadNode(nodeId) {
 
   // 创建选择按钮
   node.choices.forEach((choice, index) => {
+    const availability = resourceManager.getChoiceAvailability(choice);
     const button = document.createElement('button');
     button.className = 'choice-btn';
     button.innerHTML = choice.text;
+    button.dataset.available = availability.available ? 'true' : 'false';
 
     // 显示消耗和获得
     if (choice.cost && Object.keys(choice.cost).length > 0) {
@@ -150,20 +156,29 @@ function loadNode(nodeId) {
       button.appendChild(gainSpan);
     }
 
-    button.addEventListener('click', () => {
-      // 播放选择音效
-      if (audioManager) {
-        audioManager.playChoiceSound();
-      }
-      makeChoice(index);
-    });
+    if (!availability.available) {
+      button.classList.add('choice-btn-disabled');
+      button.disabled = true;
+      const warningSpan = document.createElement('span');
+      warningSpan.className = 'choice-warning';
+      warningSpan.textContent = '不可选：' + availability.reason;
+      button.appendChild(warningSpan);
+    } else {
+      button.addEventListener('click', () => {
+        // 播放选择音效
+        if (audioManager) {
+          audioManager.playChoiceSound();
+        }
+        makeChoice(index);
+      });
 
-    // 添加悬停音效
-    button.addEventListener('mouseenter', () => {
-      if (audioManager) {
-        audioManager.playHoverSound();
-      }
-    });
+      // 添加悬停音效
+      button.addEventListener('mouseenter', () => {
+        if (audioManager) {
+          audioManager.playHoverSound();
+        }
+      });
+    }
 
     choicesContainer.appendChild(button);
   });
@@ -206,18 +221,28 @@ function makeChoice(choiceIndex) {
   }
 
   // 显示后果
-  showConsequence(choice.consequence, choice.nextNode);
+  showConsequence(choice.consequence, choice.nextNode, choice);
 }
 
 // 显示后果
-function showConsequence(consequenceText, nextNode) {
+function showConsequence(consequenceText, nextNode, choice) {
   // 隐藏选择
   document.getElementById('choices-container').style.display = 'none';
 
   // 显示后果
+  const storyBody = document.getElementById('story-body');
   const consequencePanel = document.getElementById('consequence-panel');
+  storyBody.classList.add('consequence-active');
   document.getElementById('consequence-text').textContent = consequenceText;
+  document.getElementById('consequence-impact').textContent = resourceManager.getChoiceImpactSummary(choice);
   consequencePanel.classList.remove('hidden');
+  requestAnimationFrame(() => {
+    storyBody.style.setProperty('--consequence-height', `${consequencePanel.offsetHeight}px`);
+  });
+  document.querySelector('.story-panel').scrollIntoView({
+    behavior: 'smooth',
+    block: 'start'
+  });
 
   // 保存下一个节点
   consequencePanel.dataset.nextNode = nextNode;
@@ -278,17 +303,19 @@ function showEnding() {
 
   // 显示最终资源
   const state = resourceManager.getState();
+  const resourceStory = resourceManager.getResourceStory();
   document.getElementById('final-money').textContent = '¥' + state.money.toLocaleString();
   document.getElementById('final-time').textContent = (48 - state.time) + 'h';  // 修正：显示已消耗的时间
   document.getElementById('final-energy').textContent = state.energy;
   document.getElementById('final-network').textContent = state.network;
+  document.getElementById('final-state-summary').textContent = resourceStory.detail;
 
   // 保存到localStorage（用于统计）
-  saveGameResult(ending, state);
+  saveGameResult(ending, state, resourceStory);
 }
 
 // 保存游戏结果
-function saveGameResult(ending, state) {
+function saveGameResult(ending, state, resourceStory) {
   const result = {
     endingId: ending.id,
     survivalTime: state.hour,
@@ -298,6 +325,7 @@ function saveGameResult(ending, state) {
       energy: state.energy,
       network: state.network
     },
+    resourceStory,
     choices: state.choices,
     timestamp: new Date().toISOString()
   };
@@ -398,6 +426,8 @@ function showImagePreview(dataURL, blob) {
               <div class="share-resource">⚡ ${latestResult.finalResources.energy}</div>
               <div class="share-resource">👥 ${latestResult.finalResources.network}</div>
             </div>
+
+            <p class="share-summary">${latestResult.resourceStory?.share || '你活下来了，但每一项资源都付出了代价。'}</p>
           </div>
 
           <div class="share-footer">

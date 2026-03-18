@@ -39,64 +39,79 @@
 
         <!-- 主内容区域 -->
         <div class="game-content">
-            <!-- 左侧：剧情面板 -->
-            <div class="story-panel">
-                <h2 class="story-title" id="story-title"></h2>
-                <p class="story-scene" id="story-scene"></p>
-                <p class="story-description" id="story-description"></p>
+            <!-- 左侧：图片 + 文字整体组件 -->
+            <div class="story-main">
+                <div class="story-lower">
+                    <div class="story-panel">
+                        <h2 class="story-title" id="story-title"></h2>
+                        <p class="story-scene" id="story-scene"></p>
+                        <div class="story-body" id="story-body">
+                            <p class="story-description" id="story-description"></p>
 
-                <!-- 选择按钮 -->
-                <div class="choices-container" id="choices-container"></div>
+                            <!-- 选择按钮 -->
+                            <div class="choices-container" id="choices-container"></div>
 
-                <!-- 黑镜式旁白 -->
-                <p class="black-mirror-text" id="black-mirror-text"></p>
-            </div>
+                            <!-- 后果显示 -->
+                            <div class="consequence-panel hidden" id="consequence-panel">
+                                <div class="consequence-card">
+                                    <span class="consequence-kicker">SYSTEM FEEDBACK</span>
+                                    <p class="consequence-text" id="consequence-text"></p>
+                                    <p class="consequence-impact" id="consequence-impact"></p>
+                                    <div class="consequence-actions">
+                                        <button class="btn-secondary consequence-btn" id="continue-btn">继续</button>
+                                    </div>
+                                </div>
+                            </div>
 
-            <!-- 右侧：资源条 -->
-            <div class="resources-panel">
-                <div class="resource-item">
-                    <span class="resource-icon">💰</span>
-                    <span class="resource-label">资金</span>
-                    <div class="resource-bar">
-                        <div class="resource-fill" id="money-fill"></div>
+                            <!-- 黑镜式旁白 -->
+                            <p class="black-mirror-text" id="black-mirror-text"></p>
+                        </div>
                     </div>
-                    <span class="resource-value" id="money-value">¥8,000</span>
+
+                    <!-- 右侧：资源条 -->
+                    <div class="resources-panel">
+                        <div class="resource-item">
+                            <span class="resource-icon">💰</span>
+                            <span class="resource-label">资金</span>
+                            <div class="resource-bar">
+                                <div class="resource-fill" id="money-fill"></div>
+                            </div>
+                            <span class="resource-value" id="money-value">¥8,000</span>
+                        </div>
+
+                        <div class="resource-item">
+                            <span class="resource-icon">⏰</span>
+                            <span class="resource-label">时间</span>
+                            <div class="resource-bar">
+                                <div class="resource-fill" id="time-fill"></div>
+                            </div>
+                            <span class="resource-value" id="time-value">48h</span>
+                        </div>
+
+                        <div class="resource-item">
+                            <span class="resource-icon">⚡</span>
+                            <span class="resource-label">精力</span>
+                            <div class="resource-bar">
+                                <div class="resource-fill" id="energy-fill"></div>
+                            </div>
+                            <span class="resource-value" id="energy-value">100</span>
+                        </div>
+
+                        <div class="resource-item">
+                            <span class="resource-icon">👥</span>
+                            <span class="resource-label">人脉</span>
+                            <div class="resource-bar">
+                                <div class="resource-fill" id="network-fill"></div>
+                            </div>
+                            <span class="resource-value" id="network-value">5</span>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="resource-item">
-                    <span class="resource-icon">⏰</span>
-                    <span class="resource-label">时间</span>
-                    <div class="resource-bar">
-                        <div class="resource-fill" id="time-fill"></div>
-                    </div>
-                    <span class="resource-value" id="time-value">48h</span>
-                </div>
-
-                <div class="resource-item">
-                    <span class="resource-icon">⚡</span>
-                    <span class="resource-label">精力</span>
-                    <div class="resource-bar">
-                        <div class="resource-fill" id="energy-fill"></div>
-                    </div>
-                    <span class="resource-value" id="energy-value">100</span>
-                </div>
-
-                <div class="resource-item">
-                    <span class="resource-icon">👥</span>
-                    <span class="resource-label">人脉</span>
-                    <div class="resource-bar">
-                        <div class="resource-fill" id="network-fill"></div>
-                    </div>
-                    <span class="resource-value" id="network-value">5</span>
-                </div>
+                <div class="scene-frame" id="scene-frame"></div>
             </div>
         </div>
 
-        <!-- 后果显示 -->
-        <div class="consequence-panel hidden" id="consequence-panel">
-            <p class="consequence-text" id="consequence-text"></p>
-            <button class="btn-secondary" id="continue-btn">继续</button>
-        </div>
     </div>
 
     <!-- 结局界面 -->
@@ -112,6 +127,7 @@
             <!-- 资源剩余 -->
             <div class="final-resources">
                 <h3>最终状态</h3>
+                <p class="final-state-summary" id="final-state-summary"></p>
                 <div class="final-resource-grid">
                     <div class="final-resource-item">
                         <span class="resource-icon">💰</span>
