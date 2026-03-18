@@ -27,19 +27,18 @@ function playIntroAnimation() {
     '这是一场实验。',
     '我们想知道，当一个人决定创业时...',
     '他能在真实世界中存活多久。',
-    '',
     '现在是 2026年3月17日，晚上11:47',
     '你刚刚按下了辞职信的发送键。',
     '距离房租到期：48小时',
     '银行余额：¥8,000',
-    '',
     '游戏开始。'
   ];
 
   let index = 0;
   const interval = setInterval(() => {
     if (index < texts.length) {
-      const element = document.getElementById(`intro-text-${Math.floor(index / 2) + 1}`);
+      const elementIndex = Math.min(index + 1, 6);
+      const element = document.getElementById(`intro-text-${elementIndex}`);
       if (element) {
         element.textContent = texts[index];
         element.classList.add('typing');
@@ -82,6 +81,22 @@ function loadNode(nodeId) {
 
   // 更新小时
   resourceManager.setHour(node.hour);
+
+  // 更新场景图片
+  if (node.image) {
+    const storyPanel = document.querySelector('.story-panel');
+    let sceneImage = document.getElementById('scene-image');
+
+    if (!sceneImage) {
+      sceneImage = document.createElement('img');
+      sceneImage.id = 'scene-image';
+      sceneImage.className = 'scene-image';
+      storyPanel.insertBefore(sceneImage, storyPanel.firstChild);
+    }
+
+    sceneImage.src = node.image;
+    sceneImage.alt = node.title;
+  }
 
   // 更新剧情内容
   document.getElementById('story-title').textContent = node.title;
@@ -264,44 +279,130 @@ function saveGameResult(ending, state) {
 }
 
 // 分享结果
-function shareResult() {
+async function shareResult() {
   const latestResult = JSON.parse(localStorage.getItem('latestResult'));
   if (!latestResult) return;
 
   const ending = getEnding(latestResult.endingId);
 
-  // 更新分享卡片
-  document.getElementById('share-ending-title').textContent = ending.title;
-  document.getElementById('share-survival-time').textContent = latestResult.survivalTime;
-  document.getElementById('share-percentage').textContent = ending.percentage;
+  // 显示加载提示
+  const shareBtn = document.getElementById('share-btn');
+  const originalText = shareBtn.textContent;
+  shareBtn.textContent = '生成图片中...';
+  shareBtn.disabled = true;
 
-  // 生成分享文案
-  const shareText = `【创业者48小时生存实验】\n\n我的结局：${ending.title}\n存活时间：${latestResult.survivalTime}小时\n击败了${ending.percentage}%的玩家\n\n${ending.shareText}\n\n立即挑战：${window.location.href}`;
-
-  // 尝试使用Web Share API
-  if (navigator.share) {
-    navigator.share({
-      title: '创业者48小时生存实验',
-      text: shareText,
-      url: window.location.href
-    }).catch(err => {
-      console.log('分享失败:', err);
-      fallbackShare(shareText);
+  try {
+    // 截取结局界面生成图片
+    const endingContent = document.querySelector('.ending-content');
+    const canvas = await html2canvas(endingContent, {
+      backgroundColor: '#0a0a0a',
+      scale: 2,
+      logging: false
     });
-  } else {
-    fallbackShare(shareText);
+
+    // 转换为blob和dataURL
+    const dataURL = canvas.toDataURL('image/png');
+
+    canvas.toBlob(async (blob) => {
+      try {
+        // 显示预览弹窗
+        showImagePreview(dataURL, blob);
+
+        shareBtn.textContent = originalText;
+        shareBtn.disabled = false;
+      } catch (err) {
+        console.error('处理失败:', err);
+        shareBtn.textContent = originalText;
+        shareBtn.disabled = false;
+      }
+    }, 'image/png');
+  } catch (error) {
+    console.error('生成图片失败:', error);
+    shareBtn.textContent = originalText;
+    shareBtn.disabled = false;
+    alert('生成图片失败，请重试');
   }
 }
 
-// 备用分享方式
+// 显示图片预览弹窗
+function showImagePreview(dataURL, blob) {
+  // 创建预览弹窗
+  const modal = document.createElement('div');
+  modal.className = 'image-preview-modal';
+  modal.innerHTML = `
+    <div class="preview-content">
+      <div class="preview-header">
+        <h3>分享预览</h3>
+        <button class="close-preview">×</button>
+      </div>
+      <div class="preview-image-container">
+        <img src="${dataURL}" alt="结局图片" class="preview-image">
+      </div>
+      <div class="preview-actions">
+        <button class="btn-primary copy-image-btn">复制图片</button>
+        <button class="btn-secondary download-image-btn">下载图片</button>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(modal);
+
+  // 关闭按钮
+  modal.querySelector('.close-preview').onclick = () => {
+    document.body.removeChild(modal);
+  };
+
+  // 点击背景关闭
+  modal.onclick = (e) => {
+    if (e.target === modal) {
+      document.body.removeChild(modal);
+    }
+  };
+
+  // 复制图片
+  modal.querySelector('.copy-image-btn').onclick = async () => {
+    try {
+      await navigator.clipboard.write([
+        new ClipboardItem({
+          'image/png': blob
+        })
+      ]);
+      alert('图片已复制到剪贴板！\n\n可以直接粘贴到微信、朋友圈等社交媒体分享。');
+      document.body.removeChild(modal);
+    } catch (err) {
+      console.error('复制失败:', err);
+      alert('复制失败，请尝试下载图片');
+    }
+  };
+
+  // 下载图片
+  modal.querySelector('.download-image-btn').onclick = () => {
+    const link = document.createElement('a');
+    link.download = '创业者48小时生存实验-我的结局.png';
+    link.href = dataURL;
+    link.click();
+    alert('图片已下载！');
+    document.body.removeChild(modal);
+  };
+}
+
+// 下载图片（降级方案）
+function downloadImage(canvas) {
+  const link = document.createElement('a');
+  link.download = '创业者48小时生存实验-我的结局.png';
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+  alert('图片已下载到本地！\n\n可以从相册中分享到社交媒体。');
+}
+
+// 备用分享方式（已废弃，保留以防需要）
 function fallbackShare(text) {
-  // 复制到剪贴板
+  // 现在主要使用图片分享，此函数作为备用
   if (navigator.clipboard) {
     navigator.clipboard.writeText(text).then(() => {
       alert('分享文案已复制到剪贴板！\n\n请粘贴到朋友圈或社交媒体分享。');
     });
   } else {
-    // 旧版浏览器
     const textarea = document.createElement('textarea');
     textarea.value = text;
     document.body.appendChild(textarea);

@@ -5,6 +5,7 @@ const storyNodes = [
     hour: 0,
     title: '辞职的夜晚',
     scene: '你的出租屋，深夜 23:47',
+    image: 'assets/images/scenes/hour_0.jpg',
     description: '你刚刚按下了辞职信的发送键。手指还在颤抖。\n\n银行余额：¥8,000\n距离房租到期：48小时\n\n你知道，这是一场赌博。',
     choices: [
       {
@@ -45,6 +46,7 @@ const storyNodes = [
     hour: 8,
     title: '第一个考验',
     scene: '咖啡厅，早上8点',
+    image: 'assets/images/scenes/hour_8.jpg',
     description: '你需要一个技术合伙人。\n\n没有技术，你的想法只是空中楼阁。\n\n但你没有钱，也没有时间。',
     choices: [
       {
@@ -84,6 +86,7 @@ const storyNodes = [
     hour: 16,
     title: '道德困境',
     scene: '你的出租屋，下午4点',
+    image: 'assets/images/scenes/hour_16.jpg',
     description: '16小时过去了。\n\n你的项目毫无进展。\n\n这时，你想起了前公司的客户资源。\n\n你有他们的联系方式。',
     choices: [
       {
@@ -123,6 +126,7 @@ const storyNodes = [
     hour: 24,
     title: '中点危机',
     scene: '你的出租屋，深夜12点',
+    image: 'assets/images/scenes/hour_24.jpg',
     description: '24小时过去了。\n\n你已经一天没吃饭了。\n\n你的精力即将耗尽。\n\n但你不能停下来。',
     choices: [
       {
@@ -164,6 +168,7 @@ const storyNodes = [
     hour: 36,
     title: '极限时刻',
     scene: '你的出租屋，中午12点',
+    image: 'assets/images/scenes/hour_36.jpg',
     description: '36小时。\n\n你已经30小时没睡觉了。\n\n你的手在发抖。\n\n你开始出现幻觉。',
     choices: [
       {
@@ -206,6 +211,7 @@ const storyNodes = [
     hour: 48,
     title: '终局',
     scene: '你的出租屋，晚上11点',
+    image: 'assets/images/scenes/hour_48.jpg',
     description: '48小时到了。\n\n房东在敲门。\n\n这是最后的时刻。',
     choices: [
       {
