@@ -1231,6 +1231,73 @@ body::before {
   letter-spacing: 0.5px;
 }
 
+.ending-diagnosis {
+  margin: 50px 0;
+  padding: 36px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.02) 0%, rgba(0, 255, 65, 0.02) 100%),
+    rgba(7, 10, 8, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-top: 3px solid rgba(255, 255, 255, 0.12);
+  box-shadow:
+    0 0 26px rgba(0, 0, 0, 0.32),
+    inset 0 0 36px rgba(0, 0, 0, 0.42);
+  text-align: left;
+}
+
+.ending-diagnosis h3 {
+  font-size: 18px;
+  color: var(--text-gray);
+  margin-bottom: 24px;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  font-family: 'Orbitron', monospace;
+  font-weight: 700;
+}
+
+.diagnosis-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px;
+}
+
+.diagnosis-card {
+  padding: 24px 24px 22px;
+  background:
+    linear-gradient(180deg, rgba(15, 18, 16, 0.94) 0%, rgba(8, 10, 9, 0.98) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-left: 4px solid rgba(255, 255, 255, 0.14);
+  min-height: 220px;
+}
+
+.diagnosis-kicker {
+  display: inline-block;
+  margin-bottom: 14px;
+  font-size: 10px;
+  color: var(--text-red);
+  letter-spacing: 2.6px;
+  font-family: 'Orbitron', monospace;
+  font-weight: 700;
+}
+
+.diagnosis-card:last-child .diagnosis-kicker {
+  color: var(--text-green);
+}
+
+.diagnosis-title {
+  font-size: 28px;
+  line-height: 1.3;
+  margin-bottom: 16px;
+  color: var(--text-white);
+  font-weight: 700;
+}
+
+.diagnosis-text {
+  font-size: 15px;
+  line-height: 1.9;
+  color: rgba(222, 226, 222, 0.9);
+}
+
 /* 最终资源 */
 .final-resources {
   margin: 50px 0;
@@ -1484,6 +1551,22 @@ body::before {
   .final-resource-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 15px;
+  }
+
+  .ending-diagnosis {
+    padding: 24px 20px;
+  }
+
+  .diagnosis-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .diagnosis-card {
+    min-height: 0;
+  }
+
+  .diagnosis-title {
+    font-size: 22px;
   }
 
   .btn-primary, .btn-secondary {

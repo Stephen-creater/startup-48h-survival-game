@@ -373,7 +373,11 @@ class ResourceManager {
     return {
       summary: `你保住了${labels[strongest]}，但几乎耗空了${labels[weakest]}。`,
       detail: `${strongNarratives[strongest]}，但${weakNarratives[weakest]}。`,
-      share: `你保住了${labels[strongest]}，却把${labels[weakest]}压到了极限。`
+      share: `你保住了${labels[strongest]}，却把${labels[weakest]}压到了极限。`,
+      weakestResource: weakest,
+      strongestResource: strongest,
+      weakestLabel: labels[weakest],
+      strongestLabel: labels[strongest]
     };
   }
 
