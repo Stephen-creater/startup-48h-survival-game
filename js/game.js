@@ -43,8 +43,10 @@ function playIntroAnimation() {
         element.textContent = texts[index];
         element.classList.add('typing');
 
-        // 播放打字音效
-        playTypingSoundEffect(texts[index].length);
+        // 播放连续打字音效
+        if (audioManager) {
+          audioManager.startTypingSound(1000);
+        }
 
         setTimeout(() => {
           element.classList.remove('typing');
@@ -62,22 +64,13 @@ function playIntroAnimation() {
   }, 1500);
 }
 
-// 播放打字音效（根据文字长度）
-function playTypingSoundEffect(textLength) {
-  const typingDuration = 1000; // 1秒
-  const charDelay = typingDuration / textLength;
-
-  for (let i = 0; i < textLength; i++) {
-    setTimeout(() => {
-      if (audioManager) {
-        audioManager.playTypingSound();
-      }
-    }, i * charDelay);
-  }
-}
-
 // 开始游戏
 function startGame() {
+  // 播放按钮音效
+  if (audioManager) {
+    audioManager.playButtonSound();
+  }
+
   // 切换到游戏界面
   document.getElementById('intro-screen').classList.remove('active');
   document.getElementById('game-screen').classList.add('active');

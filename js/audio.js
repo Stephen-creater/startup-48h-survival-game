@@ -3,16 +3,15 @@ class AudioManager {
   constructor() {
     this.sounds = {};
     this.enabled = true;
-
-    // 使用Web Audio API生成音效
     this.audioContext = null;
+    this.typingInterval = null;
 
     // 初始化
     this.init();
   }
 
   init() {
-    // 立即初始化AudioContext（开场动画需要）
+    // 立即初始化AudioContext
     try {
       this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
     } catch (e) {
@@ -27,7 +26,7 @@ class AudioManager {
     }, { once: true });
   }
 
-  // 生成打字音效
+  // 生成单次打字音效
   playTypingSound() {
     if (!this.enabled || !this.audioContext) return;
 
@@ -37,18 +36,45 @@ class AudioManager {
     oscillator.connect(gainNode);
     gainNode.connect(this.audioContext.destination);
 
-    // 短促的高频音
-    oscillator.frequency.value = 800;
+    // 更短促、更轻的打字音
+    oscillator.frequency.value = 1200 + Math.random() * 200; // 随机频率增加真实感
     oscillator.type = 'sine';
 
-    gainNode.gain.setValueAtTime(0.1, this.audioContext.currentTime);
-    gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.05);
+    gainNode.gain.setValueAtTime(0.03, this.audioContext.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.001, this.audioContext.currentTime + 0.03);
 
     oscillator.start(this.audioContext.currentTime);
-    oscillator.stop(this.audioContext.currentTime + 0.05);
+    oscillator.stop(this.audioContext.currentTime + 0.03);
   }
 
-  // 生成选择音效
+  // 开始连续打字音效
+  startTypingSound(duration = 1000) {
+    if (!this.enabled || !this.audioContext) return;
+
+    this.stopTypingSound(); // 先停止之前的
+
+    const charDelay = 50; // 每50ms一个字符音效
+    let elapsed = 0;
+
+    this.typingInterval = setInterval(() => {
+      if (elapsed >= duration) {
+        this.stopTypingSound();
+        return;
+      }
+      this.playTypingSound();
+      elapsed += charDelay;
+    }, charDelay);
+  }
+
+  // 停止连续打字音效
+  stopTypingSound() {
+    if (this.typingInterval) {
+      clearInterval(this.typingInterval);
+      this.typingInterval = null;
+    }
+  }
+
+  // 生成选择音效（已优化）
   playChoiceSound() {
     if (!this.enabled || !this.audioContext) return;
 
@@ -63,10 +89,31 @@ class AudioManager {
     oscillator.type = 'sine';
 
     gainNode.gain.setValueAtTime(0.08, this.audioContext.currentTime);
-    gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.15);
+    gainNode.gain.exponentialRampToValueAtTime(0.001, this.audioContext.currentTime + 0.15);
 
     oscillator.start(this.audioContext.currentTime);
     oscillator.stop(this.audioContext.currentTime + 0.15);
+  }
+
+  // 生成按钮音效（用于启动实验等重要按钮）
+  playButtonSound() {
+    if (!this.enabled || !this.audioContext) return;
+
+    const oscillator = this.audioContext.createOscillator();
+    const gainNode = this.audioContext.createGain();
+
+    oscillator.connect(gainNode);
+    gainNode.connect(this.audioContext.destination);
+
+    // 柔和的确认音
+    oscillator.frequency.value = 500;
+    oscillator.type = 'sine';
+
+    gainNode.gain.setValueAtTime(0.06, this.audioContext.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.001, this.audioContext.currentTime + 0.2);
+
+    oscillator.start(this.audioContext.currentTime);
+    oscillator.stop(this.audioContext.currentTime + 0.2);
   }
 
   // 生成悬停音效
@@ -83,7 +130,7 @@ class AudioManager {
     oscillator.type = 'sine';
 
     gainNode.gain.setValueAtTime(0.05, this.audioContext.currentTime);
-    gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.08);
+    gainNode.gain.exponentialRampToValueAtTime(0.001, this.audioContext.currentTime + 0.08);
 
     oscillator.start(this.audioContext.currentTime);
     oscillator.stop(this.audioContext.currentTime + 0.08);
@@ -103,7 +150,7 @@ class AudioManager {
     oscillator.type = 'sawtooth';
 
     gainNode.gain.setValueAtTime(0.2, this.audioContext.currentTime);
-    gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.15);
+    gainNode.gain.exponentialRampToValueAtTime(0.001, this.audioContext.currentTime + 0.15);
 
     oscillator.start(this.audioContext.currentTime);
     oscillator.stop(this.audioContext.currentTime + 0.15);
