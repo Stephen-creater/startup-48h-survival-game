@@ -141,7 +141,8 @@ body::before {
 }
 
 .intro-shell {
-  padding: 42px 46px 36px;
+  padding: 46px 52px 42px;
+  text-align: center;
 }
 
 .intro-sequence-panel {
@@ -180,42 +181,34 @@ body::before {
   font-family: 'Orbitron', monospace;
   font-weight: 700;
   text-transform: uppercase;
+  text-align: center;
 }
 
 .intro-title-lockup {
-  display: flex;
-  align-items: flex-end;
-  gap: 20px;
-  flex-wrap: wrap;
-}
-
-.intro-title-prefix {
-  font-family: 'Orbitron', monospace;
-  font-size: clamp(24px, 3vw, 34px);
-  line-height: 1;
-  color: rgba(0, 255, 65, 0.72);
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  padding-bottom: 10px;
+  margin-top: 12px;
 }
 
 .intro-title {
   font-family: 'Orbitron', monospace;
-  font-size: clamp(52px, 7vw, 94px);
-  line-height: 0.92;
+  font-size: clamp(48px, 7vw, 88px);
+  line-height: 0.9;
   color: var(--text-green);
-  letter-spacing: 2px;
+  letter-spacing: 1px;
   text-transform: uppercase;
   text-shadow:
     0 0 18px rgba(0, 255, 65, 0.45),
     0 0 36px rgba(0, 255, 65, 0.18);
 }
 
+.intro-title-line {
+  display: block;
+}
+
 .intro-subtitle {
-  max-width: 860px;
-  margin-top: 20px;
-  font-size: 22px;
-  line-height: 1.85;
+  max-width: 760px;
+  margin: 22px auto 0;
+  font-size: 20px;
+  line-height: 1.8;
   color: rgba(230, 236, 230, 0.92);
   letter-spacing: 0.2px;
 }
@@ -228,15 +221,15 @@ body::before {
 }
 
 .intro-stakes {
-  margin-top: 28px;
+  margin-top: 30px;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 18px;
 }
 
 .intro-stake-card {
-  min-height: 180px;
-  padding: 18px 18px 16px;
+  min-height: 148px;
+  padding: 18px 18px 14px;
   background:
     linear-gradient(180deg, rgba(11, 16, 13, 0.96) 0%, rgba(6, 9, 7, 0.98) 100%);
   border: 1px solid rgba(0, 255, 65, 0.12);
@@ -247,6 +240,7 @@ body::before {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  text-align: left;
 }
 
 .intro-stake-label {
@@ -271,36 +265,24 @@ body::before {
   color: rgba(210, 218, 210, 0.84);
 }
 
-.intro-notes {
-  margin-top: 24px;
-  display: grid;
-  gap: 12px;
-  max-width: 860px;
-}
-
-.intro-note {
-  font-size: 15px;
-  line-height: 1.8;
-  color: rgba(178, 190, 178, 0.86);
-}
-
 .intro-actions {
   margin-top: 28px;
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 20px;
+  display: flex;
+  flex-direction: column;
   align-items: center;
+  gap: 12px;
 }
 
 .intro-actions .btn-primary {
   margin: 0;
-  min-width: 210px;
+  min-width: 260px;
 }
 
 .intro-cta-copy {
   font-size: 14px;
   line-height: 1.8;
   color: rgba(175, 189, 175, 0.82);
+  text-align: center;
 }
 
 .typewriter-text {
@@ -312,6 +294,7 @@ body::before {
   text-shadow: 0 0 8px rgba(0, 255, 65, 0.5);
   letter-spacing: 0.5px;
   font-weight: 400;
+  text-align: center;
 }
 
 .typewriter-container {
@@ -319,7 +302,8 @@ body::before {
 }
 
 .intro-sequence-panel .btn-primary {
-  margin: 18px 0 0;
+  margin: 18px auto 0;
+  display: block;
 }
 
 .typewriter-text.typing {
@@ -1619,10 +1603,6 @@ body::before {
     padding: 28px 22px 24px;
   }
 
-  .intro-title-lockup {
-    gap: 10px;
-  }
-
   .intro-title {
     font-size: clamp(42px, 12vw, 64px);
     letter-spacing: 1px;
@@ -1639,10 +1619,6 @@ body::before {
 
   .intro-stake-card {
     min-height: 0;
-  }
-
-  .intro-actions {
-    grid-template-columns: 1fr;
   }
 
   .intro-actions .btn-primary {
@@ -1776,11 +1752,6 @@ body::before {
 
   .intro-title {
     font-size: 34px;
-  }
-
-  .intro-title-prefix {
-    font-size: 18px;
-    padding-bottom: 0;
   }
 
   .intro-subtitle {
