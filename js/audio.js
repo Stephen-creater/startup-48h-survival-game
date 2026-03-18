@@ -20,7 +20,7 @@ class AudioManager {
 
     // 创建打字音效Audio元素，使用真实的音频文件
     this.typingAudio = new Audio();
-    this.typingAudio.src = 'assets/sounds/typing.wav';
+    this.typingAudio.src = 'assets/sounds/mixkit-hard-laptop-keyboard-typing-2538.wav';
     this.typingAudio.volume = 0.1;
 
     // 如果浏览器需要用户交互才能播放音频，在首次点击时恢复
