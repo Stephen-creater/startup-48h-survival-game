@@ -64,8 +64,6 @@ class ResourceManager {
 
   // 检查游戏结束条件
   checkGameOver() {
-    if (this.money <= 0) return 'broke';
-    if (this.energy <= 0) return 'burnout';
     if (this.time <= 0) return 'timeup';
     return null;
   }
@@ -173,6 +171,16 @@ class ResourceManager {
     return ratios[0];
   }
 
+  // 获取已耗尽的核心资源
+  getDepletedCoreResources() {
+    return ['money', 'energy', 'network'].filter(resource => this[resource] <= 0);
+  }
+
+  // 是否进入资源锁死状态
+  hasResourceLock() {
+    return this.getDepletedCoreResources().length > 0;
+  }
+
   // 选择代价的人话总结
   getChoiceImpactSummary(choice) {
     const cost = choice.cost || {};
@@ -251,6 +259,29 @@ class ResourceManager {
       summary: `你保住了${labels[strongest]}，但几乎耗空了${labels[weakest]}。`,
       detail: `${strongNarratives[strongest]}，但${weakNarratives[weakest]}。`,
       share: `你保住了${labels[strongest]}，却把${labels[weakest]}压到了极限。`
+    };
+  }
+
+  // 资源锁死时的叙事文案
+  getResourceLockNarrative() {
+    const depleted = this.getDepletedCoreResources();
+    const labels = {
+      money: '现金已经见底',
+      energy: '精力已经归零',
+      network: '人情已经借完'
+    };
+    const details = {
+      money: '你连继续下注的最低成本都拿不出来了。',
+      energy: '你不是不想继续，而是身体已经不再响应你了。',
+      network: '你已经没有还能再打的那通电话了。'
+    };
+
+    const primaryLines = depleted.map(resource => labels[resource]);
+    const detailLines = depleted.map(resource => details[resource]);
+
+    return {
+      text: `你盯着屏幕，发现所有还算像样的路都堵死了。\n\n${primaryLines.join('。\n')}。`,
+      impact: `${detailLines.join(' ')} 现在不是你不肯选，而是你已经没有可执行的选择了。`
     };
   }
 

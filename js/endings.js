@@ -55,6 +55,23 @@ const endings = {
     shareText: '我放弃了，你会怎么选？'
   },
 
+  cornered: {
+    id: 'cornered',
+    title: '困局',
+    percentage: 52,
+    description: [
+      '你没有倒下，也没有立刻破产。',
+      '但你已经没有下一步了。',
+      '',
+      '现金不够，精力不够，或者连最后一点人情也用完了。',
+      '你站在原地，看着所有选项同时熄灭。',
+      '',
+      '创业最残酷的时刻，往往不是失败。',
+      '而是你清楚地知道，自己已经没有任何能继续下注的筹码。'
+    ],
+    shareText: '我没有输在某一步，而是输在已经没有路可走'
+  },
+
   survive: {
     id: 'survive',
     title: '勉强生存',
@@ -120,6 +137,13 @@ function determineEnding(resources) {
   // 特殊结局：放弃
   if (flags.includes('gave_up')) {
     return endings.gave_up;
+  }
+
+  // 资源锁死：如果核心资源已经耗尽且没有可执行选择
+  if (flags.includes('resource_locked')) {
+    if (energy <= 0) return endings.burnout;
+    if (money <= 0) return endings.broke;
+    return endings.cornered;
   }
 
   // 特殊结局：崩溃

@@ -132,6 +132,7 @@ function loadNode(nodeId) {
   choicesContainer.innerHTML = '';
 
   // 创建选择按钮
+  let availableStrategicChoices = 0;
   node.choices.forEach((choice, index) => {
     const availability = resourceManager.getChoiceAvailability(choice);
     const button = document.createElement('button');
@@ -164,6 +165,10 @@ function loadNode(nodeId) {
       warningSpan.textContent = '不可选：' + availability.reason;
       button.appendChild(warningSpan);
     } else {
+      if (!isTerminalChoice(choice)) {
+        availableStrategicChoices++;
+      }
+
       button.addEventListener('click', () => {
         // 播放选择音效
         if (audioManager) {
@@ -185,6 +190,15 @@ function loadNode(nodeId) {
 
   // 隐藏后果面板
   document.getElementById('consequence-panel').classList.add('hidden');
+
+  if (availableStrategicChoices === 0 && resourceManager.hasResourceLock()) {
+    showResourceLock();
+  }
+}
+
+function isTerminalChoice(choice) {
+  const nextNode = choice.nextNode;
+  return nextNode === 'gave_up' || nextNode === 'broke' || nextNode === 'burnout';
 }
 
 // 格式化消耗/获得
@@ -248,12 +262,28 @@ function showConsequence(consequenceText, nextNode, choice) {
   consequencePanel.dataset.nextNode = nextNode;
 }
 
+function showResourceLock() {
+  resourceManager.addFlag('resource_locked');
+  const narrative = resourceManager.getResourceLockNarrative();
+  showConsequence(narrative.text, 'resource_locked', {
+    cost: {},
+    gain: {},
+    text: '无路可走'
+  });
+  document.getElementById('consequence-impact').textContent = narrative.impact;
+}
+
 // 继续游戏
 function continueGame() {
   const nextNode = document.getElementById('consequence-panel').dataset.nextNode;
 
   // 检查是否是特殊结局节点
   if (nextNode === 'gave_up' || nextNode === 'broke' || nextNode === 'burnout') {
+    showEnding();
+    return;
+  }
+
+  if (nextNode === 'resource_locked') {
     showEnding();
     return;
   }
