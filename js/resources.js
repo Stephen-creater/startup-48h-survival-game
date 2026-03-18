@@ -160,12 +160,12 @@ class ResourceManager {
   }
 
   // 获取当前最危险的资源
-  getPrimaryPressure() {
+  getPrimaryPressure(state = this.getState()) {
     const ratios = [
-      { resource: 'money', ratio: this.money / this.initialMoney },
-      { resource: 'time', ratio: this.time / this.initialTime },
-      { resource: 'energy', ratio: this.energy / this.initialEnergy },
-      { resource: 'network', ratio: this.network / this.initialNetwork }
+      { resource: 'money', ratio: state.money / this.initialMoney },
+      { resource: 'time', ratio: state.time / this.initialTime },
+      { resource: 'energy', ratio: state.energy / this.initialEnergy },
+      { resource: 'network', ratio: state.network / this.initialNetwork }
     ].sort((a, b) => a.ratio - b.ratio);
 
     return ratios[0];
@@ -226,12 +226,12 @@ class ResourceManager {
   }
 
   // 结算页/分享页的人话资源总结
-  getResourceStory() {
+  getResourceStory(state = this.getState()) {
     const ratios = [
-      { resource: 'money', ratio: this.money / this.initialMoney },
-      { resource: 'time', ratio: this.time / this.initialTime },
-      { resource: 'energy', ratio: this.energy / this.initialEnergy },
-      { resource: 'network', ratio: this.network / this.initialNetwork }
+      { resource: 'money', ratio: state.money / this.initialMoney },
+      { resource: 'time', ratio: state.time / this.initialTime },
+      { resource: 'energy', ratio: state.energy / this.initialEnergy },
+      { resource: 'network', ratio: state.network / this.initialNetwork }
     ].sort((a, b) => a.ratio - b.ratio);
 
     const weakest = ratios[0].resource;

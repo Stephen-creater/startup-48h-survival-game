@@ -204,6 +204,31 @@ function formatCost(cost) {
   return parts.join(', ');
 }
 
+function resolveConsequenceText(choice) {
+  if (typeof choice.consequence === 'function') {
+    return choice.consequence(resourceManager.getState(), resourceManager);
+  }
+  return choice.consequence;
+}
+
+function normalizeEndingState(endingId, rawState) {
+  const state = {
+    ...rawState,
+    flags: [...rawState.flags],
+    choices: [...rawState.choices]
+  };
+
+  if (endingId === 'broke') {
+    state.money = 0;
+  }
+
+  if (endingId === 'burnout') {
+    state.energy = 0;
+  }
+
+  return state;
+}
+
 // 做出选择
 function makeChoice(choiceIndex) {
   const node = getNode(currentNodeId);
@@ -228,7 +253,7 @@ function makeChoice(choiceIndex) {
   }
 
   // 显示后果
-  showConsequence(choice.consequence, choice.nextNode, choice);
+  showConsequence(resolveConsequenceText(choice), choice.nextNode, choice);
 }
 
 // 显示后果
@@ -325,10 +350,10 @@ function showEnding() {
   });
 
   // 显示最终资源
-  const state = resourceManager.getState();
-  const resourceStory = resourceManager.getResourceStory();
+  const state = normalizeEndingState(ending.id, resourceManager.getState());
+  const resourceStory = resourceManager.getResourceStory(state);
   document.getElementById('final-money').textContent = '¥' + state.money.toLocaleString();
-  document.getElementById('final-time').textContent = (48 - state.time) + 'h';  // 修正：显示已消耗的时间
+  document.getElementById('final-time').textContent = state.time + 'h';
   document.getElementById('final-energy').textContent = state.energy;
   document.getElementById('final-network').textContent = state.network;
   document.getElementById('final-state-summary').textContent = resourceStory.detail;
@@ -445,7 +470,7 @@ function showImagePreview(dataURL, blob) {
 
             <div class="share-resources">
               <div class="share-resource">💰 ¥${latestResult.finalResources.money.toLocaleString()}</div>
-              <div class="share-resource">⏰ ${48 - latestResult.finalResources.time}h</div>
+              <div class="share-resource">⏰ ${latestResult.finalResources.time}h</div>
               <div class="share-resource">⚡ ${latestResult.finalResources.energy}</div>
               <div class="share-resource">👥 ${latestResult.finalResources.network}</div>
             </div>

@@ -237,7 +237,7 @@ const storyNodes = [
       {
         text: '交房租，继续战斗',
         cost: { money: 4000 },
-        consequence: '你交了房租。\n\n银行余额：¥' + (8000 - 4000) + '\n\n你还活着。',
+        consequence: (state) => `你交了房租。\n\n银行余额：¥${state.money.toLocaleString()}\n\n你还活着。`,
         nextNode: 'ending',
         flags: ['paid_rent']
       },
