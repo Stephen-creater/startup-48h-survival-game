@@ -301,63 +301,48 @@ body::before {
   border-bottom: 1px solid rgba(0, 255, 65, 0.2);
 }
 
-/* 剧情面板（包含左右布局） */
-.story-panel {
+/* 主内容区域（左右布局） */
+.game-content {
   display: flex;
-  gap: 20px;
+  flex: 1;
+  gap: 30px;
+  padding: 20px 40px;
   max-width: 1400px;
   width: 100%;
-  margin: 20px auto;
-  padding: 40px;
-  background:
-    linear-gradient(135deg, rgba(0, 255, 65, 0.01) 0%, transparent 100%),
-    var(--bg-panel);
-  border: 1px solid rgba(0, 255, 65, 0.3);
-  border-left: 4px solid var(--neon-green);
-  box-shadow:
-    0 0 40px rgba(0, 255, 65, 0.15),
-    inset 0 0 60px rgba(0, 0, 0, 0.6);
-  position: relative;
+  margin: 0 auto;
+  align-items: flex-start;
 }
 
-.story-panel::before {
-  content: '';
-  display: none;
-}
-
-/* 左侧文字内容 */
-.story-content {
-  flex: 1;
-  min-width: 0;
-}
-
-/* 右侧资源面板 */
+/* 资源面板（右侧垂直布局，紧凑） */
 .resources-panel {
   display: flex;
   flex-direction: column;
-  gap: 15px;
-  width: 200px;
+  gap: 12px;
+  width: 240px;
   flex-shrink: 0;
-  padding: 20px;
-  background: rgba(0, 0, 0, 0.5);
-  border: 1px solid rgba(255, 8, 68, 0.3);
-  border-left: 2px solid var(--neon-red);
+  padding: 15px;
+  background:
+    linear-gradient(135deg, rgba(0, 255, 65, 0.02) 0%, transparent 100%),
+    var(--bg-panel);
+  border: 1px solid rgba(0, 255, 65, 0.2);
+  border-left: 3px solid var(--neon-green);
   box-shadow:
-    0 0 20px rgba(255, 8, 68, 0.1),
-    inset 0 0 30px rgba(0, 0, 0, 0.8);
+    0 0 30px rgba(0, 255, 65, 0.1),
+    inset 0 0 40px rgba(0, 0, 0, 0.5);
   position: relative;
+  height: fit-content;
 }
 
 .resources-panel::before {
   content: 'RESOURCES';
   position: absolute;
   top: -10px;
-  left: 15px;
-  background: var(--bg-panel);
-  padding: 0 8px;
-  font-size: 9px;
+  left: 20px;
+  background: var(--bg-black);
+  padding: 0 10px;
+  font-size: 10px;
   color: var(--text-dim);
-  letter-spacing: 2px;
+  letter-spacing: 3px;
   font-weight: 700;
   font-family: 'Orbitron', monospace;
 }
@@ -365,8 +350,8 @@ body::before {
 .resource-item {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  padding: 10px;
+  gap: 4px;
+  padding: 8px;
   background: rgba(0, 0, 0, 0.4);
   border: 1px solid var(--border-color);
   transition: all 0.3s ease;
@@ -396,12 +381,12 @@ body::before {
 }
 
 .resource-icon {
-  font-size: 20px;
+  font-size: 18px;
   filter: drop-shadow(0 0 8px rgba(0, 255, 65, 0.6));
 }
 
 .resource-label {
-  font-size: 9px;
+  font-size: 8px;
   color: var(--text-gray);
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -410,7 +395,7 @@ body::before {
 }
 
 .resource-bar {
-  height: 16px;
+  height: 14px;
   background: rgba(0, 0, 0, 0.6);
   border: 1px solid var(--text-green);
   position: relative;
@@ -470,7 +455,7 @@ body::before {
 }
 
 .resource-value {
-  font-size: 13px;
+  font-size: 12px;
   color: var(--text-white);
   font-weight: 700;
   text-shadow: 0 0 10px rgba(0, 255, 65, 0.5);
@@ -536,12 +521,13 @@ body::before {
     var(--bg-panel);
   border: 1px solid rgba(0, 255, 65, 0.3);
   border-left: 4px solid var(--neon-green);
-  padding: 40px;
+  padding: 30px;
   box-shadow:
     0 0 40px rgba(0, 255, 65, 0.15),
     inset 0 0 60px rgba(0, 0, 0, 0.6);
   position: relative;
   height: fit-content;
+  max-width: 900px;
 }
 
 /* 场景图片 */
