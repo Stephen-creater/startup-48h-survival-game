@@ -4,7 +4,7 @@ class AudioManager {
     this.sounds = {};
     this.enabled = true;
     this.audioContext = null;
-    this.typingInterval = null;
+    this.typingAudio = null;
 
     // 初始化
     this.init();
@@ -18,6 +18,11 @@ class AudioManager {
       console.log('AudioContext初始化失败:', e);
     }
 
+    // 创建打字音效Audio元素，使用真实的音频文件
+    this.typingAudio = new Audio();
+    this.typingAudio.src = 'assets/sounds/typing.wav';
+    this.typingAudio.volume = 0.1;
+
     // 如果浏览器需要用户交互才能播放音频，在首次点击时恢复
     document.addEventListener('click', () => {
       if (this.audioContext && this.audioContext.state === 'suspended') {
@@ -26,8 +31,23 @@ class AudioManager {
     }, { once: true });
   }
 
-  // 生成单次打字音效
+  // 播放打字音效（使用Audio元素）
   playTypingSound() {
+    if (!this.enabled || !this.typingAudio) return;
+
+    try {
+      // 克隆音频以支持快速连续播放
+      const sound = this.typingAudio.cloneNode();
+      sound.volume = 0.05;
+      sound.play().catch(e => console.log('音效播放失败:', e));
+    } catch (e) {
+      // 如果失败，使用Web Audio API备用方案
+      this.playTypingSoundFallback();
+    }
+  }
+
+  // 备用打字音效（Web Audio API）
+  playTypingSoundFallback() {
     if (!this.enabled || !this.audioContext) return;
 
     const oscillator = this.audioContext.createOscillator();
@@ -36,11 +56,10 @@ class AudioManager {
     oscillator.connect(gainNode);
     gainNode.connect(this.audioContext.destination);
 
-    // 更短促、更轻的打字音
-    oscillator.frequency.value = 1200 + Math.random() * 200; // 随机频率增加真实感
+    oscillator.frequency.value = 1200 + Math.random() * 200;
     oscillator.type = 'sine';
 
-    gainNode.gain.setValueAtTime(0.03, this.audioContext.currentTime);
+    gainNode.gain.setValueAtTime(0.02, this.audioContext.currentTime);
     gainNode.gain.exponentialRampToValueAtTime(0.001, this.audioContext.currentTime + 0.03);
 
     oscillator.start(this.audioContext.currentTime);
@@ -49,29 +68,19 @@ class AudioManager {
 
   // 开始连续打字音效
   startTypingSound(duration = 1000) {
-    if (!this.enabled || !this.audioContext) return;
+    if (!this.enabled) return;
 
-    this.stopTypingSound(); // 先停止之前的
-
-    const charDelay = 50; // 每50ms一个字符音效
+    const charDelay = 50;
     let elapsed = 0;
 
-    this.typingInterval = setInterval(() => {
-      if (elapsed >= duration) {
-        this.stopTypingSound();
-        return;
-      }
+    const playNext = () => {
+      if (elapsed >= duration) return;
       this.playTypingSound();
       elapsed += charDelay;
-    }, charDelay);
-  }
+      setTimeout(playNext, charDelay);
+    };
 
-  // 停止连续打字音效
-  stopTypingSound() {
-    if (this.typingInterval) {
-      clearInterval(this.typingInterval);
-      this.typingInterval = null;
-    }
+    playNext();
   }
 
   // 生成选择音效（已优化）
@@ -105,15 +114,15 @@ class AudioManager {
     oscillator.connect(gainNode);
     gainNode.connect(this.audioContext.destination);
 
-    // 柔和的确认音
-    oscillator.frequency.value = 500;
+    // 极其柔和的确认音
+    oscillator.frequency.value = 300;
     oscillator.type = 'sine';
 
-    gainNode.gain.setValueAtTime(0.06, this.audioContext.currentTime);
-    gainNode.gain.exponentialRampToValueAtTime(0.001, this.audioContext.currentTime + 0.2);
+    gainNode.gain.setValueAtTime(0.02, this.audioContext.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.001, this.audioContext.currentTime + 0.3);
 
     oscillator.start(this.audioContext.currentTime);
-    oscillator.stop(this.audioContext.currentTime + 0.2);
+    oscillator.stop(this.audioContext.currentTime + 0.3);
   }
 
   // 生成悬停音效
