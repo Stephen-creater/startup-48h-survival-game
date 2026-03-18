@@ -6,6 +6,16 @@ let currentNodeId = 'hour_0';
 function initGame() {
   resourceManager = new ResourceManager();
 
+  // 绑定点击开始按钮
+  document.getElementById('click-to-start').addEventListener('click', () => {
+    // 隐藏点击开始按钮
+    document.getElementById('click-to-start').classList.add('hidden');
+    // 显示打字机容器
+    document.getElementById('typewriter-container').classList.remove('hidden');
+    // 播放开场动画
+    playIntroAnimation();
+  });
+
   // 绑定开始按钮
   document.getElementById('start-btn').addEventListener('click', startGame);
 
@@ -16,9 +26,6 @@ function initGame() {
   document.getElementById('share-btn').addEventListener('click', shareResult);
   document.getElementById('restart-btn').addEventListener('click', restartGame);
   document.getElementById('contact-btn').addEventListener('click', contactAssistant);
-
-  // 播放开场动画
-  playIntroAnimation();
 }
 
 // 开场动画
