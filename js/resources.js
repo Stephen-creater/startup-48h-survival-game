@@ -110,9 +110,14 @@ class ResourceManager {
   }
 
   // 更新危险状态
+  // 当该资源是当前最危险资源且已进入压力区（ratio <= 0.55），或任意资源 <= 30% 时变红
   updateDangerState(resource, percent) {
     const bar = document.getElementById(resource + '-fill').parentElement;
-    if (percent <= 30) {
+    const ratio = percent / 100;
+    const primaryPressure = this.getPrimaryPressure();
+    const isPrimary = primaryPressure.resource === resource;
+    const inPressureZone = ratio <= 0.55;
+    if ((isPrimary && inPressureZone) || percent <= 30) {
       bar.classList.add('danger');
     } else {
       bar.classList.remove('danger');
@@ -239,7 +244,7 @@ class ResourceManager {
     pressureKicker.textContent = profile.kicker;
     pressureText.textContent = profile.text;
 
-    if (profile.level === 'stable') {
+    if (profile.level !== 'critical') {
       pressureStatus.classList.add('hidden');
     } else {
       pressureStatus.classList.remove('hidden');
@@ -413,7 +418,7 @@ class ResourceManager {
     return {
       summary: `你保住了${labels[strongest]}，但几乎耗空了${labels[weakest]}。`,
       detail: `${strongNarratives[strongest]}，但${weakNarratives[weakest]}。`,
-      share: `你保住了${labels[strongest]}，却把${labels[weakest]}压到了极限。`,
+      share: `我保住了${labels[strongest]}，却把${labels[weakest]}压到了极限。`,
       weakestResource: weakest,
       strongestResource: strongest,
       weakestLabel: labels[weakest],

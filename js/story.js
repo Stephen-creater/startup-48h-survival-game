@@ -1,4 +1,4 @@
-// 剧情节点数据（MVP版本：6个关键节点）
+// 剧情节点数据
 const storyNodes = [
   {
     id: 'hour_0',
@@ -11,7 +11,7 @@ const storyNodes = [
       {
         text: '立刻开始写商业计划书',
         cost: { energy: 20, time: 4 },
-        consequence: '凌晨4点，你完成了一份粗糙的BP。\n\n你的眼睛布满血丝，但至少有了一个开始。',
+        consequence: '凌晨4点，你完成了一份粗糙的BP。\n\n逻辑漏洞很多，但至少有了一个框架。\n\n你的眼睛布满血丝。',
         nextNode: 'hour_8',
         flags: ['has_bp']
       },
@@ -19,14 +19,14 @@ const storyNodes = [
         text: '先睡一觉，明天再说',
         cost: { time: 8 },
         gain: { energy: 30 },
-        consequence: '你睡了一觉，恢复了精力。\n\n但当你醒来时，已经是早上8点了。\n\n你浪费了宝贵的时间。',
+        consequence: '你睡了一觉。\n\n醒来是早上8点，窗外已经大亮。\n\n你比别人晚了整整一个夜晚。',
         nextNode: 'hour_8',
-        flags: []
+        flags: ['late_start']
       },
       {
         text: '给大学同学打电话，拉他入伙',
         cost: { network: 1, time: 2 },
-        consequence: '你的同学犹豫了很久。\n\n"我考虑一下吧。"\n\n你知道这意味着什么。',
+        consequence: '电话打了40分钟。\n\n他说"我考虑一下"。\n\n你知道这意味着什么，但你还是把他记在了备选名单里。',
         nextNode: 'hour_8',
         flags: ['contacted_friend']
       },
@@ -44,148 +44,230 @@ const storyNodes = [
   {
     id: 'hour_8',
     hour: 8,
-    title: '第一个考验',
-    scene: '咖啡厅，早上8点',
+    title: '第一道墙',
+    scene: '咖啡厅，早上',
     image: 'assets/images/scenes/hour_8.jpg',
-    description: '你需要一个技术合伙人。\n\n没有技术，你的想法只是空中楼阁。\n\n但你没有钱，也没有时间。',
+    description: {
+      default: '你需要一个能做事的人。\n\n没有技术，你的想法只是想法。\n\n但你没有钱，也没有时间。',
+      overrides: [
+        {
+          requiredFlag: 'late_start',
+          text: '你比预期晚了整整一个夜晚。\n\n咖啡厅里已经坐满了人，你找了个角落。\n\n你需要一个能做事的人，但时间已经不多了。'
+        },
+        {
+          requiredFlag: 'has_bp',
+          text: '你带着昨晚写的BP来到咖啡厅。\n\n它很粗糙，但至少说明你认真想过。\n\n现在你需要一个能把它变成现实的人。'
+        }
+      ]
+    },
     choices: [
       {
-        text: '花¥5000找外包开发',
-        cost: { money: 5000, time: 4 },
-        consequence: '外包接了单。\n\n但3天后，他消失了。\n\n钱打了水漂。',
+        text: '用BP吸引技术合伙人（免费入股）',
+        requiredFlag: 'has_bp',
+        cost: { time: 4, energy: 10 },
+        consequence: '你在创业社群里发了BP摘要。\n\n有两个人回复了，其中一个看起来是认真的。\n\n他说需要再聊聊。',
         nextNode: 'hour_16',
-        flags: ['outsource_failed']
+        flags: ['has_tech_lead']
+      },
+      {
+        text: '花¥5000找外包开发',
+        excludedFlag: 'late_start',
+        cost: { money: 5000, time: 4 },
+        consequence: '外包接了单，说两周交付。\n\n你松了口气。\n\n但你不知道，他同时接了另外三个单。',
+        nextNode: 'hour_16',
+        flags: ['hired_outsource']
       },
       {
         text: '去技术社区发帖招人',
         cost: { time: 6, energy: 15 },
-        consequence: '你在各个社区发了帖子。\n\n收到了20多个回复。\n\n但大多数人只是来看热闹的。',
+        consequence: '你在各个社区发了帖子。\n\n收到了20多个回复，大多数是来看热闹的。\n\n但有一个人的留言让你多看了两眼。',
         nextNode: 'hour_16',
         flags: ['posted_recruitment']
       },
       {
-        text: '自己学编程',
-        cost: { time: 12, energy: 30 },
-        requirements: { energy: 45, time: 18 },
-        unavailableReason: '你现在的精力和时间窗口都不够，再硬啃技术只会把自己拖垮。',
-        consequence: '你打开了编程教程。\n\n12小时后，你写出了第一行代码。\n\n然后发现，根本跑不起来。',
-        nextNode: 'hour_16',
-        flags: ['tried_coding']
-      },
-      {
-        text: '联系前公司的技术同事',
-        cost: { network: 2, time: 4 },
-        requirements: { network: 2 },
-        unavailableReason: '你手里的可用人情已经不够了，这一步没人会替你兜底。',
-        consequence: '他答应了。\n\n但他有全职工作，只能晚上帮你。\n\n总比没有强。',
+        text: '联系那个大学同学',
+        requiredFlag: 'contacted_friend',
+        cost: { time: 2 },
+        consequence: '他接了电话。\n\n"好吧，我帮你。但我只能晚上有空。"\n\n你知道这不够，但总比没有强。',
         nextNode: 'hour_16',
         flags: ['has_tech_partner']
+      },
+      {
+        text: '自己学编程，从零开始',
+        cost: { time: 16, energy: 40 },
+        requirements: { energy: 50, time: 20 },
+        unavailableReason: '你现在的精力和时间都不够，硬啃技术只会把自己拖垮。',
+        consequence: '你关掉了所有社交软件，打开了编程教程。\n\n16小时后，你写出了一个能跑的最简版本。\n\n它很烂，但它是你的。',
+        nextNode: 'hour_24',
+        flags: ['self_coded', 'has_prototype']
       }
     ],
-    blackMirrorText: '你的银行卡收到了一条短信。\n\n"您的余额已不足¥10,000。"\n\n房东明天会来收房租。'
+    blackMirrorText: {
+      default: '你的银行卡收到了一条短信。\n\n"您的余额已不足¥10,000。"\n\n房东明天会来收房租。',
+      overrides: [
+        {
+          requiredFlag: 'late_start',
+          text: '你比别人晚了一个夜晚。\n\n在创业这件事上，一个夜晚可以是一切。\n\n也可以什么都不是。'
+        }
+      ]
+    }
   },
 
   {
     id: 'hour_16',
     hour: 16,
-    title: '道德困境',
-    scene: '你的出租屋，下午4点',
+    title: '第一个裂缝',
+    scene: '你的出租屋，下午',
     image: 'assets/images/scenes/hour_16.jpg',
-    description: '16小时过去了。\n\n你的项目毫无进展。\n\n这时，你想起了前公司的客户资源。\n\n你有他们的联系方式。',
+    description: {
+      default: '16小时过去了。\n\n进展比你预期的慢。\n\n钱在流失，时间在流失，你开始感到慌了。',
+      overrides: [
+        {
+          requiredFlag: 'hired_outsource',
+          text: '你付出去的¥5000还没有任何回音。\n\n外包的微信头像还亮着，但消息已读不回。\n\n你开始意识到可能出了问题。'
+        },
+        {
+          requiredFlag: 'has_tech_lead',
+          text: '那个对BP感兴趣的人约你见面了。\n\n他问了很多尖锐的问题。\n\n你答上来了一半。'
+        }
+      ]
+    },
     choices: [
       {
-        text: '联系前公司客户（违反竞业协议）',
-        cost: { network: 1, time: 4 },
-        requirements: { network: 2 },
-        unavailableReason: '你已经没有多余的人情去冒这个险了。',
-        consequence: '你发了消息。\n\n有3个客户回复了。\n\n你知道这是不对的。\n\n但你也知道，创业没有对错，只有生存。',
+        text: '追外包要进度，否则退款',
+        requiredFlag: 'hired_outsource',
+        cost: { time: 2, energy: 10 },
+        consequence: '你发了一条措辞强硬的消息。\n\n外包回复了："代码写了一半，退款不可能。"\n\n你意识到钱已经打了水漂。',
         nextNode: 'hour_24',
-        flags: ['broke_rules', 'has_customer']
+        flags: ['outsource_failed']
       },
       {
-        text: '从零开始找客户',
-        cost: { time: 8, energy: 25 },
-        requirements: { energy: 40 },
-        unavailableReason: '陌生开发太吃体力了，你现在已经没有状态去硬打50个电话。',
-        consequence: '你打了50个陌生电话。\n\n49个人挂断了。\n\n1个人说"发个资料我看看"。\n\n然后就没有然后了。',
-        nextNode: 'hour_24',
-        flags: ['cold_call']
-      },
-      {
-        text: '放弃B2B，转做C端产品',
+        text: '继续推进，咬牙把产品做出来',
         cost: { time: 8, energy: 20 },
-        requirements: { time: 20 },
-        unavailableReason: '转向意味着重开一局，但你的时间窗口已经不支持你这么做了。',
-        consequence: '你决定换方向。\n\n重新开始。\n\n但时间已经不多了。',
+        consequence: '你把自己关在房间里。\n\n8小时后，你有了一个能演示的原型。\n\n它很粗糙，但它能跑。',
         nextNode: 'hour_24',
-        flags: ['pivoted']
+        flags: ['has_prototype']
       },
       {
-        text: '回去求前老板，撤回辞职',
+        text: '去找潜在客户，先验证需求',
+        cost: { time: 6, energy: 15, network: 1 },
+        consequence: '你联系了几个可能有需求的人。\n\n有一个人说"如果真能做出来，我愿意付钱试试"。\n\n这是你第一个真实的信号。',
+        nextNode: 'hour_24',
+        flags: ['has_lead']
+      },
+      {
+        text: '接一个小外包项目，先把钱补回来',
+        cost: { time: 8 },
+        gain: { money: 3000 },
+        consequence: '你接了一个朋友介绍的小活。\n\n钱补回来了一些。\n\n但你的项目又停了8小时。',
+        nextNode: 'hour_24',
+        flags: ['did_freelance']
+      },
+      {
+        text: '回去找前老板，撤回辞职',
         cost: {},
-        consequence: '你拨通了前老板的电话。\n\n"我..."\n\n你说不出口。',
+        consequence: '你发了一条消息："我想撤回辞职。"\n\n对方回复："位置已经给别人了。"\n\n你盯着屏幕看了很久。',
         nextNode: 'gave_up',
         flags: ['gave_up']
       }
     ],
-    blackMirrorText: '你的手指悬停在前客户的微信上。\n\n你知道这是不对的。\n\n但你的银行余额只剩¥3000了。\n\n房租是¥4000。'
+    blackMirrorText: {
+      default: '你的朋友圈里，前同事们在讨论今天的午饭。\n\n你已经不记得自己上次好好吃饭是什么时候了。',
+      overrides: [
+        {
+          requiredFlag: 'hired_outsource',
+          text: '¥5000。\n\n那是你银行卡里将近一半的钱。\n\n你开始明白，创业最贵的学费，往往是交给骗子的。'
+        }
+      ]
+    }
   },
 
   {
     id: 'hour_24',
     hour: 24,
-    title: '中点危机',
-    scene: '你的出租屋，深夜12点',
+    title: '道德岔路口',
+    scene: '你的出租屋，深夜',
     image: 'assets/images/scenes/hour_24.jpg',
-    description: '24小时过去了。\n\n你已经一天没吃饭了。\n\n你的精力即将耗尽。\n\n但你不能停下来。',
+    description: {
+      default: '24小时。\n\n你盯着手机里前公司客户的联系方式。\n\n那是一条捷径。\n\n但你签过竞业协议。',
+      overrides: [
+        {
+          requiredFlag: 'outsource_failed',
+          text: '24小时。¥5000没了。\n\n你盯着手机里前公司客户的联系方式。\n\n你已经没有资格挑路了。'
+        },
+        {
+          requiredFlag: 'has_prototype',
+          text: '24小时。你手里有一个能跑的原型。\n\n但没有客户，原型只是玩具。\n\n你盯着手机里前公司客户的联系方式。'
+        }
+      ]
+    },
     choices: [
       {
-        text: '继续死磕当前方向',
-        cost: { energy: 25, time: 8 },
+        text: '联系前公司客户（违反竞业协议）',
+        cost: { network: 1, time: 4 },
+        requirements: { network: 1 },
+        unavailableReason: '你已经没有多余的人情去冒这个险了。',
+        consequence: '你发了消息。\n\n有两个客户回复了。\n\n你知道这是不对的。\n\n但你也知道，你已经没有别的路了。',
+        nextNode: 'hour_36',
+        flags: ['broke_rules', 'has_customer']
+      },
+      {
+        text: '老实从零开始找客户',
+        cost: { time: 8, energy: 25 },
         requirements: { energy: 35 },
-        unavailableReason: '你现在的精力已经不足以再硬扛 8 小时了。',
-        consequence: '你咬牙坚持。\n\n8小时后，你有了一个粗糙的原型。\n\n虽然很丑，但至少能用。',
+        unavailableReason: '陌生开发太吃体力，你现在已经没有状态去硬打50个电话了。',
+        consequence: '你打了50个陌拜电话。\n\n49个人挂断了。\n\n1个人说"发个资料我看看"。\n\n然后就没有然后了。',
         nextNode: 'hour_36',
-        flags: ['has_prototype']
+        flags: ['cold_called']
       },
       {
-        text: '找投资人，试图融资',
-        cost: { network: 2, time: 6, energy: 20 },
-        requirements: { network: 3 },
-        unavailableReason: '融资不是发愿望清单，你现在的人脉厚度还不够支撑这一步。',
-        consequence: '你约了3个投资人。\n\n2个没回复。\n\n1个说"太早期了，等你有数据再聊"。',
-        nextNode: 'hour_36',
-        flags: ['tried_fundraising']
-      },
-      {
-        text: '接一个外包项目赚钱',
+        text: '接大外包项目回血（¥8000，但要16小时）',
         cost: { time: 16, energy: 30 },
-        requirements: { energy: 45 },
-        unavailableReason: '这种高强度外包会直接把你榨干，你现在的状态扛不住。',
         gain: { money: 8000 },
-        consequence: '你接了一个紧急外包项目。\n\n16小时不眠不休。\n\n赚了¥8000。\n\n但你的创业项目停滞了。',
-        nextNode: 'hour_36',
-        flags: ['did_outsource']
+        requirements: { energy: 35 },
+        unavailableReason: '你已经没有精力再接一个16小时的活了。',
+        consequence: '你接了一个大外包。\n\n16小时后，钱到账了。\n\n但窗外已经是第三天的早晨。\n\n房东今晚就会来。',
+        nextNode: 'hour_36_rich',
+        flags: ['did_big_freelance', 'has_money']
       },
       {
-        text: '睡2小时，恢复精力',
-        cost: { time: 2 },
-        gain: { energy: 40 },
-        consequence: '你倒在床上。\n\n2小时后，闹钟响了。\n\n你感觉好多了。',
-        nextNode: 'hour_36',
-        flags: []
+        text: '我撑不住了，回去找工作',
+        cost: {},
+        consequence: '你打开了招聘网站。\n\n这一次，你真的投了简历。',
+        nextNode: 'gave_up',
+        flags: ['gave_up']
       }
     ],
-    blackMirrorText: '系统提示：只有18%的玩家能活过24小时。\n\n你是其中之一。\n\n但接下来会更难。'
+    blackMirrorText: {
+      default: '你的前同事发了一条朋友圈：\n\n"新公司第一天，感觉不错。"\n\n你点了个赞，然后关掉了手机。',
+      overrides: [
+        {
+          requiredFlag: 'has_lead',
+          text: '那个说"愿意付钱试试"的人，今天没有回你消息。\n\n你发了一条跟进，对方已读。\n\n没有回复。'
+        }
+      ]
+    }
   },
 
   {
     id: 'hour_36',
     hour: 36,
-    title: '极限时刻',
-    scene: '你的出租屋，中午12点',
+    title: '身体极限',
+    scene: '你的出租屋，中午',
     image: 'assets/images/scenes/hour_36.jpg',
-    description: '36小时。\n\n你已经30小时没睡觉了。\n\n你的手在发抖。\n\n你开始出现幻觉。',
+    description: {
+      default: '36小时。\n\n你已经超过30小时没有睡觉了。\n\n手在发抖。\n\n你开始出现幻觉。',
+      overrides: [
+        {
+          requiredFlag: 'broke_rules',
+          text: '36小时。\n\n那两个前公司客户还没有明确答复。\n\n你的手在发抖，不知道是因为没睡，还是因为等待。'
+        },
+        {
+          requiredFlag: 'has_customer',
+          text: '36小时。\n\n客户说明天要看演示。\n\n你的手在发抖。\n\n你不知道自己能不能撑到明天。'
+        }
+      ]
+    },
     choices: [
       {
         text: '喝咖啡硬撑',
@@ -201,9 +283,9 @@ const storyNodes = [
         text: '睡4小时',
         cost: { time: 4 },
         gain: { energy: 50 },
-        consequence: '你倒头就睡。\n\n4小时后，你醒了。\n\n时间只剩8小时了。',
+        consequence: '你倒头就睡。\n\n4小时后，你醒了。\n\n时间只剩8小时了。\n\n但你的头脑清醒了一些。',
         nextNode: 'hour_48',
-        flags: []
+        flags: ['took_rest']
       },
       {
         text: '吃药（安非他明）',
@@ -218,7 +300,7 @@ const storyNodes = [
       {
         text: '我撑不住了...',
         cost: {},
-        consequence: '你倒在了电脑前。\n\n醒来时，你在医院。',
+        consequence: '你倒在了电脑前。\n\n醒来时，你在医院。\n\n护士说你是低血糖晕倒的。',
         nextNode: 'burnout',
         flags: ['burnout']
       }
@@ -227,36 +309,110 @@ const storyNodes = [
   },
 
   {
+    id: 'hour_36_rich',
+    hour: 36,
+    title: '有钱，没进展',
+    scene: '你的出租屋，清晨',
+    image: 'assets/images/scenes/hour_36.jpg',
+    description: '外包的钱到账了。\n\n但你的项目在过去16小时里原地踏步。\n\n房东今晚就来。\n\n你有钱，但你没有任何可以展示的东西。',
+    choices: [
+      {
+        text: '用钱找人，今天内把原型做出来',
+        cost: { money: 3000, time: 4, energy: 20 },
+        requirements: { energy: 25 },
+        unavailableReason: '你已经没有精力去协调一个临时团队了。',
+        consequence: '你在自由职业平台上发了一个紧急需求。\n\n有人接了。\n\n4小时后，你有了一个能演示的原型。',
+        nextNode: 'hour_48',
+        flags: ['has_prototype', 'bought_prototype']
+      },
+      {
+        text: '自己硬做，能做多少做多少',
+        cost: { time: 8, energy: 30 },
+        requirements: { energy: 35 },
+        unavailableReason: '你的身体已经不支持再连续工作8小时了。',
+        consequence: '你坐在电脑前，把能做的都做了。\n\n结果比你预期的差，但比什么都没有强。',
+        nextNode: 'hour_48',
+        flags: ['has_prototype']
+      },
+      {
+        text: '放弃产品，直接用钱交房租撑过去',
+        cost: {},
+        consequence: '你决定先活下来。\n\n产品的事，以后再说。\n\n如果还有以后的话。',
+        nextNode: 'hour_48',
+        flags: ['gave_up_product']
+      },
+      {
+        text: '我撑不住了...',
+        cost: {},
+        consequence: '你倒在了电脑前。\n\n醒来时，你在医院。\n\n护士说你是低血糖晕倒的。',
+        nextNode: 'burnout',
+        flags: ['burnout']
+      }
+    ],
+    blackMirrorText: '钱是有了。\n\n但你突然意识到，你已经不记得自己为什么要创业了。\n\n是为了钱吗？\n\n还是为了别的什么？'
+  },
+
+  {
     id: 'hour_48',
     hour: 48,
     title: '终局',
-    scene: '你的出租屋，晚上11点',
+    scene: '你的出租屋，晚上',
     image: 'assets/images/scenes/hour_48.jpg',
-    description: '48小时到了。\n\n房东在敲门。\n\n这是最后的时刻。',
+    description: {
+      default: '48小时到了。\n\n房东在敲门。\n\n这是最后的时刻。',
+      overrides: [
+        {
+          requiredFlag: 'has_prototype',
+          text: '48小时到了。\n\n房东在敲门。\n\n你的电脑屏幕上，还开着那个粗糙的原型。\n\n至少你有了一个开始。'
+        },
+        {
+          requiredFlag: 'broke_rules',
+          text: '48小时到了。\n\n房东在敲门。\n\n你的手机里，还有那两个前公司客户的聊天记录。\n\n你不知道这条路会把你带到哪里。'
+        },
+        {
+          requiredFlag: 'gave_up_product',
+          text: '48小时到了。\n\n房东在敲门。\n\n你的电脑屏幕是黑的。\n\n你选择了活下来，但你不确定这算不算赢。'
+        }
+      ]
+    },
     choices: [
       {
         text: '交房租，继续战斗',
         cost: { money: 4000 },
-        consequence: (state) => `你交了房租。\n\n银行余额：¥${state.money.toLocaleString()}\n\n你还活着。`,
+        consequence: (state) => `你交了房租。\n\n银行余额：¥${(state.money).toLocaleString()}\n\n房东走了。\n\n你还活着。`,
         nextNode: 'ending',
         flags: ['paid_rent']
       },
       {
         text: '跟房东求情，再给我一周',
         cost: { network: 1 },
-        consequence: '房东看着你。\n\n"一周。最后一周。"\n\n你赢得了时间。',
+        requirements: { network: 1 },
+        unavailableReason: '你已经没有多余的人情了，房东不会再信任你。',
+        consequence: '房东看着你。\n\n沉默了很久。\n\n"一周。最后一周。"\n\n你赢得了时间。',
         nextNode: 'ending',
         flags: ['negotiated_rent']
       },
       {
         text: '我没钱了...',
         cost: {},
-        consequence: '房东换了门锁。\n\n你的东西被扔在了楼下。',
+        consequence: '房东换了门锁。\n\n你的东西被扔在了楼下。\n\n你坐在路边，不知道该打给谁。',
         nextNode: 'broke',
         flags: ['broke']
       }
     ],
-    blackMirrorText: '48小时前，你按下了辞职信的发送键。\n\n48小时后，你站在这里。\n\n这就是创业。'
+    blackMirrorText: {
+      default: '48小时前，你按下了辞职信的发送键。\n\n48小时后，你站在这里。\n\n这就是创业。',
+      overrides: [
+        {
+          requiredFlag: 'has_prototype',
+          text: '48小时前，你什么都没有。\n\n48小时后，你有了一个原型。\n\n它很烂。\n\n但它存在。'
+        },
+        {
+          requiredFlag: 'broke_rules',
+          text: '48小时前，你是一个遵守规则的人。\n\n48小时后，你不确定自己还是不是。\n\n创业改变了你，你只是还不知道改变了多少。'
+        }
+      ]
+    }
   }
 ];
 

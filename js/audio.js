@@ -18,10 +18,11 @@ class AudioManager {
       console.log('AudioContext初始化失败:', e);
     }
 
-    // 创建打字音效Audio元素，使用真实的音频文件
+    // 创建打字音效Audio元素，预加载
     this.typingAudio = new Audio();
     this.typingAudio.src = 'assets/sounds/mixkit-hard-laptop-keyboard-typing-2538.wav';
     this.typingAudio.volume = 0.1;
+    this.typingAudio.preload = 'auto';
 
     // 如果浏览器需要用户交互才能播放音频，在首次点击时恢复
     document.addEventListener('click', () => {
@@ -70,9 +71,9 @@ class AudioManager {
   startTypingSound() {
     if (!this.enabled || !this.typingAudio) return;
 
-    // 直接播放完整的打字音频
     this.typingAudio.currentTime = 0;
     this.typingAudio.volume = 0.15;
+    // 手机浏览器忽略preload，需在用户手势中直接play()触发加载+播放
     this.typingAudio.play().catch(e => console.log('打字音效播放失败:', e));
   }
 

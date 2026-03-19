@@ -76,21 +76,64 @@
 
         <!-- 主内容区域 -->
         <div class="game-content">
-            <!-- 左侧：图片 + 文字整体组件 -->
             <div class="story-main">
+                <!-- 场景图片 -->
+                <div class="scene-frame" id="scene-frame"></div>
+
+                <!-- 资源条（图片下方，横向一行） -->
+                <div class="resources-panel">
+                    <div class="resource-item">
+                        <span class="resource-icon">💰</span>
+                        <span class="resource-label">资金</span>
+                        <div class="resource-bar">
+                            <div class="resource-fill" id="money-fill"></div>
+                        </div>
+                        <span class="resource-value" id="money-value">¥8,000</span>
+                    </div>
+
+                    <div class="resource-item">
+                        <span class="resource-icon">⏰</span>
+                        <span class="resource-label">时间</span>
+                        <div class="resource-bar">
+                            <div class="resource-fill" id="time-fill"></div>
+                        </div>
+                        <span class="resource-value" id="time-value">48h</span>
+                    </div>
+
+                    <div class="resource-item">
+                        <span class="resource-icon">⚡</span>
+                        <span class="resource-label">精力</span>
+                        <div class="resource-bar">
+                            <div class="resource-fill" id="energy-fill"></div>
+                        </div>
+                        <span class="resource-value" id="energy-value">100</span>
+                    </div>
+
+                    <div class="resource-item">
+                        <span class="resource-icon">👥</span>
+                        <span class="resource-label">人脉</span>
+                        <div class="resource-bar">
+                            <div class="resource-fill" id="network-fill"></div>
+                        </div>
+                        <span class="resource-value" id="network-value">5</span>
+                    </div>
+                </div>
+
+                <!-- 剧情内容区 -->
                 <div class="story-lower">
                     <div class="story-panel">
                         <h2 class="story-title" id="story-title"></h2>
                         <p class="story-scene" id="story-scene"></p>
-                        <div class="pressure-status hidden" id="pressure-status">
-                            <span class="pressure-kicker" id="pressure-kicker"></span>
-                            <p class="pressure-text" id="pressure-text"></p>
-                        </div>
                         <div class="story-body" id="story-body">
                             <p class="story-description" id="story-description"></p>
 
                             <!-- 选择按钮 -->
                             <div class="choices-container" id="choices-container"></div>
+
+                            <div class="pressure-status hidden" id="pressure-status">
+                                <span class="pressure-kicker" id="pressure-kicker"></span>
+                                <p class="pressure-text" id="pressure-text"></p>
+                            </div>
 
                             <!-- 后果显示 -->
                             <div class="consequence-panel hidden" id="consequence-panel">
@@ -108,48 +151,7 @@
                             <p class="black-mirror-text" id="black-mirror-text"></p>
                         </div>
                     </div>
-
-                    <!-- 右侧：资源条 -->
-                    <div class="resources-panel">
-                        <div class="resource-item">
-                            <span class="resource-icon">💰</span>
-                            <span class="resource-label">资金</span>
-                            <div class="resource-bar">
-                                <div class="resource-fill" id="money-fill"></div>
-                            </div>
-                            <span class="resource-value" id="money-value">¥8,000</span>
-                        </div>
-
-                        <div class="resource-item">
-                            <span class="resource-icon">⏰</span>
-                            <span class="resource-label">时间</span>
-                            <div class="resource-bar">
-                                <div class="resource-fill" id="time-fill"></div>
-                            </div>
-                            <span class="resource-value" id="time-value">48h</span>
-                        </div>
-
-                        <div class="resource-item">
-                            <span class="resource-icon">⚡</span>
-                            <span class="resource-label">精力</span>
-                            <div class="resource-bar">
-                                <div class="resource-fill" id="energy-fill"></div>
-                            </div>
-                            <span class="resource-value" id="energy-value">100</span>
-                        </div>
-
-                        <div class="resource-item">
-                            <span class="resource-icon">👥</span>
-                            <span class="resource-label">人脉</span>
-                            <div class="resource-bar">
-                                <div class="resource-fill" id="network-fill"></div>
-                            </div>
-                            <span class="resource-value" id="network-value">5</span>
-                        </div>
-                    </div>
                 </div>
-
-                <div class="scene-frame" id="scene-frame"></div>
             </div>
         </div>
 
@@ -158,6 +160,7 @@
     <!-- 结局界面 -->
     <div id="ending-screen" class="screen">
         <div class="ending-content">
+            <div class="ending-image-frame" id="ending-image-frame"></div>
             <h1 class="ending-title glitch" id="ending-title"></h1>
             <div class="ending-stats">
                 <p class="ending-stat">存活时长 <span class="stat-highlight" id="survival-time">0</span> 小时</p>

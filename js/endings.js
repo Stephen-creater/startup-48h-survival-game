@@ -132,46 +132,46 @@ const endings = {
 
 // 判定结局
 function determineEnding(resources) {
-  const { money, energy, time, flags } = resources.getState();
+  const { money, energy, flags } = resources.getState();
 
-  // 特殊结局：放弃
+  // 放弃（最优先，玩家主动选择）
   if (flags.includes('gave_up')) {
     return endings.gave_up;
   }
 
-  // 资源锁死：如果核心资源已经耗尽且没有可执行选择
+  // 崩溃
+  if (flags.includes('burnout') || energy <= 0) {
+    return endings.burnout;
+  }
+
+  // 资源锁死
   if (flags.includes('resource_locked')) {
     if (energy <= 0) return endings.burnout;
     if (money <= 0) return endings.broke;
     return endings.cornered;
   }
 
-  // 特殊结局：崩溃
-  if (flags.includes('burnout') || energy <= 0) {
-    return endings.burnout;
-  }
-
-  // 特殊结局：破产
-  if (flags.includes('broke') || money <= 0) {
-    return endings.broke;
-  }
-
-  // 隐藏结局：不择手段
+  // 不择手段（优先于普通成功/破产，因为 broke_rules 可能同时满足其他条件）
   if (flags.includes('broke_rules') && flags.includes('has_customer')) {
     return endings.no_ethics;
   }
 
-  // 成功结局：有客户且有钱
+  // 破产
+  if (flags.includes('broke') || money <= 0) {
+    return endings.broke;
+  }
+
+  // 成功：有客户且钱充足
   if (money > 5000 && flags.includes('has_customer')) {
     return endings.success;
   }
 
-  // 成功结局：有原型且有钱
+  // 成功：有原型且交了房租且钱充足
   if (money > 3000 && flags.includes('has_prototype') && flags.includes('paid_rent')) {
     return endings.success;
   }
 
-  // 勉强生存：交了房租
+  // 勉强生存
   if (flags.includes('paid_rent') || flags.includes('negotiated_rent')) {
     return endings.survive;
   }

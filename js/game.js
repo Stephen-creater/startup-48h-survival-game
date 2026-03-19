@@ -11,6 +11,8 @@ function initGame() {
     // 切换到独立的打字页面
     document.getElementById('intro-landing').classList.add('hidden');
     document.getElementById('intro-sequence').classList.remove('hidden');
+    // 在用户手势中同步启动音效（手机浏览器autoplay policy要求）
+    if (audioManager) audioManager.startTypingSound();
     // 播放开场动画
     playIntroAnimation();
   });
@@ -39,13 +41,6 @@ function playIntroAnimation() {
     '银行余额：¥8,000',
     '游戏开始。'
   ];
-
-  // 加载网页2秒后开始播放打字音效
-  setTimeout(() => {
-    if (audioManager) {
-      audioManager.startTypingSound();
-    }
-  }, 2000);
 
   let index = 0;
   const interval = setInterval(() => {
@@ -82,10 +77,24 @@ function startGame() {
   // 切换到游戏界面
   document.getElementById('intro-screen').classList.remove('active');
   document.getElementById('game-screen').classList.add('active');
+  ensureGameLayoutOrder();
   resourceManager.updateUI();
 
   // 加载第一个节点
   loadNode('hour_0');
+}
+
+function ensureGameLayoutOrder() {
+  const storyMain = document.querySelector('.story-main');
+  const sceneFrame = document.getElementById('scene-frame');
+  const resourcesPanel = document.querySelector('.resources-panel');
+  const storyLower = document.querySelector('.story-lower');
+
+  if (!storyMain || !sceneFrame || !resourcesPanel || !storyLower) return;
+
+  storyMain.appendChild(sceneFrame);
+  storyMain.appendChild(resourcesPanel);
+  storyMain.appendChild(storyLower);
 }
 
 // 加载节点
@@ -120,8 +129,27 @@ function loadNode(nodeId) {
   // 更新剧情内容
   document.getElementById('story-title').textContent = node.title;
   document.getElementById('story-scene').textContent = node.scene;
-  document.getElementById('story-description').textContent = node.description;
-  document.getElementById('black-mirror-text').textContent = node.blackMirrorText || '';
+
+  // description 支持对象结构：{ default, overrides: [{ requiredFlag, text }] }
+  const currentFlags = resourceManager.getState().flags;
+  let descriptionText = '';
+  if (typeof node.description === 'string') {
+    descriptionText = node.description;
+  } else if (node.description && node.description.overrides) {
+    const matched = node.description.overrides.find(o => currentFlags.includes(o.requiredFlag));
+    descriptionText = matched ? matched.text : node.description.default;
+  }
+  document.getElementById('story-description').textContent = descriptionText;
+
+  // blackMirrorText 同样支持对象结构
+  let blackMirrorText = '';
+  if (typeof node.blackMirrorText === 'string') {
+    blackMirrorText = node.blackMirrorText;
+  } else if (node.blackMirrorText && node.blackMirrorText.overrides) {
+    const matched = node.blackMirrorText.overrides.find(o => currentFlags.includes(o.requiredFlag));
+    blackMirrorText = matched ? matched.text : node.blackMirrorText.default;
+  }
+  document.getElementById('black-mirror-text').textContent = blackMirrorText;
   const storyBody = document.getElementById('story-body');
   storyBody.classList.remove('consequence-active');
   storyBody.style.removeProperty('--consequence-height');
@@ -133,12 +161,39 @@ function loadNode(nodeId) {
 
   // 创建选择按钮
   let availableChoices = 0;
+  let visibleChoiceCount = 0;
   node.choices.forEach((choice, index) => {
+    // requiredFlag：需要拥有某个 flag 才显示此选项
+    if (choice.requiredFlag && !currentFlags.includes(choice.requiredFlag)) {
+      return;
+    }
+    // excludedFlag：拥有某个 flag 时隐藏此选项
+    if (choice.excludedFlag && currentFlags.includes(choice.excludedFlag)) {
+      return;
+    }
     const availability = resourceManager.getChoiceAvailability(choice);
     const button = document.createElement('button');
     button.className = 'choice-btn';
-    button.innerHTML = choice.text;
     button.dataset.available = availability.available ? 'true' : 'false';
+    visibleChoiceCount++;
+
+    const indexBadge = document.createElement('span');
+    indexBadge.className = 'choice-index';
+    indexBadge.textContent = String(visibleChoiceCount).padStart(2, '0');
+    button.appendChild(indexBadge);
+
+    const ctaBadge = document.createElement('span');
+    ctaBadge.className = 'choice-cta';
+    ctaBadge.textContent = availability.available ? '选择' : '不可选';
+    button.appendChild(ctaBadge);
+
+    const titleSpan = document.createElement('span');
+    titleSpan.className = 'choice-title';
+    titleSpan.textContent = choice.text;
+    button.appendChild(titleSpan);
+
+    const metaRow = document.createElement('div');
+    metaRow.className = 'choice-meta';
 
     // 显示消耗和获得
     if (choice.cost && Object.keys(choice.cost).length > 0) {
@@ -146,7 +201,7 @@ function loadNode(nodeId) {
       const costSpan = document.createElement('span');
       costSpan.className = 'choice-cost';
       costSpan.textContent = '消耗：' + costText;
-      button.appendChild(costSpan);
+      metaRow.appendChild(costSpan);
     }
 
     if (choice.gain && Object.keys(choice.gain).length > 0) {
@@ -154,7 +209,7 @@ function loadNode(nodeId) {
       const gainSpan = document.createElement('span');
       gainSpan.className = 'choice-gain';
       gainSpan.textContent = '获得：' + gainText;
-      button.appendChild(gainSpan);
+      metaRow.appendChild(gainSpan);
     }
 
     if (!availability.available) {
@@ -163,7 +218,7 @@ function loadNode(nodeId) {
       const warningSpan = document.createElement('span');
       warningSpan.className = 'choice-warning';
       warningSpan.textContent = '不可选：' + availability.reason;
-      button.appendChild(warningSpan);
+      metaRow.appendChild(warningSpan);
     } else {
       availableChoices++;
 
@@ -181,6 +236,10 @@ function loadNode(nodeId) {
           audioManager.playHoverSound();
         }
       });
+    }
+
+    if (metaRow.children.length > 0) {
+      button.appendChild(metaRow);
     }
 
     choicesContainer.appendChild(button);
@@ -202,6 +261,25 @@ function formatCost(cost) {
   if (cost.energy) parts.push(`⚡ ${cost.energy}`);
   if (cost.network) parts.push(`👥 ${cost.network}`);
   return parts.join(', ');
+}
+
+function inferEmotion(choice) {
+  if (!choice) return null;
+  const flags = choice.flags || [];
+  const next = choice.nextNode || '';
+  // 放弃/破产/崩溃路径
+  if (next === 'gave_up' || next === 'broke' || next === 'burnout') return 'despair';
+  // 身体崩溃
+  if (flags.includes('burnout') || flags.includes('took_drugs')) return 'breakdown';
+  // 道德风险
+  if (flags.includes('broke_rules')) return 'anxiety';
+  // 获得恢复（睡觉/回血）
+  if (choice.gain && (choice.gain.energy >= 20 || choice.gain.money >= 3000)) return 'relief';
+  // 高精力消耗
+  if (choice.cost && choice.cost.energy >= 20) return 'exhausted';
+  // 高金钱风险
+  if (choice.cost && choice.cost.money >= 3000) return 'anxiety';
+  return 'struggle';
 }
 
 function resolveConsequenceText(choice) {
@@ -264,6 +342,16 @@ function makeChoice(choiceIndex) {
 function showConsequence(consequenceText, nextNode, choice) {
   // 隐藏选择
   document.getElementById('choices-container').style.display = 'none';
+
+  // 切换情绪图片
+  const emotion = inferEmotion(choice);
+  if (emotion) {
+    const sceneImage = document.getElementById('scene-image');
+    if (sceneImage) {
+      sceneImage.src = `assets/images/emotions/${emotion}.jpg`;
+      sceneImage.alt = emotion;
+    }
+  }
 
   // 显示后果
   const storyBody = document.getElementById('story-body');
@@ -340,6 +428,16 @@ function showEnding() {
   // 切换到结局界面
   document.getElementById('game-screen').classList.remove('active');
   document.getElementById('ending-screen').classList.add('active');
+
+  // 显示结局图片
+  const endingImageFrame = document.getElementById('ending-image-frame');
+  endingImageFrame.innerHTML = '';
+  const endingImg = document.createElement('img');
+  endingImg.src = `assets/images/endings/${ending.id}.jpg`;
+  endingImg.alt = ending.title;
+  endingImg.className = 'ending-image';
+  endingImg.onerror = () => { endingImageFrame.style.display = 'none'; };
+  endingImageFrame.appendChild(endingImg);
 
   // 显示结局信息
   document.getElementById('ending-title').textContent = ending.title;
