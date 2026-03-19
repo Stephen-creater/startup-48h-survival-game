@@ -3,8 +3,8 @@ class ResourceManager {
   constructor() {
     this.initialMoney = 8000;
     this.initialTime = 48;
-    this.initialEnergy = 100;
-    this.initialNetwork = 5;
+    this.initialEnergy = 90;
+    this.initialNetwork = 3;
 
     this.money = this.initialMoney;
     this.time = this.initialTime;
@@ -113,14 +113,20 @@ class ResourceManager {
   // 当该资源是当前最危险资源且已进入压力区（ratio <= 0.55），或任意资源 <= 30% 时变红
   updateDangerState(resource, percent) {
     const bar = document.getElementById(resource + '-fill').parentElement;
+    const resourceItem = bar.closest('.resource-item');
     const ratio = percent / 100;
     const primaryPressure = this.getPrimaryPressure();
     const isPrimary = primaryPressure.resource === resource;
     const inPressureZone = ratio <= 0.55;
+    const isDepleted = percent <= 0;
     if ((isPrimary && inPressureZone) || percent <= 30) {
       bar.classList.add('danger');
     } else {
       bar.classList.remove('danger');
+    }
+
+    if (resourceItem) {
+      resourceItem.classList.toggle('depleted', isDepleted);
     }
   }
 
@@ -230,25 +236,13 @@ class ResourceManager {
   updatePressureTone(state = this.getState()) {
     const profile = this.getPressureProfile(state);
     const gameScreen = document.getElementById('game-screen');
-    const pressureStatus = document.getElementById('pressure-status');
-    const pressureKicker = document.getElementById('pressure-kicker');
-    const pressureText = document.getElementById('pressure-text');
 
-    if (!gameScreen || !pressureStatus || !pressureKicker || !pressureText) {
+    if (!gameScreen) {
       return;
     }
 
     gameScreen.dataset.crisisResource = profile.resource;
     gameScreen.dataset.crisisLevel = profile.level;
-
-    pressureKicker.textContent = profile.kicker;
-    pressureText.textContent = profile.text;
-
-    if (profile.level !== 'critical') {
-      pressureStatus.classList.add('hidden');
-    } else {
-      pressureStatus.classList.remove('hidden');
-    }
   }
 
   // 获取已耗尽的核心资源
@@ -303,6 +297,52 @@ class ResourceManager {
     }
 
     return summary;
+  }
+
+  getChoiceImpactMarkup(choice) {
+    const cost = choice.cost || {};
+    const gain = choice.gain || {};
+    const spent = [];
+    const gained = [];
+
+    Object.entries(cost).forEach(([resource, amount]) => {
+      if (amount > 0) spent.push(this.formatResourceDelta(resource, amount));
+    });
+
+    Object.entries(gain).forEach(([resource, amount]) => {
+      if (amount > 0) gained.push(this.formatResourceDelta(resource, amount));
+    });
+
+    const parts = [];
+
+    if (spent.length && gained.length) {
+      parts.push(
+        `<span class="impact-spent">你付出了${spent.join('、')}</span>，<span class="impact-gained">换来了${gained.join('、')}</span>。`
+      );
+    } else if (spent.length) {
+      parts.push(
+        `<span class="impact-spent">你付出了${spent.join('、')}</span>，暂时还看不到直接回报。`
+      );
+    } else if (gained.length) {
+      parts.push(
+        `<span class="impact-gained">你暂时补回了${gained.join('、')}</span>。`
+      );
+    } else {
+      parts.push('这一步没有直接改变量化资源，但会改变你后面的路。');
+    }
+
+    const pressure = this.getPrimaryPressure();
+    if (pressure.ratio <= 0.45) {
+      const pressureText = {
+        money: '现在最危险的是资金，你离账单只差最后一点缓冲。',
+        time: '现在最危险的是时间，你几乎没有试错空间了。',
+        energy: '现在最危险的是精力，你已经快把自己烧空了。',
+        network: '现在最危险的是人脉，你快把能求的人都求完了。'
+      };
+      parts.push(`<span class="impact-pressure">${pressureText[pressure.resource]}</span>`);
+    }
+
+    return parts.join(' ');
   }
 
   getChoiceTradeSummary(choice) {
@@ -386,7 +426,7 @@ class ResourceManager {
   }
 
   // 结算页/分享页的人话资源总结
-  getResourceStory(state = this.getState()) {
+  getResourceStory(state = this.getState(), endingId = '') {
     const ratios = [
       { resource: 'money', ratio: state.money / this.initialMoney },
       { resource: 'time', ratio: state.time / this.initialTime },
@@ -415,6 +455,39 @@ class ResourceManager {
       network: '至少还有人愿意接你的电话'
     };
 
+    const endingOverrides = {
+      gave_up: {
+        summary: '你没有把自己耗光，但你提前离场了。',
+        detail: '你保住了人，也保住了退路，但那场你真正想打的仗，已经结束了。',
+        share: '我没有输光资源，但我先退出了牌桌。'
+      },
+      burnout: {
+        summary: '你不是输给了选择，你是先输给了身体。',
+        detail: '钱和时间都还在流动，但你的身体先按下了停止键。',
+        share: '我不是没想继续，是身体先撑不住了。'
+      },
+      broke: {
+        summary: '你不是没有想法，你是现金先见底了。',
+        detail: '当账单先于结果到来，很多路会在兑现前就被掐断。',
+        share: '我不是先没了方向，是先没了现金。'
+      },
+      cornered: {
+        summary: '你没有立刻倒下，但你已经没有下一步了。',
+        detail: '最难受的不是输，而是你清楚地知道，自己已经没有可继续下注的筹码。',
+        share: '我不是倒在某一步，我是卡在已经没有路可走。'
+      }
+    };
+
+    if (endingOverrides[endingId]) {
+      return {
+        ...endingOverrides[endingId],
+        weakestResource: weakest,
+        strongestResource: strongest,
+        weakestLabel: labels[weakest],
+        strongestLabel: labels[strongest]
+      };
+    }
+
     return {
       summary: `你保住了${labels[strongest]}，但几乎耗空了${labels[weakest]}。`,
       detail: `${strongNarratives[strongest]}，但${weakNarratives[weakest]}。`,
@@ -442,6 +515,24 @@ class ResourceManager {
 
     const primaryLines = depleted.map(resource => labels[resource]);
     const detailLines = depleted.map(resource => details[resource]);
+
+    if (primaryLines.length === 0) {
+      const pressure = this.getPrimaryPressure();
+      const fallbackLabels = {
+        money: '现金不够支撑下一步',
+        time: '时间已经不够再试一次',
+        energy: '精力已经撑不起任何一个选项',
+        network: '人脉已经不够再撬开下一扇门'
+      };
+      const fallbackDetails = {
+        money: '每条路都需要成本，但你已经没有可继续下注的现金。',
+        time: '你不是没有想法，而是已经没有时间把它执行出来。',
+        energy: '你还能看见选项，但身体已经不再允许你去做。',
+        network: '你知道该找谁，但你已经没有多余的人情去换下一次机会。'
+      };
+      primaryLines.push(fallbackLabels[pressure.resource]);
+      detailLines.push(fallbackDetails[pressure.resource]);
+    }
 
     return {
       text: `你盯着屏幕，发现所有还算像样的路都堵死了。\n\n${primaryLines.join('。\n')}。`,

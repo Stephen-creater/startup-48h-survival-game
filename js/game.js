@@ -248,7 +248,7 @@ function loadNode(nodeId) {
   // 隐藏后果面板
   document.getElementById('consequence-panel').classList.add('hidden');
 
-  if (availableChoices === 0 && resourceManager.hasResourceLock()) {
+  if (availableChoices === 0) {
     showResourceLock();
   }
 }
@@ -358,7 +358,7 @@ function showConsequence(consequenceText, nextNode, choice) {
   const consequencePanel = document.getElementById('consequence-panel');
   storyBody.classList.add('consequence-active');
   document.getElementById('consequence-text').textContent = consequenceText;
-  document.getElementById('consequence-impact').textContent = resourceManager.getChoiceImpactSummary(choice);
+  document.getElementById('consequence-impact').innerHTML = resourceManager.getChoiceImpactMarkup(choice);
   consequencePanel.classList.remove('hidden');
   requestAnimationFrame(() => {
     storyBody.style.setProperty('--consequence-height', `${consequencePanel.offsetHeight}px`);
@@ -423,11 +423,16 @@ function showEnding() {
   // 判定结局
   const ending = determineEnding(resourceManager);
   const state = normalizeEndingState(ending.id, resourceManager.getState());
-  const resourceStory = resourceManager.getResourceStory(state);
+  const resourceStory = resourceManager.getResourceStory(state, ending.id);
 
   // 切换到结局界面
   document.getElementById('game-screen').classList.remove('active');
   document.getElementById('ending-screen').classList.add('active');
+  window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+  document.getElementById('ending-screen').scrollIntoView({
+    behavior: 'auto',
+    block: 'start'
+  });
 
   // 显示结局图片
   const endingImageFrame = document.getElementById('ending-image-frame');
@@ -443,6 +448,7 @@ function showEnding() {
   document.getElementById('ending-title').textContent = ending.title;
   document.getElementById('survival-time').textContent = calculateSurvivalTime(state);
   document.getElementById('beat-percentage').textContent = ending.percentage;
+  document.getElementById('ending-share-hook').textContent = ending.shareText || '你活过了这一局，但代价已经写在资源条里。';
 
   // 显示结局描述
   const descriptionDiv = document.getElementById('ending-description');
@@ -559,6 +565,7 @@ function showImagePreview(dataURL, blob) {
 
           <div class="share-result">
             <h3 class="share-ending-title">${ending.title}</h3>
+            <p class="share-broadcast-line">${ending.shareText || '我活过了这48小时。'}</p>
             <div class="share-stats">
               <div class="share-stat-item">
                 <span class="share-stat-label">存活时长</span>
@@ -589,8 +596,8 @@ function showImagePreview(dataURL, blob) {
         </div>
       </div>
       <div class="preview-actions">
-        <button class="btn-primary copy-image-btn">复制图片</button>
-        <button class="btn-secondary download-image-btn">下载图片</button>
+        <button class="btn-secondary share-link-btn">分享链接</button>
+        <button class="btn-primary download-image-btn">下载图片</button>
       </div>
     </div>
   `;
@@ -607,20 +614,14 @@ function showImagePreview(dataURL, blob) {
     });
 
     const newDataURL = canvas.toDataURL('image/png');
-    canvas.toBlob((newBlob) => {
-      // 更新按钮事件
-      modal.querySelector('.copy-image-btn').onclick = async () => {
+    canvas.toBlob(() => {
+      modal.querySelector('.share-link-btn').onclick = async () => {
         try {
-          await navigator.clipboard.write([
-            new ClipboardItem({
-              'image/png': newBlob
-            })
-          ]);
-          alert('图片已复制到剪贴板！\n\n可以直接粘贴到微信、朋友圈等社交媒体分享。');
-          document.body.removeChild(modal);
+          await navigator.clipboard.writeText(window.location.href);
+          alert('小游戏链接已复制到剪贴板！');
         } catch (err) {
-          console.error('复制失败:', err);
-          alert('复制失败，请尝试下载图片');
+          console.error('复制链接失败:', err);
+          alert('复制链接失败，请手动复制地址栏链接。');
         }
       };
 
@@ -683,6 +684,11 @@ function restartGame() {
   // 切换到游戏界面
   document.getElementById('ending-screen').classList.remove('active');
   document.getElementById('game-screen').classList.add('active');
+  window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+  document.getElementById('game-screen').scrollIntoView({
+    behavior: 'auto',
+    block: 'start'
+  });
 
   // 隐藏后果面板
   document.getElementById('consequence-panel').classList.add('hidden');
@@ -696,7 +702,7 @@ function restartGame() {
 
 // 联系小助手
 function contactAssistant() {
-  alert('添加小助手微信：[请填写你的微信号]\n\n我们会给你更详细的创业建议和反馈。');
+  window.open('https://mp.weixin.qq.com/s/mPhVtUdwuEQkZ3lde-PwJw', '_blank', 'noopener,noreferrer');
 }
 
 // 页面加载完成后初始化

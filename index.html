@@ -7,9 +7,9 @@
     <meta name="description" content="一场残酷的创业生存实验。你能活过48小时吗？">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/animations.css">
-    <link rel="stylesheet" href="css/preview.css">
+    <link rel="stylesheet" href="css/style.css?v=20260319-1">
+    <link rel="stylesheet" href="css/animations.css?v=20260319-1">
+    <link rel="stylesheet" href="css/preview.css?v=20260319-1">
 </head>
 <body>
     <!-- 开场动画 -->
@@ -74,50 +74,50 @@
             <span class="hour-label">小时</span>
         </div>
 
+        <!-- 资源条（sticky，吸附顶部） -->
+        <div class="resources-panel">
+            <div class="resource-item">
+                <span class="resource-icon">💰</span>
+                <span class="resource-label">资金</span>
+                <div class="resource-bar">
+                    <div class="resource-fill" id="money-fill"></div>
+                </div>
+                <span class="resource-value" id="money-value">¥8,000</span>
+            </div>
+
+            <div class="resource-item">
+                <span class="resource-icon">⏰</span>
+                <span class="resource-label">时间</span>
+                <div class="resource-bar">
+                    <div class="resource-fill" id="time-fill"></div>
+                </div>
+                <span class="resource-value" id="time-value">48h</span>
+            </div>
+
+            <div class="resource-item">
+                <span class="resource-icon">⚡</span>
+                <span class="resource-label">精力</span>
+                <div class="resource-bar">
+                    <div class="resource-fill" id="energy-fill"></div>
+                </div>
+                <span class="resource-value" id="energy-value">100</span>
+            </div>
+
+            <div class="resource-item">
+                <span class="resource-icon">👥</span>
+                <span class="resource-label">人脉</span>
+                <div class="resource-bar">
+                    <div class="resource-fill" id="network-fill"></div>
+                </div>
+                <span class="resource-value" id="network-value">5</span>
+            </div>
+        </div>
+
         <!-- 主内容区域 -->
         <div class="game-content">
             <div class="story-main">
                 <!-- 场景图片 -->
                 <div class="scene-frame" id="scene-frame"></div>
-
-                <!-- 资源条（图片下方，横向一行） -->
-                <div class="resources-panel">
-                    <div class="resource-item">
-                        <span class="resource-icon">💰</span>
-                        <span class="resource-label">资金</span>
-                        <div class="resource-bar">
-                            <div class="resource-fill" id="money-fill"></div>
-                        </div>
-                        <span class="resource-value" id="money-value">¥8,000</span>
-                    </div>
-
-                    <div class="resource-item">
-                        <span class="resource-icon">⏰</span>
-                        <span class="resource-label">时间</span>
-                        <div class="resource-bar">
-                            <div class="resource-fill" id="time-fill"></div>
-                        </div>
-                        <span class="resource-value" id="time-value">48h</span>
-                    </div>
-
-                    <div class="resource-item">
-                        <span class="resource-icon">⚡</span>
-                        <span class="resource-label">精力</span>
-                        <div class="resource-bar">
-                            <div class="resource-fill" id="energy-fill"></div>
-                        </div>
-                        <span class="resource-value" id="energy-value">100</span>
-                    </div>
-
-                    <div class="resource-item">
-                        <span class="resource-icon">👥</span>
-                        <span class="resource-label">人脉</span>
-                        <div class="resource-bar">
-                            <div class="resource-fill" id="network-fill"></div>
-                        </div>
-                        <span class="resource-value" id="network-value">5</span>
-                    </div>
-                </div>
 
                 <!-- 剧情内容区 -->
                 <div class="story-lower">
@@ -129,11 +129,6 @@
 
                             <!-- 选择按钮 -->
                             <div class="choices-container" id="choices-container"></div>
-
-                            <div class="pressure-status hidden" id="pressure-status">
-                                <span class="pressure-kicker" id="pressure-kicker"></span>
-                                <p class="pressure-text" id="pressure-text"></p>
-                            </div>
 
                             <!-- 后果显示 -->
                             <div class="consequence-panel hidden" id="consequence-panel">
@@ -161,11 +156,13 @@
     <div id="ending-screen" class="screen">
         <div class="ending-content">
             <div class="ending-image-frame" id="ending-image-frame"></div>
+            <p class="ending-kicker">本局结论</p>
             <h1 class="ending-title glitch" id="ending-title"></h1>
             <div class="ending-stats">
                 <p class="ending-stat">存活时长 <span class="stat-highlight" id="survival-time">0</span> 小时</p>
                 <p class="ending-stat">击败 <span class="stat-highlight" id="beat-percentage">0</span>% 玩家</p>
             </div>
+            <p class="ending-share-hook" id="ending-share-hook"></p>
             <div class="ending-description" id="ending-description"></div>
 
             <!-- 资源剩余 -->
@@ -195,8 +192,8 @@
             <!-- 分享按钮 -->
             <div class="ending-actions">
                 <button class="btn-primary" id="share-btn">分享结果</button>
-                <button class="btn-secondary" id="restart-btn">重新开始</button>
-                <button class="btn-secondary" id="contact-btn">联系小助手</button>
+                <button class="btn-secondary" id="restart-btn">重新挑战</button>
+                <button class="btn-primary" id="contact-btn">测一测：你是否适合创业？</button>
             </div>
         </div>
     </div>
@@ -211,11 +208,11 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-    <script src="js/audio.js"></script>
-    <script src="js/resources.js"></script>
-    <script src="js/story.js"></script>
-    <script src="js/endings.js"></script>
-    <script src="js/game.js"></script>
-    <script src="js/share.js"></script>
+    <script src="js/audio.js?v=20260319-1"></script>
+    <script src="js/resources.js?v=20260319-1"></script>
+    <script src="js/story.js?v=20260319-1"></script>
+    <script src="js/endings.js?v=20260319-1"></script>
+    <script src="js/game.js?v=20260319-1"></script>
+    <script src="js/share.js?v=20260319-1"></script>
 </body>
 </html>

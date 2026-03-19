@@ -10,7 +10,7 @@ const storyNodes = [
     choices: [
       {
         text: '立刻开始写商业计划书',
-        cost: { energy: 20, time: 4 },
+        cost: { energy: 25, time: 4 },
         consequence: '凌晨4点，你完成了一份粗糙的BP。\n\n逻辑漏洞很多，但至少有了一个框架。\n\n你的眼睛布满血丝。',
         nextNode: 'hour_8',
         flags: ['has_bp']
@@ -18,7 +18,7 @@ const storyNodes = [
       {
         text: '先睡一觉，明天再说',
         cost: { time: 8 },
-        gain: { energy: 30 },
+        gain: { energy: 25 },
         consequence: '你睡了一觉。\n\n醒来是早上8点，窗外已经大亮。\n\n你比别人晚了整整一个夜晚。',
         nextNode: 'hour_8',
         flags: ['late_start']
@@ -79,7 +79,7 @@ const storyNodes = [
       },
       {
         text: '去技术社区发帖招人',
-        cost: { time: 6, energy: 15 },
+        cost: { time: 6, energy: 18 },
         consequence: '你在各个社区发了帖子。\n\n收到了20多个回复，大多数是来看热闹的。\n\n但有一个人的留言让你多看了两眼。',
         nextNode: 'hour_16',
         flags: ['posted_recruitment']
@@ -118,7 +118,7 @@ const storyNodes = [
     hour: 16,
     title: '第一个裂缝',
     scene: '你的出租屋，下午',
-    image: 'assets/images/scenes/hour_16.jpg',
+    image: 'assets/images/scenes/investor_meeting_setback_afternoon.jpg',
     description: {
       default: '16小时过去了。\n\n进展比你预期的慢。\n\n钱在流失，时间在流失，你开始感到慌了。',
       overrides: [
@@ -143,7 +143,7 @@ const storyNodes = [
       },
       {
         text: '继续推进，咬牙把产品做出来',
-        cost: { time: 8, energy: 20 },
+        cost: { time: 8, energy: 25 },
         consequence: '你把自己关在房间里。\n\n8小时后，你有了一个能演示的原型。\n\n它很粗糙，但它能跑。',
         nextNode: 'hour_24',
         flags: ['has_prototype']
@@ -157,7 +157,7 @@ const storyNodes = [
       },
       {
         text: '接一个小外包项目，先把钱补回来',
-        cost: { time: 8 },
+        cost: { time: 8, energy: 10 },
         gain: { money: 3000 },
         consequence: '你接了一个朋友介绍的小活。\n\n钱补回来了一些。\n\n但你的项目又停了8小时。',
         nextNode: 'hour_24',
@@ -186,7 +186,7 @@ const storyNodes = [
     id: 'hour_24',
     hour: 24,
     title: '道德岔路口',
-    scene: '你的出租屋，深夜',
+    scene: '回出租屋晚上，深夜',
     image: 'assets/images/scenes/hour_24.jpg',
     description: {
       default: '24小时。\n\n你盯着手机里前公司客户的联系方式。\n\n那是一条捷径。\n\n但你签过竞业协议。',
@@ -213,18 +213,18 @@ const storyNodes = [
       },
       {
         text: '老实从零开始找客户',
-        cost: { time: 8, energy: 25 },
-        requirements: { energy: 35 },
+        cost: { time: 8, energy: 30 },
+        requirements: { energy: 40 },
         unavailableReason: '陌生开发太吃体力，你现在已经没有状态去硬打50个电话了。',
-        consequence: '你打了50个陌拜电话。\n\n49个人挂断了。\n\n1个人说"发个资料我看看"。\n\n然后就没有然后了。',
+        consequence: '你打了50个mobile电话。\n\n49个人挂断了。\n\n1个人说"发个资料我看看"。\n\n然后就没有然后了。',
         nextNode: 'hour_36',
         flags: ['cold_called']
       },
       {
         text: '接大外包项目回血（¥8000，但要16小时）',
-        cost: { time: 16, energy: 30 },
+        cost: { time: 16, energy: 35 },
         gain: { money: 8000 },
-        requirements: { energy: 35 },
+        requirements: { energy: 40 },
         unavailableReason: '你已经没有精力再接一个16小时的活了。',
         consequence: '你接了一个大外包。\n\n16小时后，钱到账了。\n\n但窗外已经是第三天的早晨。\n\n房东今晚就会来。',
         nextNode: 'hour_36_rich',
@@ -254,7 +254,7 @@ const storyNodes = [
     hour: 36,
     title: '身体极限',
     scene: '你的出租屋，中午',
-    image: 'assets/images/scenes/hour_36.jpg',
+    image: 'assets/images/scenes/hour_36_apartment_noon.jpg.png',
     description: {
       default: '36小时。\n\n你已经超过30小时没有睡觉了。\n\n手在发抖。\n\n你开始出现幻觉。',
       overrides: [
@@ -282,13 +282,13 @@ const storyNodes = [
       {
         text: '睡4小时',
         cost: { time: 4 },
-        gain: { energy: 50 },
+        gain: { energy: 40 },
         consequence: '你倒头就睡。\n\n4小时后，你醒了。\n\n时间只剩8小时了。\n\n但你的头脑清醒了一些。',
         nextNode: 'hour_48',
         flags: ['took_rest']
       },
       {
-        text: '吃药（安非他明）',
+        text: '吃药（兴奋作用）',
         cost: { money: 200, energy: 20 },
         gain: { energy: 40 },
         requirements: { energy: 20 },
@@ -313,13 +313,13 @@ const storyNodes = [
     hour: 36,
     title: '有钱，没进展',
     scene: '你的出租屋，清晨',
-    image: 'assets/images/scenes/hour_36.jpg',
+    image: 'assets/images/scenes/hour_36_rich_apartment_dawn.jpg.png',
     description: '外包的钱到账了。\n\n但你的项目在过去16小时里原地踏步。\n\n房东今晚就来。\n\n你有钱，但你没有任何可以展示的东西。',
     choices: [
       {
         text: '用钱找人，今天内把原型做出来',
-        cost: { money: 3000, time: 4, energy: 20 },
-        requirements: { energy: 25 },
+        cost: { money: 3000, time: 4, energy: 25 },
+        requirements: { energy: 30 },
         unavailableReason: '你已经没有精力去协调一个临时团队了。',
         consequence: '你在自由职业平台上发了一个紧急需求。\n\n有人接了。\n\n4小时后，你有了一个能演示的原型。',
         nextNode: 'hour_48',
@@ -327,8 +327,8 @@ const storyNodes = [
       },
       {
         text: '自己硬做，能做多少做多少',
-        cost: { time: 8, energy: 30 },
-        requirements: { energy: 35 },
+        cost: { time: 8, energy: 35 },
+        requirements: { energy: 40 },
         unavailableReason: '你的身体已经不支持再连续工作8小时了。',
         consequence: '你坐在电脑前，把能做的都做了。\n\n结果比你预期的差，但比什么都没有强。',
         nextNode: 'hour_48',
@@ -356,7 +356,7 @@ const storyNodes = [
     id: 'hour_48',
     hour: 48,
     title: '终局',
-    scene: '你的出租屋，晚上',
+    scene: '回出租屋路上，晚上',
     image: 'assets/images/scenes/hour_48.jpg',
     description: {
       default: '48小时到了。\n\n房东在敲门。\n\n这是最后的时刻。',
