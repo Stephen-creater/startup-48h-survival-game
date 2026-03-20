@@ -261,10 +261,10 @@
   width: 120px;
   height: 120px;
   display: block;
-  object-fit: contain;
+  object-fit: cover;
   border: 2px solid rgba(0, 255, 65, 0.22);
-  background: #ffffff;
-  padding: 8px;
+  background: transparent;
+  padding: 0;
   box-shadow: 0 0 18px rgba(0, 255, 65, 0.12);
 }
 
@@ -354,7 +354,7 @@
   .qr-box {
     width: 96px;
     height: 96px;
-    padding: 6px;
+    padding: 0;
   }
 
 }
