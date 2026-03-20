@@ -268,9 +268,6 @@ Style: Black Mirror "Hated in the Nation" moral compromise.
 
 ---
 
-## 预算估算
-
-- 18张图片 × ¥2 = **约¥36**
 
 ---
 

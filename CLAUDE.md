@@ -1,302 +1,204 @@
 # 项目：创业者48小时生存实验
 
 ## 项目定位
-黑镜风格创业叙事游戏，纯前端实现。
-
-核心目标不是复杂系统，而是：
+黑镜气质的创业叙事游戏，纯前端实现，重点不是复杂系统，而是：
 - 强叙事
 - 强情绪
-- 强分享传播
-- 极低部署成本
+- 强传播
+- 低部署成本
 
-## 当前状态
-MVP 可运行，主界面布局已经过一轮较大重构，当前结构稳定，可继续在此基础上迭代。
+## 当前产品状态
+当前版本已经完成一轮较完整的体验优化，基础流程稳定：
+- 首页、打字页、主游戏页、结尾页、分享预览页都已跑通
+- 移动端是最高优先级
+- 分享、BGM、结尾收束、资源危机反馈都已经接入
+- 后续继续按“小步慢跑”方式迭代
 
-当前 UI 重点：
-- 图片现在放在主内容区下方
-- 图片上方是统一的大框
-- 大框内部左侧为文字/选择/结果区域
-- 大框内部右侧为 4 个资源条
-- 资源不再只是展示数字，已经开始真实影响选项可用性
-- 金钱/精力耗尽不再立刻结局，而是可能进入后续节点形成“资源锁死”
-- `consequence` 结果层会覆盖左侧正文区，但不会遮住标题区
-- 结果层显示时，左侧正文区高度会自动扩展，避免内容溢出外框
+## 迭代原则
+- 一次只改一个小点
+- 优先保住现有体验，不为了新效果破坏老流程
+- 接近结尾的氛围增强要逐层加，不要一口气堆满
+- 任何视觉/音效反馈都不能影响：
+  - 选择点击
+  - 节点跳转
+  - 结局判定
+  - 分享生成
 
 ## 当前页面结构
 
-### 1. 主界面结构
-`index.html`
+### 1. 首页
+目标：
+- 手机端首屏感
+- 赛博黑镜气质
+- 人物主视觉
+- 极少文字
 
-当前 `#game-screen` 的主内容结构是：
+当前状态：
+- 首页内容首屏居中
+- 人物图是 `assets/images/Image 2.png`
+- 首页已经去掉大面积脏色晕，只保留干净黑底 + 人物 + 标题 + CTA
+- 首页 BGM 不会在这里自动播放
+
+### 2. 打字页
+目标：
+- 垂直居中
+- 不可滚动
+- 作为进入游戏前的情绪铺垫
+
+当前状态：
+- 用户点击首页 CTA 后进入打字页
+- 打字音效会播放
+- 打字页是独立界面，不应出现顶部对齐或额外滚动空间
+- 只有用户点击“启动实验”后，才会真正开始 BGM
+
+### 3. 游戏主界面
+当前结构：
 
 ```html
-.game-content
-  .story-main
-    .story-lower
-      .story-panel
-        .story-title
-        .story-scene
-        .story-body
-          .story-description
-          .choices-container
-          .consequence-panel
-            .consequence-card
-          .black-mirror-text
+#game-screen
+  .hour-display
+  .resources-panel
+  .game-content
+    .story-main
+      .scene-frame
       .resources-panel
-    .scene-frame
+      .story-lower
+        .story-panel
+          .story-title
+          .story-scene
+          .story-body
+            .story-description
+            .choices-container
+            .consequence-panel
+            .black-mirror-text
 ```
 
 注意：
-- `scene-frame` 在 `story-main` 最下方，也就是图片显示在文字/资源区域下方
-- `resources-panel` 已经被收进统一大框 `story-lower` 内，不能再当成独立外挂面板处理
-
-### 2. 结果层结构
-`consequence-panel` 不是弹窗，不是页面底部块，也不是独立页面。
-
-它的设计目标是：
-- 只覆盖左侧正文区 `story-body`
-- 保留标题 `story-title` 和场景信息 `story-scene`
-- 让用户在同一阅读位置完成“剧情 -> 结果 -> 继续”
+- `ensureGameLayoutOrder()` 会把图片、资源条、正文区重新排到正确顺序
+- 场景图在上，资源条在中，正文区在下
+- 不要再把资源条/图片随便插回老结构
 
 ## 当前关键行为
 
-### 1. 场景图插入逻辑
-`js/game.js`
+### 1. 资源系统
+文件：
+- `js/resources.js`
+- `css/style.css`
 
-图片不是写死在 HTML 里的，而是在 `loadNode()` 中动态插入 `#scene-frame`。
+当前已实现：
+- 4维资源：金钱、时间、精力、人脉
+- 资源会影响选项是否可执行
+- `getResourceStatus()` 已统一输出：
+  - `normal`
+  - `warning`
+  - `critical`
+  - `depleted`
+- 最危险资源会写入 `#game-screen` 的 `data-crisis-resource / data-crisis-level`
 
-当前逻辑：
-- 若不存在 `#scene-image`，就创建
-- 创建后 append 到 `#scene-frame`
-- 后续节点只更新 `src` 和 `alt`
-
-不要再把图片插回 `.story-panel`，否则布局会重新乱掉。
-
-### 2. consequence 显示逻辑
-`js/game.js`
-
-`showConsequence()` 当前会做这些事：
-- 隐藏 `choices-container`
-- 给 `#story-body` 添加 `consequence-active`
-- 设置结果文案
-- 设置 `#consequence-impact`，把这一步的资源交换翻译成人话
-- 显示 `#consequence-panel`
-- 用 `requestAnimationFrame()` 读取结果层高度，并把高度写入 `--consequence-height`
-- 调用 `scrollIntoView()`，把左侧内容区滚到合适位置
-
-`loadNode()` 当前会做这些收尾：
-- 移除 `consequence-active`
-- 清掉 `--consequence-height`
-- 隐藏 `#consequence-panel`
-- 重建按钮列表
-
-这套机制是为了解决两个问题：
-- 结果文案过长时按钮被裁掉
-- 结果层完整显示后冲出外框
-
-### 3. 左侧正文区高度联动
-`css/style.css`
-
-关键点：
-- `.story-body` 有基础 `min-height`
-- `.story-body.consequence-active` 会读取 JS 写入的 `--consequence-height`
-- 结果层显示时，正文区最小高度会随结果层真实高度扩展
-
-不要简单删掉这个 CSS 变量机制，否则会回到“按钮显示不全”或“超出边框”的老问题。
-
-### 4. 资源门槛逻辑
-`js/resources.js` + `js/story.js`
-
-现在资源系统已经不是单纯显示条：
-- `js/story.js` 里的部分 choice 带有 `requirements`
-- `js/resources.js` 里的 `getChoiceAvailability()` 会同时检查：
-  - 是否付得起 cost
-  - 是否达到 requirements 门槛
-- `js/game.js` 在渲染按钮时会把不可选项渲染成 disabled 状态，并显示中文原因
-
-这套机制是这次改动的核心之一。不要把 disabled 状态简单删掉，否则资源又会退回“只在旁边变化一下”的弱感知状态。
-
-### 4.1 资源危机语气层
-`js/resources.js` + `js/game.js` + `css/style.css`
-
-当前已经做了第一优先级的前两层：
-- `getPressureProfile()` 会根据当前最危险资源输出 `resource + level + 文案`
-- `updatePressureTone()` 会把危机状态写到 `#game-screen` 的 `data-crisis-resource / data-crisis-level`
-- 页面上新增了 `pressure-status` 提示块
-- CSS 会根据危机资源切换按钮、标题、结果卡的语气色调
-- 能源危机的 critical 状态会有更疲惫的视觉反馈
+当前危机反馈：
+- `critical` 时页面会短暂轻震
+- 核心资源第一次归零时会触发更强的短震
+- 归零时会叠一层短暂的“裂开 / 故障”遮罩
+- 资源条本身已有 `critical / depleted` 呼吸与报警感
 
 注意：
-- 这层是“危险资源驱动界面语气”的核心，不要删掉 `data-crisis-*` 这组状态
-- 资源危机现在不只是资源条变红，而是会影响左侧主叙事区的观感
+- 这层反馈只能增强感知，不能改动主流程
+- 不能再出现旧问题：
+  - 资源归零后卡死不跳节点
+  - 重复点击导致多次扣资源
+  - 页面长时间模糊
 
-### 4.2 选择交易摘要
-`js/resources.js` + `js/game.js`
-
-每个选项现在都会额外显示 `choice-trade`：
-- 它不是精确数值复述
-- 它是对这一步交易本质的人话翻译
-- 当系统处于危机状态时，会附带一句“当前最贵的资源是什么”
-
-这层的作用是让玩家明确感知：
-- 自己是在拿什么换什么
-- 当前最应该珍惜的不是“努力”，而是某个正在见底的资源
-
-### 4.3 结局诊断模块
-这层已经被移除。
-
-原因：
-- 信息量过重
-- 和结局正文抢焦点
-- 在移动端表现尤其差
-
-当前结局页保留：
-- 结局标题
-- 存活时长 / 击败玩家
-- 结局正文
-- 最终状态与资源总结
-
-后续如果要补“死因分析”，应当以更轻的形式回归，而不是再恢复双卡诊断模块。
-
-### 5. 资源锁死逻辑
-`js/resources.js` + `js/game.js` + `js/endings.js`
-
-现在金钱和精力不再一到 0 就立刻 game over。
-
-当前逻辑是：
-- `checkGameOver()` 只保留时间耗尽
-- 金钱/精力/人脉可能被耗到 0
-- 如果进入下一个节点后，核心资源已经耗尽，且已经没有任何可执行选择，才会触发 `resource_locked`
-- `resource_locked` 会先显示一段“你已经无路可走”的 consequence
-- 用户继续后再进入对应结局
-
-结局分流规则：
-- 若 `resource_locked` 时精力 <= 0，进入 `burnout`
-- 若 `resource_locked` 时金钱 <= 0，进入 `broke`
-- 若主要是人脉/组合资源耗尽导致卡死，进入新增结局 `cornered`
-
-### 6. 结算资源显示规则
-`js/game.js` + `js/resources.js`
-
-结算页和分享页显示的是“最终剩余资源”，不是“已消耗资源”。
-
-当前约定：
-- `finalMoney` = 最终剩余金钱
-- `finalTime` = 最终剩余时间
-- `finalEnergy` = 最终剩余精力
-- `finalNetwork` = 最终剩余人脉
-
-另外：
-- `broke` 结局显示前会把 money 归一化为 0
-- `burnout` 结局显示前会把 energy 归一化为 0
-- `hour_48` 的交房租 consequence 已改成动态读取当前余额，不能再写死 `8000 - 4000`
-
-## 当前视觉设计结论
-
-### 已确定的方向
-- 黑色大底
-- 霓虹绿为主强调色
-- 红色只用于警告/代价/旁白危险信息
-- 图片下方的主阅读区使用一个统一大框
-- 左侧内容区尽量弱化独立边框，让视觉焦点回到外层统一框
-- 右侧资源区是统一框内部的功能模块，不再是外挂式侧栏
-
-### consequence 的当前视觉策略
-- 背景遮罩只做弱化，不做强烈的整屏发绿效果
-- 结果内容放在深色卡片中，保证可读性
-- 结果按钮放在卡片内，和文案归为一个阅读单元
-- 结果卡内会额外显示一条资源交换总结，让玩家知道自己到底拿什么换了什么
-
-## 本次已完成的 UI 重构
-
-### 布局层面
-- 把“文字区 + 资源区”收进同一个统一外框
-- 把图片移动到主内容区下方
-- 让资源条与左侧内容区位于同一视觉系统中
-
-### 交互层面
-- `consequence` 改为覆盖左侧正文区，而不是单独悬浮在页面其他位置
-- 结果出现时自动滚动到合适阅读位置
-- 结果区域高度与正文区联动，避免溢出
-- 选择按钮现在会根据资源阈值出现真实的不可选状态
-- 结算页和分享页会把资源状态翻译成人话
-
-### 视觉层面
-- 去掉了多余的绿色空框
-- 去掉了“资源条在框外”的割裂感
-- 结果卡不再居中悬浮，而是从正文区顶部展开，更符合阅读节奏
-
-## 当前关键文件说明
-- `index.html`
-  主结构。若后续继续改布局，优先看这里。
-
-- `css/style.css`
-  所有关键 UI 都在这里。当前最重要的区块是：
-  - `.story-main`
-  - `.story-lower`
-  - `.story-panel`
-  - `.story-body`
-  - `.resources-panel`
-  - `.consequence-panel`
-  - `.consequence-card`
-
+### 2. 选择与 consequence
+文件：
 - `js/game.js`
-  当前与 UI 强耦合的逻辑主要有两块：
-  - `loadNode()` 里的图片挂载、结果状态清理、按钮禁用态渲染
-  - `showConsequence()` 里的结果展开、高度同步、自动滚动、资源交换总结
-
-- `js/story.js`
-  节点数据。当前所有主节点都有 `image` 字段，布局默认依赖这一点。
-  部分 choice 已新增 `requirements` 和 `unavailableReason`。
-
 - `js/resources.js`
-  现在不仅负责数值变更，还负责：
-  - choice 可用性判断
-  - 当前最危险资源识别
-  - consequence 资源交换总结
-  - ending/share 的资源叙事总结
+- `css/style.css`
 
-## 交接给下一个 AI 时最重要的上下文
+当前状态：
+- 选择后先显示 consequence
+- consequence 覆盖正文区，不是独立弹窗
+- consequence 出现后，玩家点击“继续”才会进入下一个节点
+- consequence 里会显示资源交换的人话总结
 
-### 1. 哪些问题已经解决
-- 资源条不再在外侧
-- 图片与内容的上下顺序已经调整
-- consequence 不再是突兀蓝框
-- consequence 文案不会被截断
-- consequence 不会冲出主外框
-- 资源条不再只是摆设，已经会真实阻止部分高强度选择
-- 结算和分享不再只给数字，已经开始输出可读的人话总结
-- 金钱/精力耗尽后不再直接跳结局，已经存在“进入下一节点后发现自己无路可走”的残局状态
+关键要求：
+- consequence 依然是“同位置阅读”，不要改成跳来跳去
+- 点“继续”进入下一个节点时，应回到新节点顶部先看到场景图
 
-### 2. 哪些结构不要轻易推翻
-- `story-lower` 统一外框
-- `story-body` 和 `consequence-panel` 的覆盖关系
-- JS 写入 `--consequence-height` 的高度同步机制
-- `scene-frame` 作为图片唯一挂载点
-- `requirements -> getChoiceAvailability() -> disabled button` 这一整条资源门槛链路
-- `getChoiceImpactSummary()` 和 `getResourceStory()` 这两个资源叙事出口
-- `resource_locked -> showResourceLock() -> determineEnding()` 这条残局收束链路
+### 3. 结尾切换
+文件：
+- `js/game.js`
+- `css/style.css`
 
-### 3. 如果要继续优化，优先级建议
-1. 把资源门槛做得更精细，不再只靠静态 requirements
-2. 让不同资源危险状态反向影响标题、文案语气或音效
-3. 资源区与左侧正文首行的纵向对齐微调
-4. consequence 成功/危险状态的视觉区分
-5. 移动端细节打磨
+当前状态：
+- 最后一跳进入结尾前，不再直接切屏
+- 会先走 `ending-transition`
+- 当前过渡风格是“收束坍缩”
+- 过渡文案是结算提示
+- 过渡时长目前已被拉长，明显区别于普通节点切换
 
-## 设计原则
-- 极简代码
-- 不做无意义抽象
-- 保留黑镜式压迫感，但阅读必须舒服
-- 视觉层级优先于花哨效果
-- 所有布局调整优先服务“阅读顺序清晰”
+### 4. BGM 与音效
+文件：
+- `js/audio.js`
+- `js/game.js`
+- `assets/sounds/压迫感紧张_爱给网_aigei_com.mp3`
 
-## Git / 工作区提醒
-当前工作区不是干净状态，接手时先看 `git status`。
+当前规则：
+- 首页：不自动播 BGM
+- 打字页：不自动播 BGM
+- 用户点击“启动实验”后：开始播 BGM
+- 进入结算页时：停止 BGM
+- 用户点“重新开始”后：当前实现会再次启动 BGM
 
-尤其注意：
-- 不要回滚不属于自己任务的文件改动
-- 如果看到 `assets/images/export.zip`、`小游戏ui/skill.md` 处于删除状态，先假定那是用户已有改动，不要擅自恢复
+交互音效：
+- 按钮音效、选择音效、悬停音效已接入
+- 为了避免被 BGM 压住，触发交互音效时会对 BGM 做短暂 duck
 
-## 一句话交接摘要
-当前版本已经把主界面稳定成“上方小时数，中间统一内容大框，框内左文右资源，图片在下，结果覆盖左侧正文区”的结构；下一个 AI 应该在这个结构上微调，而不是重新推翻布局。
+### 5. 分享预览页
+文件：
+- `js/game.js`
+- `css/preview.css`
+- `assets/qrcode.png`
+
+当前方向：
+- 分享图是“结果海报”，不是“结算截屏”
+- 已删除资源条
+- 中间主视觉替换为首页人物图
+- 文案已减负，只保留核心结果信息
+- 二维码已经替换为 `assets/qrcode.png`
+- “分享链接”复制的地址应为正式站点：
+  - `https://startup-48h-survival-game.vercel.app/`
+
+注意：
+- 移动端和桌面端的分享预览比例要分别看
+- 最近修过桌面端按钮遮挡、移动端预览过窄、二维码白边问题
+
+## 当前视觉结论
+
+### 已确认方向
+- 黑底
+- 霓虹绿是主强调色
+- 红色只用于危险、代价、结局冲击
+- 首页偏克制，不要脏色晕
+- 游戏主界面是信息密度更高的系统界面
+- 结尾和分享页可以更海报化
+
+### 已明确不要的东西
+- 首页大面积脏红绿光晕
+- 重复边框语言
+- 分享图里大段解释性文字
+- 资源条出现在分享海报里
+- 一次性改太多，导致旧功能失效
+
+## 当前部署与传播入口
+- GitHub 仓库：`Stephen-creater/startup-48h-survival-game`
+- 当前线上正式域名：`https://startup-48h-survival-game.vercel.app/`
+
+注意：
+- Vercel 只认已推送到 GitHub 的提交
+- 本地 `git add` 但未 `git commit` 时，Vercel 不会更新
+
+## 后续推荐迭代顺序
+1. 继续细调危机感，但一次只加一层
+2. 分享图继续减字、提传播感
+3. 检查所有节点的“文案-图片-情绪”一致性
+4. 保持版本管理，每次小改后都及时提交

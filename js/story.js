@@ -215,7 +215,7 @@ const storyNodes = [
         text: '老实从零开始找客户',
         cost: { time: 8, energy: 30 },
         requirements: { energy: 40 },
-        unavailableReason: '陌生开发太吃体力，你现在已经没有状态去硬打50个电话了。',
+        unavailableReason: '你现在已经没有状态去硬打50个电话了。',
         consequence: '你打了50个mobile电话。\n\n49个人挂断了。\n\n1个人说"发个资料我看看"。\n\n然后就没有然后了。',
         nextNode: 'hour_36',
         flags: ['cold_called']
