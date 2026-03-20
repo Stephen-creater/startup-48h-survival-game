@@ -7,9 +7,9 @@
     <meta name="description" content="一场残酷的创业生存实验。你能活过48小时吗？">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet" href="css/style.css?v=20260320-1">
+    <link rel="stylesheet" href="css/style.css?v=20260320-22">
     <link rel="stylesheet" href="css/animations.css?v=20260319-1">
-    <link rel="stylesheet" href="css/preview.css?v=20260319-1">
+    <link rel="stylesheet" href="css/preview.css?v=20260320-4">
 </head>
 <body>
     <!-- 开场动画 -->
@@ -20,8 +20,6 @@
                     <div class="intro-visual" aria-hidden="true">
                         <div class="intro-visual-glow intro-visual-glow-red"></div>
                         <div class="intro-visual-glow intro-visual-glow-green"></div>
-                        <div class="intro-orbit intro-orbit-red"></div>
-                        <div class="intro-orbit intro-orbit-green"></div>
                         <div class="intro-grid"></div>
                         <div class="intro-avatar-shell">
                             <img class="intro-avatar" src="assets/images/Image%202.png" alt="">
@@ -29,14 +27,14 @@
                     </div>
 
                     <div class="intro-copy">
-                        <p class="intro-kicker">BLACK MIRROR STARTUP SIMULATION</p>
                         <div class="intro-title-lockup">
                             <h1 class="intro-title">
-                                <span class="intro-title-line">48小时</span>
-                                <span class="intro-title-line">创业生存实验</span>
+                                <span class="intro-title-line intro-title-time">48小时</span>
+                                <span class="intro-title-line intro-title-main">创业生存实验</span>
                             </h1>
                         </div>
-                        <p class="intro-subtitle">现金不多，时间更少。看你还能撑多久。</p>
+                        <p class="intro-kicker">BLACK MIRROR STARTUP SIMULATION</p>
+                        <p class="intro-subtitle">现金不多，时间极少。看你还能撑多久🤪</p>
                     </div>
                 </div>
 
@@ -194,6 +192,13 @@
         </div>
     </div>
 
+    <div id="ending-transition" class="ending-transition hidden" aria-hidden="true">
+        <div class="ending-transition-copy">
+            <p class="ending-transition-kicker">SESSION CLOSED</p>
+            <p class="ending-transition-text">正在结算你的终局</p>
+        </div>
+    </div>
+
     <!-- 分享卡片（隐藏，用于生成图片） -->
     <div id="share-card" class="share-card hidden">
         <h2>创业者48小时生存实验</h2>
@@ -204,11 +209,11 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-    <script src="js/audio.js?v=20260319-1"></script>
-    <script src="js/resources.js?v=20260319-1"></script>
+    <script src="js/audio.js?v=20260320-2"></script>
+    <script src="js/resources.js?v=20260320-1"></script>
     <script src="js/story.js?v=20260319-1"></script>
     <script src="js/endings.js?v=20260319-1"></script>
-    <script src="js/game.js?v=20260319-1"></script>
+    <script src="js/game.js?v=20260320-8"></script>
     <script src="js/share.js?v=20260319-1"></script>
 </body>
 </html>

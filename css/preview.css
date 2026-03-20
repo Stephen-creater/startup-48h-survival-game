@@ -145,14 +145,13 @@
 
 .share-header {
   text-align: center;
-  margin-bottom: 26px;
-  border-bottom: 1px solid rgba(0, 255, 65, 0.14);
-  padding-bottom: 18px;
+  margin-bottom: 8px;
+  padding-bottom: 0;
 }
 
 .share-game-title {
   font-family: 'Orbitron', sans-serif;
-  font-size: 28px;
+  font-size: 26px;
   color: rgba(0, 255, 65, 0.8);
   text-transform: uppercase;
   letter-spacing: 3px;
@@ -161,31 +160,46 @@
 }
 
 .share-subtitle {
-  font-size: 14px;
-  color: rgba(0, 217, 255, 0.6);
-  letter-spacing: 2px;
+  font-size: 12px;
+  color: rgba(184, 244, 196, 0.66);
+  letter-spacing: 1.2px;
   margin: 0;
 }
 
 .share-result {
-  margin-bottom: 30px;
+  margin-bottom: 12px;
+}
+
+.share-hero {
+  display: flex;
+  justify-content: center;
+  margin: 0 0 8px;
+}
+
+.share-hero-image {
+  width: 148px;
+  max-width: 100%;
+  object-fit: contain;
+  filter:
+    drop-shadow(0 0 18px rgba(255, 8, 68, 0.18))
+    drop-shadow(0 0 24px rgba(0, 255, 65, 0.12));
 }
 
 .share-ending-title {
   font-family: 'Orbitron', sans-serif;
-  font-size: 42px;
+  font-size: 38px;
   color: var(--text-red);
   text-align: center;
-  margin: 0 0 14px 0;
+  margin: 0 0 6px 0;
   text-shadow: 0 0 30px rgba(255, 8, 68, 0.8);
   letter-spacing: 4px;
 }
 
 .share-broadcast-line {
-  margin: 0 0 22px;
+  margin: 0 0 10px;
   text-align: center;
-  font-size: 18px;
-  line-height: 1.6;
+  font-size: 15px;
+  line-height: 1.35;
   color: rgba(255, 223, 230, 0.92);
   text-shadow: 0 0 12px rgba(255, 8, 68, 0.14);
 }
@@ -193,15 +207,15 @@
 .share-stats {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 14px;
-  margin-bottom: 20px;
+  gap: 12px;
+  margin-bottom: 4px;
 }
 
 .share-stat-item {
   background:
     linear-gradient(180deg, rgba(255, 8, 68, 0.05) 0%, rgba(255, 8, 68, 0.015) 100%);
   border: 1px solid rgba(255, 8, 68, 0.16);
-  padding: 16px 12px 14px;
+  padding: 14px 10px 12px;
   text-align: center;
 }
 
@@ -216,48 +230,24 @@
 .share-stat-value {
   display: block;
   font-family: 'Orbitron', sans-serif;
-  font-size: 32px;
+  font-size: 29px;
   color: rgba(255, 51, 105, 0.96);
   font-weight: 700;
   text-shadow: 0 0 14px rgba(255, 8, 68, 0.3);
   white-space: nowrap;
 }
 
-.share-resources {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
-}
-
-.share-resource {
-  background: rgba(0, 0, 0, 0.5);
-  border: 1px solid rgba(80, 80, 80, 0.3);
-  padding: 12px 8px;
-  text-align: center;
-  font-size: 14px;
-  color: rgba(224, 224, 224, 0.9);
-}
-
-.share-summary {
-  margin: 18px 0 0;
-  padding: 16px 0;
-  font-size: 15px;
-  line-height: 1.8;
-  color: rgba(228, 237, 228, 0.92);
-  background: transparent;
-}
-
 .share-footer {
   text-align: center;
-  padding-top: 25px;
+  padding-top: 18px;
   border-top: 1px solid rgba(0, 255, 65, 0.2);
 }
 
 .share-challenge {
   font-family: 'Orbitron', sans-serif;
-  font-size: 20px;
+  font-size: 18px;
   color: rgba(0, 217, 255, 0.7);
-  margin: 0 0 20px 0;
+  margin: 0 0 14px 0;
   letter-spacing: 2px;
   text-shadow: 0 0 10px rgba(0, 217, 255, 0.3);
 }
@@ -282,8 +272,9 @@
 
 @media (max-width: 768px) {
   .preview-content {
-    max-width: 95%;
-    max-height: 95vh;
+    width: calc(100vw - 12px);
+    max-width: 640px;
+    max-height: calc(100svh - 12px);
   }
 
   .preview-header {
@@ -295,7 +286,7 @@
   }
 
   .preview-image-container {
-    padding: 20px;
+    padding: 12px 10px 0;
   }
 
   .preview-actions {
@@ -318,8 +309,8 @@
 
   .share-card-enhanced {
     width: 100%;
-    max-width: 500px;
-    padding: 30px 20px;
+    max-width: none;
+    padding: 16px 14px 12px;
   }
 
   .share-game-title {
@@ -327,24 +318,45 @@
   }
 
   .share-ending-title {
-    font-size: 32px;
+    font-size: 30px;
   }
 
   .share-broadcast-line {
-    font-size: 16px;
-    margin-bottom: 18px;
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
+
+  .share-hero-image {
+    width: 136px;
   }
 
   .share-stat-value {
-    font-size: 28px;
+    font-size: 24px;
     letter-spacing: -0.5px;
   }
 
   .share-stats {
-    gap: 15px;
+    gap: 10px;
+    margin-bottom: 0;
   }
 
-  .share-resources {
-    grid-template-columns: repeat(2, 1fr);
+  .share-stat-item {
+    padding: 12px 8px 10px;
   }
+
+  .share-footer {
+    padding-top: 12px;
+  }
+
+  .share-challenge {
+    font-size: 16px;
+    margin-bottom: 10px;
+  }
+
+  .qr-box {
+    width: 96px;
+    height: 96px;
+    font-size: 12px;
+  }
+
 }

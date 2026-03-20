@@ -5,6 +5,10 @@ class AudioManager {
     this.enabled = true;
     this.audioContext = null;
     this.typingAudio = null;
+    this.bgmAudio = null;
+    this.bgmPrimed = false;
+    this.bgmBaseVolume = 0.18;
+    this.bgmDuckVolume = 0.08;
 
     // 初始化
     this.init();
@@ -23,6 +27,12 @@ class AudioManager {
     this.typingAudio.src = 'assets/sounds/mixkit-hard-laptop-keyboard-typing-2538.wav';
     this.typingAudio.volume = 0.1;
     this.typingAudio.preload = 'auto';
+
+    this.bgmAudio = new Audio();
+    this.bgmAudio.src = encodeURI('assets/sounds/压迫感紧张_爱给网_aigei_com.mp3');
+    this.bgmAudio.volume = this.bgmBaseVolume;
+    this.bgmAudio.loop = true;
+    this.bgmAudio.preload = 'auto';
 
     // 如果浏览器需要用户交互才能播放音频，在首次点击时恢复
     document.addEventListener('click', () => {
@@ -85,9 +95,54 @@ class AudioManager {
     }
   }
 
+  primeBgm() {
+    if (!this.enabled || !this.bgmAudio || this.bgmPrimed) return;
+
+    this.bgmAudio.muted = true;
+    this.bgmAudio.currentTime = 0;
+    this.bgmAudio.play()
+      .then(() => {
+        this.bgmAudio.pause();
+        this.bgmAudio.currentTime = 0;
+        this.bgmAudio.muted = false;
+        this.bgmPrimed = true;
+      })
+      .catch(() => {
+        this.bgmAudio.muted = false;
+      });
+  }
+
+  startBgm() {
+    if (!this.enabled || !this.bgmAudio) return;
+
+    this.bgmAudio.muted = false;
+    this.bgmAudio.volume = this.bgmBaseVolume;
+    this.bgmAudio.play().catch(e => console.log('BGM播放失败:', e));
+  }
+
+  stopBgm() {
+    if (!this.bgmAudio) return;
+
+    this.bgmAudio.pause();
+    this.bgmAudio.currentTime = 0;
+  }
+
+  duckBgm(duration = 260) {
+    if (!this.bgmAudio || this.bgmAudio.paused) return;
+
+    this.bgmAudio.volume = this.bgmDuckVolume;
+    window.clearTimeout(this.bgmDuckTimer);
+    this.bgmDuckTimer = window.setTimeout(() => {
+      if (this.bgmAudio) {
+        this.bgmAudio.volume = this.bgmBaseVolume;
+      }
+    }, duration);
+  }
+
   // 生成选择音效（已优化）
   playChoiceSound() {
     if (!this.enabled || !this.audioContext) return;
+    this.duckBgm(240);
 
     const oscillator = this.audioContext.createOscillator();
     const gainNode = this.audioContext.createGain();
@@ -99,7 +154,7 @@ class AudioManager {
     oscillator.frequency.value = 400;
     oscillator.type = 'sine';
 
-    gainNode.gain.setValueAtTime(0.08, this.audioContext.currentTime);
+    gainNode.gain.setValueAtTime(0.12, this.audioContext.currentTime);
     gainNode.gain.exponentialRampToValueAtTime(0.001, this.audioContext.currentTime + 0.15);
 
     oscillator.start(this.audioContext.currentTime);
@@ -109,6 +164,7 @@ class AudioManager {
   // 生成按钮音效（用于启动实验等重要按钮）
   playButtonSound() {
     if (!this.enabled || !this.audioContext) return;
+    this.duckBgm(340);
 
     const oscillator = this.audioContext.createOscillator();
     const gainNode = this.audioContext.createGain();
@@ -120,7 +176,7 @@ class AudioManager {
     oscillator.frequency.value = 300;
     oscillator.type = 'sine';
 
-    gainNode.gain.setValueAtTime(0.02, this.audioContext.currentTime);
+    gainNode.gain.setValueAtTime(0.06, this.audioContext.currentTime);
     gainNode.gain.exponentialRampToValueAtTime(0.001, this.audioContext.currentTime + 0.3);
 
     oscillator.start(this.audioContext.currentTime);
@@ -130,6 +186,7 @@ class AudioManager {
   // 生成悬停音效
   playHoverSound() {
     if (!this.enabled || !this.audioContext) return;
+    this.duckBgm(120);
 
     const oscillator = this.audioContext.createOscillator();
     const gainNode = this.audioContext.createGain();
@@ -140,7 +197,7 @@ class AudioManager {
     oscillator.frequency.value = 400;
     oscillator.type = 'sine';
 
-    gainNode.gain.setValueAtTime(0.05, this.audioContext.currentTime);
+    gainNode.gain.setValueAtTime(0.07, this.audioContext.currentTime);
     gainNode.gain.exponentialRampToValueAtTime(0.001, this.audioContext.currentTime + 0.08);
 
     oscillator.start(this.audioContext.currentTime);
@@ -150,6 +207,7 @@ class AudioManager {
   // 生成警告音效
   playWarningSound() {
     if (!this.enabled || !this.audioContext) return;
+    this.duckBgm(320);
 
     const oscillator = this.audioContext.createOscillator();
     const gainNode = this.audioContext.createGain();

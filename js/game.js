@@ -12,7 +12,9 @@ function initGame() {
     document.getElementById('intro-landing').classList.add('hidden');
     document.getElementById('intro-sequence').classList.remove('hidden');
     // 在用户手势中同步启动音效（手机浏览器autoplay policy要求）
-    if (audioManager) audioManager.startTypingSound();
+    if (audioManager) {
+      audioManager.startTypingSound();
+    }
     // 播放开场动画
     playIntroAnimation();
   });
@@ -35,7 +37,7 @@ function playIntroAnimation() {
     '这是一场实验。',
     '我们想知道，当一个人决定创业时...',
     '他能在真实世界中存活多久。',
-    '现在是 2026年3月17日，晚上11:47',
+    '现在是 2026年3月21日，晚上11:47',
     '你刚刚按下了辞职信的发送键。',
     '距离房租到期：48小时',
     '银行余额：¥8,000',
@@ -61,6 +63,9 @@ function playIntroAnimation() {
       clearInterval(interval);
       // 显示开始按钮
       setTimeout(() => {
+        if (audioManager) {
+          audioManager.stopTypingSound();
+        }
         document.getElementById('start-btn').classList.remove('hidden');
       }, 500);
     }
@@ -72,6 +77,7 @@ function startGame() {
   // 播放按钮音效
   if (audioManager) {
     audioManager.playButtonSound();
+    audioManager.startBgm();
   }
 
   // 切换到游戏界面
@@ -389,25 +395,25 @@ function continueGame() {
 
   // 检查是否是特殊结局节点
   if (nextNode === 'gave_up' || nextNode === 'broke' || nextNode === 'burnout') {
-    showEnding();
+    startEndingTransition();
     return;
   }
 
   if (nextNode === 'resource_locked') {
-    showEnding();
+    startEndingTransition();
     return;
   }
 
   // 检查是否到达终局
   if (nextNode === 'ending') {
-    showEnding();
+    startEndingTransition();
     return;
   }
 
   // 检查游戏是否结束
   const gameOverReason = resourceManager.checkGameOver();
   if (gameOverReason) {
-    showEnding();
+    startEndingTransition();
     return;
   }
 
@@ -421,12 +427,31 @@ function continueGame() {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
+function startEndingTransition() {
+  const transition = document.getElementById('ending-transition');
+  if (!transition) {
+    showEnding();
+    return;
+  }
+
+  transition.classList.remove('hidden');
+
+  window.setTimeout(() => {
+    transition.classList.add('hidden');
+    showEnding();
+  }, 3600);
+}
+
 // 显示结局
 function showEnding() {
   // 判定结局
   const ending = determineEnding(resourceManager);
   const state = normalizeEndingState(ending.id, resourceManager.getState());
   const resourceStory = resourceManager.getResourceStory(state, ending.id);
+
+  if (audioManager) {
+    audioManager.stopBgm();
+  }
 
   // 切换到结局界面
   document.getElementById('game-screen').classList.remove('active');
@@ -503,8 +528,6 @@ async function shareResult() {
   const latestResult = JSON.parse(localStorage.getItem('latestResult'));
   if (!latestResult) return;
 
-  const ending = getEnding(latestResult.endingId);
-
   // 显示加载提示
   const shareBtn = document.getElementById('share-btn');
   const originalText = shareBtn.textContent;
@@ -512,30 +535,9 @@ async function shareResult() {
   shareBtn.disabled = true;
 
   try {
-    // 截取结局界面生成图片
-    const endingContent = document.querySelector('.ending-content');
-    const canvas = await html2canvas(endingContent, {
-      backgroundColor: '#0a0a0a',
-      scale: 2,
-      logging: false
-    });
-
-    // 转换为blob和dataURL
-    const dataURL = canvas.toDataURL('image/png');
-
-    canvas.toBlob(async (blob) => {
-      try {
-        // 显示预览弹窗
-        showImagePreview(dataURL, blob);
-
-        shareBtn.textContent = originalText;
-        shareBtn.disabled = false;
-      } catch (err) {
-        console.error('处理失败:', err);
-        shareBtn.textContent = originalText;
-        shareBtn.disabled = false;
-      }
-    }, 'image/png');
+    showImagePreview();
+    shareBtn.textContent = originalText;
+    shareBtn.disabled = false;
   } catch (error) {
     console.error('生成图片失败:', error);
     shareBtn.textContent = originalText;
@@ -545,7 +547,7 @@ async function shareResult() {
 }
 
 // 显示图片预览弹窗
-function showImagePreview(dataURL, blob) {
+function showImagePreview() {
   // 创建预览弹窗
   const modal = document.createElement('div');
   modal.className = 'image-preview-modal';
@@ -562,11 +564,14 @@ function showImagePreview(dataURL, blob) {
       <div class="preview-image-container">
         <div class="share-card-enhanced">
           <div class="share-header">
-            <h2 class="share-game-title">创业者48小时生存实验</h2>
-            <p class="share-subtitle">创业模拟 | 你能活多久?</p>
+            <h2 class="share-game-title">48小时生存实验</h2>
+            <p class="share-subtitle">我的创业结局</p>
           </div>
 
           <div class="share-result">
+            <div class="share-hero">
+              <img class="share-hero-image" src="assets/images/Image%202.png" alt="">
+            </div>
             <h3 class="share-ending-title">${ending.title}</h3>
             <p class="share-broadcast-line">${ending.shareText || '我活过了这48小时。'}</p>
             <div class="share-stats">
@@ -579,15 +584,6 @@ function showImagePreview(dataURL, blob) {
                 <span class="share-stat-value">${ending.percentage}%</span>
               </div>
             </div>
-
-            <div class="share-resources">
-              <div class="share-resource">💰 ¥${latestResult.finalResources.money.toLocaleString()}</div>
-              <div class="share-resource">⏰ ${latestResult.finalResources.time}h</div>
-              <div class="share-resource">⚡ ${latestResult.finalResources.energy}</div>
-              <div class="share-resource">👥 ${latestResult.finalResources.network}</div>
-            </div>
-
-            <p class="share-summary">${latestResult.resourceStory?.share || '你活下来了，但每一项资源都付出了代价。'}</p>
           </div>
 
           <div class="share-footer">
@@ -683,6 +679,10 @@ function fallbackShare(text) {
 function restartGame() {
   // 重置资源
   resourceManager.reset();
+
+  if (audioManager) {
+    audioManager.startBgm();
+  }
 
   // 切换到游戏界面
   document.getElementById('ending-screen').classList.remove('active');

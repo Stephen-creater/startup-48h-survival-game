@@ -356,7 +356,7 @@ const storyNodes = [
     id: 'hour_48',
     hour: 48,
     title: '终局',
-    scene: '回出租屋路上，晚上',
+    scene: '出租屋门口，晚上',
     image: 'assets/images/scenes/hour_48.jpg',
     description: {
       default: '48小时到了。\n\n房东在敲门。\n\n这是最后的时刻。',

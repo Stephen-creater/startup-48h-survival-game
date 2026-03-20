@@ -15,6 +15,8 @@ class ResourceManager {
     // 用于记录用户的选择路径
     this.flags = [];
     this.choices = [];
+    this.lastCrisisSignature = '';
+    this.depletionFeedbackSeen = new Set();
   }
 
   // 消耗资源
@@ -267,8 +269,52 @@ class ResourceManager {
       return;
     }
 
+    const previousSignature = this.lastCrisisSignature;
+    const nextSignature = `${profile.resource}:${profile.level}`;
+
     gameScreen.dataset.crisisResource = profile.resource;
     gameScreen.dataset.crisisLevel = profile.level;
+    this.lastCrisisSignature = nextSignature;
+
+    if (profile.level === 'critical' && previousSignature !== nextSignature) {
+      this.triggerCrisisPulse();
+    }
+
+    this.triggerDepletionFeedback(state);
+  }
+
+  triggerCrisisPulse() {
+    const gameScreen = document.getElementById('game-screen');
+    if (!gameScreen) return;
+
+    gameScreen.classList.remove('crisis-pulse');
+    void gameScreen.offsetWidth;
+    gameScreen.classList.add('crisis-pulse');
+
+    window.clearTimeout(this.crisisPulseTimer);
+    this.crisisPulseTimer = window.setTimeout(() => {
+      gameScreen.classList.remove('crisis-pulse');
+    }, 520);
+  }
+
+  triggerDepletionFeedback(state = this.getState()) {
+    const gameScreen = document.getElementById('game-screen');
+    if (!gameScreen) return;
+
+    const depletedNow = ['money', 'energy', 'network'].filter(resource => state[resource] <= 0);
+    const newlyDepleted = depletedNow.filter(resource => !this.depletionFeedbackSeen.has(resource));
+
+    if (newlyDepleted.length === 0) return;
+
+    newlyDepleted.forEach(resource => this.depletionFeedbackSeen.add(resource));
+    gameScreen.classList.remove('resource-break');
+    void gameScreen.offsetWidth;
+    gameScreen.classList.add('resource-break');
+
+    window.clearTimeout(this.resourceBreakTimer);
+    this.resourceBreakTimer = window.setTimeout(() => {
+      gameScreen.classList.remove('resource-break');
+    }, 760);
   }
 
   // 获取已耗尽的核心资源
@@ -601,6 +647,10 @@ class ResourceManager {
     this.hour = 0;
     this.flags = [];
     this.choices = [];
+    this.lastCrisisSignature = '';
+    this.depletionFeedbackSeen.clear();
+    window.clearTimeout(this.crisisPulseTimer);
+    window.clearTimeout(this.resourceBreakTimer);
     this.updateUI();
     this.setHour(0);
   }
