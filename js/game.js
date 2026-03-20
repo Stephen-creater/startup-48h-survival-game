@@ -416,6 +416,9 @@ function continueGame() {
 
   // 加载下一个节点
   loadNode(nextNode);
+
+  // 回到新节点顶部，先看到场景图
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 // 显示结局

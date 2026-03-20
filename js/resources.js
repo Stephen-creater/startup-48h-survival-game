@@ -109,24 +109,50 @@ class ResourceManager {
     this.updatePressureTone(state);
   }
 
+  getResourceStatus(resource, state = this.getState()) {
+    const initialMap = {
+      money: this.initialMoney,
+      time: this.initialTime,
+      energy: this.initialEnergy,
+      network: this.initialNetwork
+    };
+
+    const currentValue = state[resource];
+    const maxValue = initialMap[resource];
+    const ratio = maxValue > 0 ? currentValue / maxValue : 0;
+    const primaryPressure = this.getPrimaryPressure(state);
+    const isPrimary = primaryPressure.resource === resource;
+
+    if (currentValue <= 0) {
+      return { level: 'depleted', ratio, isPrimary };
+    }
+
+    if (ratio <= 0.18) {
+      return { level: 'critical', ratio, isPrimary };
+    }
+
+    if ((isPrimary && ratio <= 0.55) || ratio <= 0.3) {
+      return { level: 'warning', ratio, isPrimary };
+    }
+
+    return { level: 'normal', ratio, isPrimary };
+  }
+
   // 更新危险状态
-  // 当该资源是当前最危险资源且已进入压力区（ratio <= 0.55），或任意资源 <= 30% 时变红
   updateDangerState(resource, percent) {
     const bar = document.getElementById(resource + '-fill').parentElement;
     const resourceItem = bar.closest('.resource-item');
-    const ratio = percent / 100;
-    const primaryPressure = this.getPrimaryPressure();
-    const isPrimary = primaryPressure.resource === resource;
-    const inPressureZone = ratio <= 0.55;
-    const isDepleted = percent <= 0;
-    if ((isPrimary && inPressureZone) || percent <= 30) {
+    const status = this.getResourceStatus(resource);
+
+    if (status.level === 'warning' || status.level === 'critical' || status.level === 'depleted') {
       bar.classList.add('danger');
     } else {
       bar.classList.remove('danger');
     }
 
     if (resourceItem) {
-      resourceItem.classList.toggle('depleted', isDepleted);
+      resourceItem.classList.toggle('critical', status.level === 'critical');
+      resourceItem.classList.toggle('depleted', status.level === 'depleted');
     }
   }
 
