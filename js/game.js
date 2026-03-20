@@ -589,7 +589,7 @@ function showImagePreview() {
           <div class="share-footer">
             <p class="share-challenge">你能活过我吗？</p>
             <div class="share-qr-placeholder">
-              <div class="qr-box">扫码挑战</div>
+              <img class="qr-box" src="assets/qrcode.png" alt="扫码挑战">
             </div>
           </div>
         </div>
@@ -616,7 +616,7 @@ function showImagePreview() {
     canvas.toBlob(() => {
       modal.querySelector('.share-link-btn').onclick = async () => {
         try {
-          await navigator.clipboard.writeText(window.location.href);
+          await navigator.clipboard.writeText('https://startup-48h-survival-game.vercel.app/');
           alert('小游戏链接已复制到剪贴板！');
         } catch (err) {
           console.error('复制链接失败:', err);
