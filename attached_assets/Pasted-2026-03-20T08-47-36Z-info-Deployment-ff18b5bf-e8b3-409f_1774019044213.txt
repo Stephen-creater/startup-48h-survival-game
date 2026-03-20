@@ -1,0 +1,40 @@
+2026-03-20T08:47:36Z info: Deployment: ff18b5bf-e8b3-409f-8e72-8885858195e1
+2026-03-20T08:47:36Z info: Build: 7569385d-cb02-40a5-9a46-1b9c5e7fa3d4
+2026-03-20T08:47:36Z info: Running Security Scan
+2026-03-20T08:47:37Z info: Security Scan Complete
+2026-03-20T08:47:37Z info: Connecting to builder
+2026-03-20T08:47:38Z info: Builder connected
+2026-03-20T08:47:38Z info: Installing packages
+2026-03-20T08:47:39Z info: Skipping Build as no Build command set
+2026-03-20T08:47:39Z info: Pushing pid1 binary layer...
+2026-03-20T08:47:41Z info: Pushing Repl layer...
+2026-03-20T08:47:41Z info: Pushing hosting layer...
+2026-03-20T08:47:41Z info: Created hosting layer
+2026-03-20T08:47:41Z info: Created pid1 binary layer
+2026-03-20T08:47:43Z info: Created Repl layer
+2026-03-20T08:49:00Z info: Creating Autoscale service
+command finished with error [sh -c /start]: exit status 127
+sh: 1: /start: not found
+sh: 1: /start: not found
+command finished with error [sh -c /start]: exit status 127
+sh: 1: /start: not found
+starting up user application
+command finished with error [sh -c /start]: exit status 127
+command finished with error [sh -c /start]: exit status 127
+sh: 1: /start: not found
+metasidecar: loaded enterprise status from environment is_enterprise=false
+forwarding local port 5000 to external port 80 (mapped as 1104)
+command finished with error [sh -c /start]: exit status 127
+command finished with error [sh -c /start]: exit status 127
+sh: 1: /start: not found
+sh: 1: /start: not found
+command finished with error [sh -c /start]: exit status 127
+sh: 1: /start: not found
+sh: 1: /start: not found
+command finished with error [sh -c /start]: exit status 127
+sh: 1: /start: not found
+command finished with error [sh -c /start]: exit status 127
+command finished with error [sh -c /start]: exit status 127
+sh: 1: /start: not found
+crash loop detected
+2026-03-20T08:51:58Z error: The deployment is crash looping. This can happen if the run command fails or exits immediately after starting. Check the logs for more information.
