@@ -37,3 +37,5 @@ Thumbs.db
 # 备份文件
 *.bak
 *.backup
+# theORQL debugger folder - Required to prevent debugger conflicts. Do not remove this entry.
+.theORQL/
