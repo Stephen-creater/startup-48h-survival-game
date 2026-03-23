@@ -706,7 +706,7 @@ function restartGame() {
 
 // 联系小助手
 function contactAssistant() {
-  window.open('https://mp.weixin.qq.com/s/mPhVtUdwuEQkZ3lde-PwJw', '_blank', 'noopener,noreferrer');
+  window.open('https://lh9emykotk.feishu.cn/share/base/form/shrcnGjuoHFHzie3jfnBOSH0Wrb', '_blank', 'noopener,noreferrer');
 }
 
 // 页面加载完成后初始化
